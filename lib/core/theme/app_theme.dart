@@ -1,0 +1,199 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:runaar/core/constants/app_color.dart';
+import 'package:runaar/core/theme/app_text.dart';
+
+class AppTheme {
+  ThemeData lightTheme(BuildContext context) {
+    final customTextTheme = AppTextSize.getTextTheme(context);
+
+    return ThemeData(
+      brightness: Brightness.light,
+
+     textTheme: GoogleFonts.interTextTheme(customTextTheme).apply(
+  fontFamilyFallback: [
+    'Noto Sans Devanagari',
+  ],
+),
+
+
+
+      scaffoldBackgroundColor: appColor.backgroundColor,
+
+      
+
+      colorScheme: ColorScheme.light(
+        primary: appColor.mainColor,
+        onPrimary: appColor.textColor,
+        surface: appColor.themeColor,
+        onSurface: appColor.textColor,
+      ),
+
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+
+      dividerTheme: DividerThemeData(
+        color: Colors.grey.shade700,
+        thickness: 1.r, // 🔥 responsive
+      ),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: appColor.mainColor,
+        foregroundColor: appColor.textColor,
+        centerTitle: true,
+        elevation: 1,
+
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.only(
+        //     bottomLeft: Radius.circular(30.r),
+        //     bottomRight: Radius.circular(30.r),
+        //   ),
+        // ),
+
+        titleTextStyle: customTextTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.bold,
+          color: appColor.textColor,
+        ),
+
+        toolbarHeight: 45.h,
+
+        actionsIconTheme: IconThemeData(
+          color: appColor.textColor,
+          size: 20.sp,
+        ),
+
+        actionsPadding: EdgeInsets.only(right: 10.w),
+      ),
+
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: Colors.grey.shade900,
+        selectedItemColor: appColor.mainColor,
+
+        selectedLabelStyle: customTextTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
+
+        type: BottomNavigationBarType.fixed,
+        elevation: 2,
+        landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
+        unselectedItemColor: appColor.textColor.withOpacity(.5),
+
+        unselectedLabelStyle: customTextTheme.bodyMedium,
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          alignment: Alignment.center,
+          //shape: WidgetStateOutlinedBorder.fromMap(),
+
+          textStyle: WidgetStateTextStyle.resolveWith(
+            (states) => customTextTheme.titleLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+              fontSize: 20.sp,
+            ),
+          ),
+
+          backgroundColor: WidgetStateColor.resolveWith(
+            (states) => appColor.mainColor,
+          ),
+
+          foregroundColor: WidgetStateColor.resolveWith(
+            (states) => appColor.themeColor,
+          ),
+        ),
+      ),
+
+      tabBarTheme: TabBarThemeData(indicatorColor: appColor.textColor),
+
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: appColor.mainColor.withOpacity(0.3),
+        circularTrackColor: appColor.textColor,
+      ),
+
+      iconTheme: IconThemeData(
+        color: appColor.textColor,
+        size: 22.sp, // 🔥 responsive
+      ),
+
+      inputDecorationTheme: InputDecorationThemeData(
+        alignLabelWithHint: true,
+
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey, width: 1.r),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: appColor.mainColor, width: 2.r),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey, width: 2.r),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey, width: 2.r),
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+
+        hintStyle: customTextTheme.bodyLarge?.copyWith(
+          color: Colors.grey.shade600,
+        ),
+
+        labelStyle: customTextTheme.titleLarge?.copyWith(
+          color: appColor.textColor,
+        ),
+
+        errorStyle: customTextTheme.bodyMedium?.copyWith(color: Colors.red),
+
+        errorMaxLines: 2,
+
+        prefixIconColor: appColor.textColor,
+        suffixIconColor: appColor.textColor,
+      ),
+
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: customTextTheme.titleMedium,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.grey.shade800,
+      ),
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStateColor.resolveWith(
+            (states) => appColor.textColor,
+          ),
+          textStyle: WidgetStateTextStyle.resolveWith(
+            (states) => customTextTheme.titleLarge!.copyWith(
+              fontSize: 18.sp, // 🔥 responsive
+            ),
+          ),
+          iconSize: WidgetStatePropertyAll(24.sp), // 🔥 responsive
+        ),
+      ),
+
+    
+
+      cardTheme: CardThemeData(
+        color:appColor.themeColor,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        shadowColor: appColor.mainColor.withOpacity(0.5),
+        margin: EdgeInsets.all(5.w), // 🔥 responsive
+      ),
+
+      dialogTheme: DialogThemeData(
+        backgroundColor: Colors.black87,
+        titleTextStyle: customTextTheme.titleLarge!.copyWith(
+          fontSize: 18.sp, // 🔥 responsive
+        ),
+      ),
+
+      
+    );
+  }
+}
+
+final AppTheme appTheme = AppTheme();
