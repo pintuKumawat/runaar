@@ -15,6 +15,10 @@ extension SizeExtensions on num {
 /// ------- PADDING EXTENSIONS -------
 extension PaddingExtensions on num {
   EdgeInsets get all => EdgeInsets.all(ScreenUtil().setWidth(toDouble()));
+  EdgeInsets get horizontal =>
+      EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(toDouble()));
+  EdgeInsets get vertical =>
+      EdgeInsets.symmetric(vertical: ScreenUtil().setHeight(toDouble()));
   EdgeInsets hv(double v) => EdgeInsets.symmetric(
     horizontal: ScreenUtil().setWidth(toDouble()),
     vertical: ScreenUtil().setHeight(v),

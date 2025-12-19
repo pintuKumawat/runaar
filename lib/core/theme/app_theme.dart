@@ -11,17 +11,11 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
 
-     textTheme: GoogleFonts.interTextTheme(customTextTheme).apply(
-  fontFamilyFallback: [
-    'Noto Sans Devanagari',
-  ],
-),
-
-
+      textTheme: GoogleFonts.interTextTheme(
+        customTextTheme,
+      ).apply(fontFamilyFallback: ['Noto Sans Devanagari']),
 
       scaffoldBackgroundColor: appColor.backgroundColor,
-
-      
 
       colorScheme: ColorScheme.light(
         primary: appColor.mainColor,
@@ -51,7 +45,6 @@ class AppTheme {
         //     bottomRight: Radius.circular(30.r),
         //   ),
         // ),
-
         titleTextStyle: customTextTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: appColor.textColor,
@@ -59,10 +52,7 @@ class AppTheme {
 
         toolbarHeight: 45.h,
 
-        actionsIconTheme: IconThemeData(
-          color: appColor.textColor,
-          size: 20.sp,
-        ),
+        actionsIconTheme: IconThemeData(color: appColor.textColor, size: 20.sp),
 
         actionsPadding: EdgeInsets.only(right: 10.w),
       ),
@@ -86,8 +76,8 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           alignment: Alignment.center,
-          //shape: WidgetStateOutlinedBorder.fromMap(),
 
+          //shape: WidgetStateOutlinedBorder.fromMap(),
           textStyle: WidgetStateTextStyle.resolveWith(
             (states) => customTextTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
@@ -175,10 +165,8 @@ class AppTheme {
         ),
       ),
 
-    
-
       cardTheme: CardThemeData(
-        color:appColor.themeColor,
+        color: appColor.themeColor,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shadowColor: appColor.mainColor.withOpacity(0.5),
         margin: EdgeInsets.all(5.w), // 🔥 responsive
@@ -190,8 +178,6 @@ class AppTheme {
           fontSize: 18.sp, // 🔥 responsive
         ),
       ),
-
-      
     );
   }
 }
