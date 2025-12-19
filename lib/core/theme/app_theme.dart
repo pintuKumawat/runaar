@@ -38,12 +38,13 @@ class AppTheme {
         centerTitle: true,
         elevation: 1,
 
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15.r),
-            bottomRight: Radius.circular(15.r),
-          ),
-        ),
+        // shape: RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.only(
+        //     bottomLeft: Radius.circular(15.r),
+        //     bottomRight: Radius.circular(15.r),
+        //   ),
+        // ),
+        
         titleTextStyle: customTextTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: appColor.backgroundColor,

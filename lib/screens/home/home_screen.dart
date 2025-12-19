@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
+import 'package:runaar/core/responsive/responsive_extension.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedDate = DateTime.now();
-  int seats = 1; // seats count
+  int seats = 1;
 
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
@@ -26,56 +27,66 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context).textTheme;
+
     return Scaffold(
-     // backgroundColor: const Color(0xffF6F6F6),
       appBar: AppBar(
-       // backgroundColor: const Color(0xff2F5D50),
-        elevation: 0,
-        title: const Text(
-          'CARPOOL',
-         
-        ),
+        title: Text('CARPOOL'),
         centerTitle: true,
         actions: [
           Stack(
-            children: const [
-              Icon(Icons.notifications, size: 26),
+            children: [
+              Icon(Icons.notifications, size: 26.sp),
               Positioned(
                 right: 0,
                 top: 0,
                 child: CircleAvatar(
-                  radius: 7,
+                  radius: 7.r,
                   backgroundColor: Colors.red,
-                  child: Text('11', style: TextStyle(fontSize: 9, color: Colors.white)),
+                  child: Text(
+                    '11',
+                    style: theme.bodySmall?.copyWith(
+                      color: Colors.white,
+                      fontSize: 9.sp,
+                    ),
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(width: 16),
         ],
       ),
+
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: 16.all,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Find Ride', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
+            Text('Find Ride', style: theme.titleMedium),
+            16.height,
 
-            _inputTile(icon: Icons.my_location, hint: 'Enter Pickup Location'),
-            _inputTile(icon: Icons.location_on, hint: 'Enter Drop Location'),
+            _inputTile(
+              icon: Icons.my_location,
+              hint: 'Enter Pickup Location',
+              theme: theme,
+            ),
+            _inputTile(
+              icon: Icons.location_on,
+              hint: 'Enter Drop Location',
+              theme: theme,
+            ),
 
-            // seat selector
-            _seatSelector(),
+            _seatSelector(theme),
 
-            const SizedBox(height: 14),
+            14.height,
+
             GestureDetector(
               onTap: _pickDate,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
+                padding: 18.hv(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: .circular(14.r),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,43 +94,53 @@ class _HomeScreenState extends State<HomeScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Date of Departure', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                        const SizedBox(height: 4),
+                        Text('Date of Departure', style: theme.bodySmall),
+                        4.height,
                         Text(
                           '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: theme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ],
                     ),
-                    const Icon(Icons.calendar_month, color: Color(0xff2F5D50)),
+                    Icon(
+                      Icons.calendar_month,
+                      size: 22.sp,
+                    ),
                   ],
                 ),
               ),
             ),
 
-            const SizedBox(height: 26),
+            26.height,
+
             SizedBox(
               width: double.infinity,
-              height: 56,
-              child: ElevatedButton.icon(
+              height: 56.h,
+              child: ElevatedButton(
                 onPressed: () {},
-                icon: const Icon(Icons.search),
-                label: const Text('SEARCH RIDE', style: TextStyle(fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xff2F5D50),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                child: Row(
+                  mainAxisAlignment: .center,
+                  children: [
+                    Icon(Icons.search, size: 20.sp),
+                    4.width,
+                    Text('SEARCH RIDE'),
+                  ],
                 ),
               ),
             ),
 
-            const SizedBox(height: 30),
-            const Text('Exclusive Offer', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            30.height,
+
+            Text('Exclusive Offer', style: theme.titleMedium),
+            12.height,
+
             ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(16.r),
               child: Image.network(
                 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_D4QEFHiMTxClosCqqzasjAIj5e4r3auUZHcyi5kCfYnLKu4OBQ4ogKJNvhD2PZLwMjo&usqp=CAU',
-                height: 150,
+                height: 150.h,
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -130,33 +151,34 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Seat selector widget
-  Widget _seatSelector() {
+  /// ---------------- SEAT SELECTOR ----------------
+
+  Widget _seatSelector(TextTheme theme) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-      margin: const EdgeInsets.only(bottom: 12),
+      padding: 14.hv(16),
+      margin: .only(bottom: 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: .circular(14.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Number of Seats', style: TextStyle(fontSize: 15)),
+          Text('Number of Seats', style: theme.bodyLarge),
           Row(
             children: [
               _seatButton(Icons.remove, () {
                 if (seats > 1) setState(() => seats--);
               }),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14),
-                child: Text('$seats', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: Text('$seats', style: theme.titleMedium),
               ),
               _seatButton(Icons.add, () {
                 if (seats < 8) setState(() => seats++);
               }),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -165,23 +187,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _seatButton(IconData icon, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: .circular(20.r),
       child: CircleAvatar(
-        radius: 18,
-        backgroundColor: appColor.backgroundColor
-        ,
-        child: Icon(icon, color: appColor.mainColor),
+        radius: 18.r,
+        backgroundColor: appColor.backgroundColor,
+        child: Icon(icon, color: appColor.mainColor, size: 18.sp),
       ),
     );
   }
 
-  Widget _inputTile({required IconData icon, required String hint}) {
+  /// ---------------- INPUT TILE ----------------
+
+  Widget _inputTile({
+    required IconData icon,
+    required String hint,
+    required TextTheme theme,
+  }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14)),
+      margin: .only(bottom: 12.h),
+      padding: .symmetric(horizontal: 12.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: .circular(14.r),
+      ),
       child: TextField(
-        decoration: InputDecoration(icon: Icon(icon), hintText: hint, border: InputBorder.none),
+        style: theme.bodyLarge,
+        decoration: InputDecoration(
+          icon: Icon(icon, size: 24.sp),
+          hintText: hint,
+        ),
       ),
     );
   }

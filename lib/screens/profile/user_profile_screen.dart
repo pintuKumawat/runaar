@@ -308,11 +308,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Profile"), centerTitle: true),
+      appBar: AppBar(),
       body: ListView(
         padding: 16.all,
         children: [
           _profileHeader(theme),
+          
           20.height,
           _sectionTitle("Account", theme),
           _profileTile(Icons.person_outline, "Edit Profile", theme),
@@ -358,7 +359,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
           _profileTile(Icons.logout, "Logout", theme, danger: true),
 
-          24.height,
+          15.height,
 
           Center(
             child: Text(
@@ -366,12 +367,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               style: theme.bodySmall?.copyWith(color: Colors.grey),
             ),
           ),
+          15.height,
         ],
       ),
     );
   }
-
-  // ================= PROFILE HEADER =================
 
   Widget _profileHeader(TextTheme theme) {
     return Container(
@@ -405,15 +405,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Text("(4.6)", style: theme.bodySmall),
           ],
         ),
-        // trailing: Icon(Icons.arrow_forward_ios, size: 14.sp),
         onTap: () {
           // Navigate to profile details
         },
       ),
     );
   }
-
-  // ================= SECTION TITLE =================
 
   Widget _sectionTitle(String title, TextTheme theme) {
     return Padding(
