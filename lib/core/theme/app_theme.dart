@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:runaar/core/constants/app_color.dart';
+import 'package:runaar/core/responsive/responsive_extension.dart'
+    show PlatformExtensions;
 import 'package:runaar/core/theme/app_text.dart';
 
 class AppTheme {
@@ -28,10 +30,7 @@ class AppTheme {
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
 
-      dividerTheme: DividerThemeData(
-        color: Colors.grey.shade700,
-        thickness: 1.r, // 🔥 responsive
-      ),
+      dividerTheme: DividerThemeData(color: Colors.black45),
 
       appBarTheme: AppBarTheme(
         backgroundColor: appColor.mainColor,
@@ -39,33 +38,36 @@ class AppTheme {
         centerTitle: true,
         elevation: 1,
 
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.only(
-        //     bottomLeft: Radius.circular(30.r),
-        //     bottomRight: Radius.circular(30.r),
-        //   ),
-        // ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(15.r),
+            bottomRight: Radius.circular(15.r),
+          ),
+        ),
         titleTextStyle: customTextTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
-          color: appColor.textColor,
+          color: appColor.backgroundColor,
         ),
 
         toolbarHeight: 45.h,
 
-        actionsIconTheme: IconThemeData(color: appColor.textColor, size: 20.sp),
+        actionsIconTheme: IconThemeData(
+          color: appColor.backgroundColor,
+          size: 20.sp,
+        ),
 
         actionsPadding: EdgeInsets.only(right: 10.w),
       ),
 
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: appColor.themeColor,
         selectedItemColor: appColor.mainColor,
 
         selectedLabelStyle: customTextTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.bold,
         ),
 
-        type: BottomNavigationBarType.fixed,
+        type: BottomNavigationBarType.shifting,
         elevation: 2,
         landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
         unselectedItemColor: appColor.textColor.withOpacity(.5),
@@ -81,7 +83,11 @@ class AppTheme {
           textStyle: WidgetStateTextStyle.resolveWith(
             (states) => customTextTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 20.sp,
+              fontSize: context.isMobile
+                  ? 20.sp
+                  : context.isTablet
+                  ? 13.sp
+                  : 9.sp,
             ),
           ),
 
@@ -102,10 +108,7 @@ class AppTheme {
         circularTrackColor: appColor.textColor,
       ),
 
-      iconTheme: IconThemeData(
-        color: appColor.textColor,
-        size: 22.sp, // 🔥 responsive
-      ),
+      iconTheme: IconThemeData(color: appColor.textColor, size: 22.sp),
 
       inputDecorationTheme: InputDecorationThemeData(
         alignLabelWithHint: true,
@@ -166,10 +169,13 @@ class AppTheme {
       ),
 
       cardTheme: CardThemeData(
-        color: appColor.themeColor,
+        color: Colors.white70,
         clipBehavior: Clip.antiAliasWithSaveLayer,
         shadowColor: appColor.mainColor.withOpacity(0.5),
-        margin: EdgeInsets.all(5.w), // 🔥 responsive
+        margin: .all(5.w), // 🔥 responsive
+        shape: RoundedRectangleBorder(
+          borderRadius: .circular(8.r)
+        )
       ),
 
       dialogTheme: DialogThemeData(

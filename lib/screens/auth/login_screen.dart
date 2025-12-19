@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/screens/auth/sign_up_screen.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,9 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 /// MOBILE NUMBER
                 TextFormField(
                   keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: "Enter mobile number",
-                    prefixIcon: Icon(Icons.phone),
+                    prefixIcon: Icon(Icons.phone, size: 16.sp),
                   ),
                 ),
 
@@ -57,12 +59,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: !isPasswordVisible,
                   decoration: InputDecoration(
                     hintText: "Enter password",
-                    prefixIcon: const Icon(Icons.lock),
+                    prefixIcon: Icon(Icons.lock, size: 16.sp),
                     suffixIcon: IconButton(
                       icon: Icon(
                         isPasswordVisible
                             ? Icons.visibility
                             : Icons.visibility_off,
+                        size: 14.sp,
                       ),
                       onPressed: () {
                         setState(() {
@@ -91,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () => appNavigator.push(BottomNav()),
                     child: const Text("Login"),
                   ),
                 ),

@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
-import 'package:runaar/screens/auth/login_screen.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -29,10 +30,11 @@ class MyApp extends StatelessWidget {
         );
       },
       title: 'Flutter Demo',
+      navigatorKey: appNavigator.navigateKey,
       debugShowCheckedModeBanner: false,
       theme: appTheme.lightTheme(context),
       themeMode: ThemeMode.light,
-      home: LoginScreen(),
+      home: BottomNav(),
     );
   }
 }
