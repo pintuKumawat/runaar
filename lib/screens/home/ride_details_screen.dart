@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/home/confirm_booking_screen.dart';
 
 class RideDetailsScreen extends StatelessWidget {
   final String tripId;
@@ -18,7 +20,7 @@ class RideDetailsScreen extends StatelessWidget {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => appNavigator.push(ConfirmBookingScreen()),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 
 class OfferRide extends StatefulWidget {
   const OfferRide({super.key});
@@ -98,7 +100,7 @@ class _OfferRideState extends State<OfferRide> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => appNavigator.push(OfferRideDetailsScreen()),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -146,7 +148,6 @@ class _OfferRideState extends State<OfferRide> {
         borderRadius: .circular(14.r),
       ),
       child: DropdownButtonHideUnderline(
-
         child: DropdownButton<String>(
           dropdownColor: Colors.grey.shade200,
           value: selectedVehicle,
