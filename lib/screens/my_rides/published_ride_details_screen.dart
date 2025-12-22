@@ -21,13 +21,13 @@ class PublishedRideDetailsScreen extends StatelessWidget {
         child: Column(
           children: [
             _tripCard(theme),
-            6.height,
+            // 6.height,
             _driverSelfCard(theme),
-            6.height,
+            // 6.height,
             _vehicleDetails(theme),
-            6.height,
+            // 6.height,
             _seatInfo(theme),
-            6.height,
+            // 6.height,
             _passengerList(theme),
             // 14.height,
             // _bottomStatusButton(theme),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
   final String bookingId;
@@ -10,6 +11,7 @@ class BookingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
+BookingStatus currentStatus = BookingStatus.completed;
 
     return Scaffold(
       appBar: AppBar(title: Text("Booking Details")),
@@ -18,14 +20,37 @@ class BookingDetailsScreen extends StatelessWidget {
         padding: 10.all,
         child: Column(
           children: [
+            statusContainer(theme, currentStatus),
+            // 6.height,
             _tripHeader(theme),
-            6.height,
+            // 6.height,
             _driverCard(theme),
-            6.height,
+            // 6.height,
             _vehicleDetails(theme),
-            6.height,
+            // 6.height,
             _passengerInfo(theme),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget statusContainer(TextTheme theme, BookingStatus status) {
+    return Align(
+      alignment: .topRight,
+      child: Container(
+        padding: 12.hv(6),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: status.backgroundColor,
+        ),
+        child: Text(
+          status.label,
+          textAlign: .end,
+          style: theme.bodySmall?.copyWith(
+            color: status.textColor,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -131,9 +156,15 @@ class BookingDetailsScreen extends StatelessWidget {
           backgroundColor: Colors.grey.shade300,
           child: Icon(Icons.person, size: 30.sp),
         ),
-        title: Text(
-          "Amit Sharma",
-          style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+        title: Row(
+          children: [
+            Text(
+              "Amit Sharma",
+              style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            4.width,
+            Icon(Icons.verified, color: Colors.green,size: 18.sp,)
+          ],
         ),
         subtitle: RatingBarIndicator(
           rating: 4.6,

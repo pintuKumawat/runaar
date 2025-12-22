@@ -38,17 +38,13 @@ class AppTheme {
         centerTitle: true,
         elevation: 1,
 
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: .only(
-        //     bottomLeft: Radius.circular(15.r),
-        //     bottomRight: Radius.circular(15.r),
-        //   ),
-        // ),
         titleTextStyle: customTextTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
+
         iconTheme: IconThemeData(color: appColor.buttonColor),
+
         toolbarHeight: 45.h,
 
         actionsIconTheme: IconThemeData(
@@ -56,7 +52,7 @@ class AppTheme {
           size: 20.sp,
         ),
 
-        actionsPadding: EdgeInsets.only(right: 10.w),
+        actionsPadding: .only(right: 10.w),
       ),
 
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -138,21 +134,21 @@ class AppTheme {
       inputDecorationTheme: InputDecorationThemeData(
         alignLabelWithHint: true,
         fillColor: Colors.white70,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 1.r),
-          borderRadius: .circular(14.r),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.grey, width: .5.r),
+          // borderRadius: .circular(14.r),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: appColor.mainColor, width: 2.r),
-          borderRadius: .circular(14.r),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: appColor.mainColor, width: 1.r),
+          // borderRadius: .circular(14.r),
         ),
-        errorBorder: OutlineInputBorder(
+        errorBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.grey, width: 2.r),
-          borderRadius: .circular(14.r),
+          // borderRadius: .circular(14.r),
         ),
-        focusedErrorBorder: OutlineInputBorder(
+        focusedErrorBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.grey, width: 2.r),
-          borderRadius: .circular(14.r),
+          // borderRadius: .circular(14.r),
         ),
 
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -174,9 +170,10 @@ class AppTheme {
       ),
 
       snackBarTheme: SnackBarThemeData(
-        contentTextStyle: customTextTheme.titleMedium,
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.grey.shade800,
+        contentTextStyle: customTextTheme.titleMedium?.copyWith(
+          color: appColor.buttonColor,
+        ),
+        backgroundColor: appColor.mainColor,
       ),
 
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -206,6 +203,9 @@ class AppTheme {
           fontSize: 18.sp, // 🔥 responsive
         ),
       ),
+
+      popupMenuTheme: PopupMenuThemeData(color: Colors.white, iconSize: 22.sp),
+      dropdownMenuTheme: DropdownMenuThemeData(textStyle: customTextTheme.labelMedium)
     );
   }
 }

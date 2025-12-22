@@ -290,6 +290,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/auth/login_screen.dart';
+import 'package:runaar/screens/my_rides/my_rides_screen.dart';
+import 'package:runaar/screens/profile/account/change_password_screen.dart';
+import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
+import 'package:runaar/screens/profile/account/language_change_screen.dart';
+import 'package:runaar/screens/profile/account/verification_screen.dart';
+import 'package:runaar/screens/profile/delete_account_screen.dart';
+import 'package:runaar/screens/profile/vehicle/add_vehicle_screen.dart';
+import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -308,14 +318,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(userName),
-      ),
+      appBar: AppBar(title: Text(userName)),
       body: ListView(
         padding: 10.all,
         children: [
           _profileHeader(theme),
-          
+
           20.height,
           _sectionTitle("Account", theme),
           _profileTile(Icons.person_outline, "Edit Profile", theme),
@@ -417,10 +425,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget _sectionTitle(String title, TextTheme theme) {
     return Padding(
       padding: 6.vertical,
-      child: Text(
-        title,
-        style: theme.titleMedium,
-      ),
+      child: Text(title, style: theme.titleMedium),
     );
   }
 
@@ -451,6 +456,33 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   void _handleTap(String title) {
     switch (title) {
+      case "Edit Profile":
+        appNavigator.push(EditProfileScreen(userId: 1));
+        break;
+      case "Change Password":
+        appNavigator.push(ChangePasswordScreen(userId: 1));
+        break;
+      case "Language":
+        appNavigator.push(LanguageChangeScreen());
+        break;
+      case "Verification":
+        appNavigator.push(VerificationScreen());
+        break;
+      case "My Rides":
+        appNavigator.push(MyRidesScreen(initialIndex: 0));
+        break;
+      case "Trip History":
+        appNavigator.push(MyRidesScreen(initialIndex: 1));
+        break;
+      case "My Vehicles":
+        appNavigator.push(VehicleList(userId: 1));
+        break;
+      case "Add Vehicle":
+        appNavigator.push(AddVehicleScreen(userId: 1));
+        break;
+      case "Delete Account":
+        appNavigator.push(DeleteAccountScreen(userId: 1));
+        break;
       case "Logout":
         _showLogoutSheet();
         break;
@@ -492,8 +524,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context);
-                      // logout logic
+                      appNavigator.pushAndRemoveUntil(LoginScreen());
                     },
                     child: const Text("Logout"),
                   ),

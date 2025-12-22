@@ -98,7 +98,7 @@ class _BottomNavState extends State<BottomNav> {
     super.initState();
     _pages = const [
       OfferRide(), // Offer Ride
-      MyRidesScreen(), // My Rides
+      MyRidesScreen(initialIndex: 0,), // My Rides
       HomeScreen(),
       NotificationScreen(), // Notifications
       UserProfileScreen(),

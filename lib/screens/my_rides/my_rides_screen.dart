@@ -6,7 +6,8 @@ import 'package:runaar/screens/my_rides/booking_details_screen.dart';
 import 'package:runaar/screens/my_rides/published_ride_details_screen.dart';
 
 class MyRidesScreen extends StatefulWidget {
-  const MyRidesScreen({super.key});
+  final int initialIndex;
+  const MyRidesScreen({super.key, required this.initialIndex});
 
   @override
   State<MyRidesScreen> createState() => _MyRidesScreenState();
@@ -125,6 +126,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
 
     return DefaultTabController(
       length: 3,
+      initialIndex: widget.initialIndex.clamp(0, 2),
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(110.h),
