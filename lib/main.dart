@@ -21,20 +21,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      builder: (context, widget) {
-        ScreenUtil.init(context);
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
-          child: widget!,
-        );
-      },
-      title: 'Flutter Demo',
-      navigatorKey: appNavigator.navigateKey,
-      debugShowCheckedModeBanner: false,
-      theme: appTheme.lightTheme(context),
-      themeMode: ThemeMode.light,
-      home: BottomNav(),
+    return SafeArea(
+      child: MaterialApp(
+        builder: (context, widget) {
+          ScreenUtil.init(context);
+          return MediaQuery(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+            child: widget!,
+          );
+        },
+        title: 'Flutter Demo',
+        navigatorKey: appNavigator.navigateKey,
+        debugShowCheckedModeBanner: false,
+        theme: appTheme.lightTheme(context),
+        themeMode: ThemeMode.light,
+        home: BottomNav(),
+      ),
     );
   }
 }

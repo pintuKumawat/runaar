@@ -30,26 +30,25 @@ class AppTheme {
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
 
-      dividerTheme: DividerThemeData(color: Colors.black45),
+      dividerTheme: DividerThemeData(color: Colors.black12),
 
       appBarTheme: AppBarTheme(
         backgroundColor: appColor.mainColor,
-        foregroundColor: appColor.textColor,
+        foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 1,
 
         // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.only(
+        //   borderRadius: .only(
         //     bottomLeft: Radius.circular(15.r),
         //     bottomRight: Radius.circular(15.r),
         //   ),
         // ),
-        
         titleTextStyle: customTextTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.bold,
-          color: appColor.backgroundColor,
+          color: Colors.white,
         ),
-
+        iconTheme: IconThemeData(color: appColor.buttonColor),
         toolbarHeight: 45.h,
 
         actionsIconTheme: IconThemeData(
@@ -61,19 +60,29 @@ class AppTheme {
       ),
 
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: appColor.themeColor,
-        selectedItemColor: appColor.mainColor,
+        landscapeLayout: BottomNavigationBarLandscapeLayout.spread,
 
-        selectedLabelStyle: customTextTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.bold,
+        backgroundColor: appColor.mainColor,
+        selectedItemColor: appColor.buttonColor,
+        selectedIconTheme: IconThemeData(
+          color: appColor.buttonColor,
+          size: 24.sp,
+        ),
+        unselectedIconTheme: IconThemeData(color: Colors.white60, size: 22.sp),
+        selectedLabelStyle: TextStyle(
+          fontWeight: .w600,
+          color: Colors.white,
+          fontSize: 12.sp,
         ),
 
-        type: BottomNavigationBarType.shifting,
-        elevation: 2,
-        landscapeLayout: BottomNavigationBarLandscapeLayout.linear,
-        unselectedItemColor: appColor.textColor.withOpacity(.5),
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: appColor.buttonColor.withOpacity(.5),
 
-        unselectedLabelStyle: customTextTheme.bodyMedium,
+        unselectedLabelStyle: TextStyle(
+          fontWeight: .w400,
+          color: Colors.white60,
+          fontSize: 12.sp,
+        ),
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -97,12 +106,27 @@ class AppTheme {
           ),
 
           foregroundColor: WidgetStateColor.resolveWith(
-            (states) => appColor.themeColor,
+            (states) => Colors.white,
           ),
         ),
       ),
+      bottomAppBarTheme: BottomAppBarThemeData(
+        color: Colors.transparent,
+        shadowColor: Colors.transparent,
+        elevation: 0,
+      ),
 
-      tabBarTheme: TabBarThemeData(indicatorColor: appColor.textColor),
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: appColor.buttonColor,
+        labelColor: appColor.buttonColor,
+        unselectedLabelColor: appColor.buttonColor,
+        unselectedLabelStyle: customTextTheme.labelMedium?.copyWith(
+          color: appColor.buttonColor,
+        ),
+        labelStyle: customTextTheme.titleMedium?.copyWith(
+          color: appColor.buttonColor,
+        ),
+      ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: appColor.mainColor.withOpacity(0.3),
@@ -113,22 +137,22 @@ class AppTheme {
 
       inputDecorationTheme: InputDecorationThemeData(
         alignLabelWithHint: true,
-
+        fillColor: Colors.white70,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey, width: 1.r),
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: .circular(14.r),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: appColor.mainColor, width: 2.r),
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: .circular(14.r),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey, width: 2.r),
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: .circular(14.r),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.grey, width: 2.r),
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: .circular(14.r),
         ),
 
         floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -165,18 +189,15 @@ class AppTheme {
               fontSize: 18.sp, // 🔥 responsive
             ),
           ),
-          iconSize: WidgetStatePropertyAll(24.sp), // 🔥 responsive
+          iconSize: WidgetStatePropertyAll(24.sp),
         ),
       ),
 
       cardTheme: CardThemeData(
-        color: Colors.white70,
+        color: Color.fromARGB(255, 239, 239, 239),
         clipBehavior: Clip.antiAliasWithSaveLayer,
-        shadowColor: appColor.mainColor.withOpacity(0.5),
         margin: .all(5.w), // 🔥 responsive
-        shape: RoundedRectangleBorder(
-          borderRadius: .circular(8.r)
-        )
+        shape: RoundedRectangleBorder(borderRadius: .circular(0.r)),
       ),
 
       dialogTheme: DialogThemeData(

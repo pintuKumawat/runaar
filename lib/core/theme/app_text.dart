@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:runaar/core/constants/app_color.dart';
 
-
 class AppTextSize {
   AppTextSize._();
 
@@ -23,8 +22,13 @@ class AppTextSize {
       ),
 
       titleMedium: TextStyle(
-        fontSize: 20.sp,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w600,
+        color: appColor.textColor,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 16.sp,
+        fontWeight: FontWeight.w400,
         color: appColor.textColor,
       ),
 

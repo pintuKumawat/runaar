@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       body: SingleChildScrollView(
-        padding: 16.all,
+        padding: 10.all,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -104,10 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    Icon(
-                      Icons.calendar_month,
-                      size: 22.sp,
-                    ),
+                    Icon(Icons.calendar_month, size: 22.sp),
                   ],
                 ),
               ),
@@ -119,11 +118,11 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => appNavigator.push(SearchScreen()),
                 child: Row(
                   mainAxisAlignment: .center,
                   children: [
-                    Icon(Icons.search, size: 20.sp),
+                    Icon(Icons.search, size: 22.sp),
                     4.width,
                     Text('SEARCH RIDE'),
                   ],
@@ -132,26 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             30.height,
-
-            Text('Exclusive Offer', style: theme.titleMedium),
-            12.height,
-
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16.r),
-              child: Image.network(
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_D4QEFHiMTxClosCqqzasjAIj5e4r3auUZHcyi5kCfYnLKu4OBQ4ogKJNvhD2PZLwMjo&usqp=CAU',
-                height: 150.h,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
           ],
         ),
       ),
     );
   }
-
-  /// ---------------- SEAT SELECTOR ----------------
 
   Widget _seatSelector(TextTheme theme) {
     return Container(
@@ -196,8 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// ---------------- INPUT TILE ----------------
-
   Widget _inputTile({
     required IconData icon,
     required String hint,
@@ -205,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return Container(
       margin: .only(bottom: 12.h),
-      padding: .symmetric(horizontal: 12.w),
+      padding: 12.all,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: .circular(14.r),
@@ -213,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: TextField(
         style: theme.bodyLarge,
         decoration: InputDecoration(
-          icon: Icon(icon, size: 24.sp),
+          icon: Icon(icon, size: 24.sp, color: Color(0XFF07869C),),
           hintText: hint,
         ),
       ),

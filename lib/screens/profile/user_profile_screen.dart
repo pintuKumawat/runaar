@@ -308,9 +308,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(userName),
+      ),
       body: ListView(
-        padding: 16.all,
+        padding: 10.all,
         children: [
           _profileHeader(theme),
           
@@ -376,7 +378,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget _profileHeader(TextTheme theme) {
     return Container(
       decoration: BoxDecoration(
-        color: appColor.themeColor.withOpacity(0.25),
+        color: appColor.themeColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: ListTile(
@@ -417,7 +419,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       padding: 6.vertical,
       child: Text(
         title,
-        style: theme.titleMedium?.copyWith(color: appColor.mainColor),
+        style: theme.titleMedium,
       ),
     );
   }

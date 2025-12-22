@@ -77,13 +77,12 @@ class NotificationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications", style: theme.titleLarge),
-        centerTitle: true,
+        title: Text("Notifications"),
       ),
       body: notifications.isEmpty
           ? _emptyView(context)
           : Padding(
-              padding: 8.all,
+              padding: 10.all,
               child: Column(
                 crossAxisAlignment: .stretch,
                 children: [
@@ -112,8 +111,6 @@ class NotificationScreen extends StatelessWidget {
             ),
     );
   }
-
-  /// ---------------- EMPTY VIEW ----------------
 
   Widget _emptyView(BuildContext context) {
     final theme = Theme.of(context).textTheme;
