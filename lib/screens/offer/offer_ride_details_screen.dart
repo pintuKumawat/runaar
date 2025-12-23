@@ -15,31 +15,43 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
   bool luggageAllowed = true;
   bool petsAllowed = false;
   bool smokingAllowed = false;
+  int seats = 1;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ride Details'),
-        centerTitle: true,
+      appBar: AppBar(title: const Text('Ride Details')),
+      bottomNavigationBar: BottomAppBar(
+        child: SizedBox(
+          width: double.infinity,
+          height: 56.h,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.publish, size: 20.sp),
+                8.width,
+                const Text('PUBLISH RIDE'),
+              ],
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-             _routeCard( theme),
+            _routeCard(theme),
             16.height,
             Text('Add ride preferences', style: theme.titleMedium),
             8.height,
 
-            /// PRICE PER SEAT
             _priceInput(theme),
 
-            /// ALLOWANCES
             _sectionTitle('Allowances'),
             _switchTile(
               title: 'Luggage allowed',
@@ -56,7 +68,6 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
               theme: theme,
             ),
 
-            /// PREFERENCES
             _sectionTitle('Preferences'),
             _switchTile(
               title: 'Smoking allowed',
@@ -65,27 +76,6 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
               onChanged: (v) => setState(() => smokingAllowed = v),
               theme: theme,
             ),
-
-            28.height,
-
-            /// PUBLISH BUTTON
-            SizedBox(
-              width: double.infinity,
-              height: 56.h,
-              child: ElevatedButton(
-                onPressed: () {
-                  // submit ride details
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.publish, size: 20.sp),
-                    8.width,
-                    const Text('PUBLISH RIDE'),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -93,7 +83,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
   }
 
   /// ---------------- WIDGETS ----------------
- Widget _routeCard(TextTheme theme) {
+  Widget _routeCard(TextTheme theme) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -175,34 +165,33 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
       ],
     );
   }
+
   Widget _sectionTitle(String title) {
     return Padding(
       padding: EdgeInsets.only(top: 16.h, bottom: 8.h),
       child: Text(
         title,
-        style: TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 16.sp,
-        ),
+        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
       ),
     );
   }
 
   Widget _priceInput(TextTheme theme) {
     return Container(
-      
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: .circular(14.r),
-      ),
-      child: TextField(
-        controller: priceController,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),
-          hintText: 'Price per seat',
-          hintStyle: theme.bodyMedium,
-        ),
+      decoration: BoxDecoration(color: Colors.white),
+      child: Column(
+        children: [
+          TextField(
+            controller: priceController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),
+              hintText: 'Price per seat',
+              hintStyle: theme.bodyMedium,
+            ),
+          ),
+          _seatSelector(theme),
+        ],
       ),
     );
   }
@@ -216,7 +205,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 10.h),
-     // padding: 14.all,
+      // padding: 14.all,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: .circular(14.r),
@@ -225,15 +214,52 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
         children: [
           Icon(icon, color: appColor.mainColor),
           12.width,
-          Expanded(
-            child: Text(title, style: theme.bodyLarge),
-          ),
+          Expanded(child: Text(title, style: theme.bodyLarge)),
           Switch(
             value: value,
             activeColor: appColor.mainColor,
             onChanged: onChanged,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _seatSelector(TextTheme theme) {
+    return Container(
+      padding: 14.hv(16),
+      decoration: BoxDecoration(color: Colors.white),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('Number of Seats', style: theme.titleSmall),
+          Row(
+            children: [
+              _seatButton(Icons.remove, () {
+                if (seats > 1) setState(() => seats--);
+              }),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
+                child: Text('$seats', style: theme.titleMedium),
+              ),
+              _seatButton(Icons.add, () {
+                if (seats < 8) setState(() => seats++);
+              }),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _seatButton(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: .circular(20.r),
+      child: CircleAvatar(
+        radius: 18.r,
+        backgroundColor: appColor.backgroundColor,
+        child: Icon(icon, color: appColor.mainColor, size: 18.sp),
       ),
     );
   }

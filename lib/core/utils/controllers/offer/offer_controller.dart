@@ -23,3 +23,5 @@ class OfferController {
     priceController.dispose();
   }
 }
+
+final OfferController offerController = OfferController();

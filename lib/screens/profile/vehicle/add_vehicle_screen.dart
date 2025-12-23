@@ -133,10 +133,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   Widget _label(String text, TextTheme theme) {
     return Text(
       text,
-      style: theme.titleSmall?.copyWith(
-        fontWeight: FontWeight.w600,
-        
-      ),
+      style: theme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
@@ -152,7 +149,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  // -------------------- DROPDOWN --------------------
   Widget _dropdownField({
     required String value,
     required List<String> items,
@@ -162,9 +158,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     return DropdownButtonFormField<String>(
       value: value,
       dropdownColor: Colors.white,
-      style: textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w500,
-      ),
+      style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
       items: items
           .map((e) => DropdownMenuItem(value: e, child: Text(e)))
           .toList(),
@@ -172,7 +166,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  // -------------------- IMAGE SECTION --------------------
   Widget _imageSection({
     required String label,
     required File? image,

@@ -30,18 +30,12 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Vehicle Details"),
-      ),
+      appBar: AppBar(title: Text("Vehicle Details")),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
           crossAxisAlignment: .start,
           children: [
-            _imageSection(textTheme),
-
-            24.height,
-
             _sectionTitle("Basic Information", textTheme),
             12.height,
 
@@ -52,6 +46,8 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
             _detailTile("Fuel Type", vehicle["fuel"], textTheme),
             _detailTile("Seats", vehicle["seats"], textTheme),
             _detailTile("Color", vehicle["color"], textTheme),
+            24.height,
+            _imageSection(textTheme),
           ],
         ),
       ),
@@ -123,10 +119,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
   Widget _sectionTitle(String text, TextTheme theme) {
     return Text(
       text,
-      style: theme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w600,
-        
-      ),
+      style: theme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
