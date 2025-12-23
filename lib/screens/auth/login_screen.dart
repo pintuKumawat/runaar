@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/provider/login_provider.dart';
 import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 
@@ -17,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<LoginProvider>();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -38,45 +41,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 10.height,
-
                 Text("Login to continue", style: theme.textTheme.bodyMedium),
-
                 25.height,
 
-                /// MOBILE NUMBER
+                // MOBILE NUMBER (LIVE VALIDATION)
                 TextFormField(
+                  controller: provider.loginPhoneController,
                   keyboardType: TextInputType.phone,
+                  onChanged: provider.validatePhone,
                   decoration: InputDecoration(
                     hintText: "Enter mobile number",
-                    prefixIcon: Icon(Icons.phone, size: 16.sp),
+                    prefixIcon: const Icon(Icons.phone),
+                    errorText: provider.phoneError,
                   ),
                 ),
 
-                const SizedBox(height: 15),
+                15.height,
 
-                /// PASSWORD
+                /// 🔐 PASSWORD (LIVE VALIDATION)
                 TextFormField(
-                  obscureText: !isPasswordVisible,
-                  decoration: InputDecoration(
-                    hintText: "Enter password",
-                    prefixIcon: Icon(Icons.lock, size: 16.sp),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        size: 14.sp,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          isPasswordVisible = !isPasswordVisible;
-                        });
-                      },
-                    ),
-                  ),
-                ),
+  controller: provider.loginPasswordController,
+  obscureText: !provider.isPasswordVisible,
+  onChanged: provider.validatePassword,
+  decoration: InputDecoration(
+    hintText: "Enter password",
+    prefixIcon: const Icon(Icons.lock),
+    errorText: provider.passwordError,
+    suffixIcon: IconButton(
+      icon: Icon(
+        provider.isPasswordVisible
+            ? Icons.visibility
+            : Icons.visibility_off,
+      ),
+      onPressed: provider.togglePasswordVisibility,
+    ),
+  ),
+),
 
-                const SizedBox(height: 10),
+
 
                 /// FORGOT PASSWORD
                 Align(
@@ -87,20 +89,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 20),
+                20.height,
 
-                /// LOGIN BUTTON
+                /// 🚀 LOGIN BUTTON (Provider login)
                 SizedBox(
                   width: double.infinity,
                   height: 56.h,
-                  child: ElevatedButton(
-                    onPressed: () => appNavigator.push(BottomNav()),
-                    child: const Text("Login"),
-                  ),
-                ),
-                const SizedBox(height: 15),
+                  child: provider.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                          onPressed: () async {
+                            await provider.login();
 
-                /// SIGN UP TEXT
+                            // Navigate only if validation passed
+                            if (provider.phoneError == null &&
+                                provider.passwordError == null) {
+                              appNavigator.pushAndRemoveUntil(
+                                const BottomNav(),
+                              );
+                            }
+                          },
+                          child: const Text("Login"),
+                        ),
+                ),
+
+                15.height,
+
+                /// SIGN UP
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -111,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignupScreen(),
+                            builder: (context) => const SignupScreen(),
                           ),
                         );
                       },

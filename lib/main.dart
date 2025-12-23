@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/screens/home/bottom_nav.dart';
+import 'package:runaar/provider/login_provider.dart';
+import 'package:runaar/provider/signup_provider.dart';
+import 'package:runaar/screens/auth/login_screen.dart';
+
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -13,7 +17,16 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  runApp(const ScreenUtilSetup(child: MyApp()));
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+          create: (_) => LoginProvider(),
+        ),
+
+        ChangeNotifierProvider(create: (_)=>SignupProvider())
+        
+    ],
+    child: const ScreenUtilSetup(child: MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -35,7 +48,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: appTheme.lightTheme(context),
         themeMode: ThemeMode.light,
-        home: BottomNav(),
+        home: LoginScreen(),
       ),
     );
   }

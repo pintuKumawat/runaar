@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: TextField(
         style: theme.bodyLarge,
         decoration: InputDecoration(
-          icon: Icon(icon, size: 24.sp, color: Color(0XFF07869C),),
+          icon: Icon(icon, size: 24.sp, ),
           hintText: hint,
         ),
       ),
