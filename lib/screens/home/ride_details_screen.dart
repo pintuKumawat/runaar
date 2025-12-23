@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
@@ -36,49 +37,39 @@ class RideDetailsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: 0.all,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Saturday, 20 December',
-                    style: theme.titleSmall?.copyWith(fontWeight: .w600),
+                  Padding(
+                    padding: 10.hv(10),
+                    child: Text(
+                      'Saturday, 20 December',
+                      style: theme.titleSmall?.copyWith(fontWeight: .w600),
+                    ),
                   ),
 
-                  6.height,
+            
                   _routeCard(theme),
 
-                  6.height,
+                  
                   _priceCard(theme),
 
-                  6.height,
+            
                   _driverCard(theme),
 
-                  6.height,
+              
+                  _vehicleDetails(theme),
+                  
+                  _passengerList(theme),
+        
                   _infoTile(
-                    icon: Icons.verified,
-                    title: 'Verified Profile',
+                    icon: FontAwesomeIcons.whatsapp,
+                    title: 'Chat with driver',
                     theme: theme,
                   ),
                   _infoTile(
-                    icon: Icons.warning_amber_rounded,
-                    title: 'Sometimes cancels rides',
-                    theme: theme,
-                  ),
-                  _infoTile(
-                    icon: Icons.info_outline,
-                    title:
-                        "Your booking won't be confirmed until the driver approves",
-                    theme: theme,
-                  ),
-                  // _infoTile(
-                  //   icon: Icons.group,
-                  //   title: 'Max 2 in the back',
-                  //   theme: theme,
-                  // ),
-                  _infoTile(
-                    icon: Icons.directions_car,
-                    title: 'MAHINDRA Scorpio · Black',
+                    icon: Icons.report,
+                    title: 'Report ride',
                     theme: theme,
                   ),
                 ],
@@ -89,13 +80,85 @@ class RideDetailsScreen extends StatelessWidget {
       ),
     );
   }
+ Widget _vehicleDetails(TextTheme theme) {
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Vehicle Details",
+              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            12.height,
+            _infoRow(theme, "Car Model", "Baleno"),
+            _infoRow(theme, "Color", "Grey"),
+            _infoRow(theme, "Number", "GJ 01 AB 4567"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoRow(TextTheme theme, String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: theme.titleSmall),
+          Text(value, style: theme.titleMedium),
+        ],
+      ),
+    );
+  }
+
+  Widget _passengerList(TextTheme theme) {
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Passengers (2)",
+              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            12.height,
+            _passengerTile(theme, "Rahul Patel", 4.3),
+            _passengerTile(theme, "Neha Verma", 4.1),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _passengerTile(TextTheme theme, String name, double rating) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: Colors.grey.shade300,
+        child: Icon(Icons.person),
+      ),
+      title: Text(name, style: theme.titleSmall),
+      subtitle: RatingBarIndicator(
+        rating: rating,
+        itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
+        itemCount: 5,
+        itemSize: 16.sp,
+      ),
+      trailing: Text("1 Seat", style: theme.titleSmall),
+    );
+  }
+
+  
 
   Widget _routeCard(TextTheme theme) {
     return Card(
       child: Padding(
         padding: 10.all,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _timeLine(theme),
             14.width,
@@ -133,14 +196,14 @@ class RideDetailsScreen extends StatelessWidget {
         Container(
           height: 15.h,
           width: 2.w,
-          margin: 6.all,
+          margin: 3.all,
           color: appColor.mainColor,
         ),
         Text('0h59', style: theme.bodySmall),
         Container(
           height: 15.h,
           width: 2.w,
-          margin: 6.all,
+          margin: 3.all,
           color: appColor.mainColor,
         ),
         Text('15:00', style: theme.bodyMedium),
@@ -177,16 +240,32 @@ class RideDetailsScreen extends StatelessWidget {
     return Card(
       child: Padding(
         padding: 10.all,
-        child: Row(
+        child: Column(
+          children: [
+            Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('1 passenger', style: theme.bodyMedium),
+            Text("Seats left", style: theme.bodyMedium),
             Text(
-              '₹ 190.00',
-              style: theme.titleMedium?.copyWith(
-                color: appColor.mainColor,
-                fontWeight: FontWeight.bold,
-              ),
+              "2",
+              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        4.height,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                
+                Text('1 passenger', style: theme.bodyMedium),
+                Text(
+                  '₹ 190.00',
+                  style: theme.titleMedium?.copyWith(
+                    color: appColor.mainColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -232,14 +311,18 @@ class RideDetailsScreen extends StatelessWidget {
     required String title,
     required TextTheme theme,
   }) {
-    return Padding(
-      padding: .only(left: 12.w, bottom: 12.h),
-      child: Row(
-        children: [
-          Icon(icon, size: 20.sp, color: appColor.mainColor),
-          12.width,
-          Expanded(child: Text(title, style: theme.bodyMedium)),
-        ],
+    return Card(
+      child: Padding(
+        padding: 12.all,
+        child: Row(
+          children: [
+            Icon(icon, size: 20.sp, color: appColor.secondColor),
+            12.width,
+            Text(title, style: theme.bodyMedium?.copyWith(color: appColor.secondColor)),
+            Spacer(),
+            Icon(Icons.keyboard_arrow_right_outlined,),
+          ],
+        ),
       ),
     );
   }

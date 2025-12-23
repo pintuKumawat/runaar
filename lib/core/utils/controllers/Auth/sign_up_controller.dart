@@ -5,16 +5,12 @@ class SignUpController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController dobController = TextEditingController();
-  TextEditingController genderController = TextEditingController();
 
   void clear() {
     mobileController.clear();
     passwordController.clear();
     emailController.clear();
     nameController.clear();
-    dobController.clear();
-    genderController.clear();
   }
 
   void dispose() {
@@ -22,8 +18,6 @@ class SignUpController {
     passwordController.dispose();
     emailController.dispose();
     nameController.dispose();
-    dobController.dispose();
-    genderController.dispose();
   }
 }
 

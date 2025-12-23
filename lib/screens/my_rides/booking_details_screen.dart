@@ -47,9 +47,9 @@ BookingStatus currentStatus = BookingStatus.completed;
         child: Text(
           status.label,
           textAlign: .end,
-          style: theme.bodySmall?.copyWith(
+          style: theme.bodyMedium?.copyWith(
             color: status.textColor,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w900,
           ),
         ),
       ),

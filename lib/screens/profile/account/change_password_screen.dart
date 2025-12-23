@@ -158,7 +158,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         children: [
           Icon(
             condition ? Icons.check_circle : Icons.cancel,
-            color: condition ? Colors.green.shade600 : Colors.red,
+            color: condition ? Colors.green.shade800 : Colors.red.shade800,
+            // color: condition ? Colors.green.shade600 : Colors.red,
             size: 18.sp,
           ),
           8.width,
@@ -167,7 +168,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               text,
               style: TextStyle(
                 fontSize: 15.sp,
-                color: condition ? Colors.green : Colors.red,
+                color: condition ? Colors.green.shade800 : Colors.red.shade800,
+                // color: condition ? Colors.green : Colors.red,
               ),
             ),
           ),

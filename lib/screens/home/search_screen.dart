@@ -41,7 +41,7 @@ class SearchScreen extends StatelessWidget {
             from: 'Jaipur',
             to: 'Reengus',
             name: 'Pradeep',
-            date: '23 Sep 2025', 
+            date: '23 Sep 2025',
           ),
 
           _rideCard(
@@ -74,12 +74,13 @@ class SearchScreen extends StatelessWidget {
     required String to,
     required String name,
     required String tripId,
-    required String date, 
+    required String date,
     String? rating,
   }) {
     return InkWell(
       onTap: () => appNavigator.push(RideDetailsScreen(tripId: tripId)),
       child: Card(
+        
         child: Column(
           children: [
             Padding(
@@ -90,27 +91,31 @@ class SearchScreen extends StatelessWidget {
                   _timeLine(startTime, duration, endTime, theme),
 
                   14.width,
-
-                  /// FROM → TO
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _locationText(from, theme),
-                        47.height,
+                        60.height,
                         _locationText(to, theme),
                       ],
                     ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
-                    spacing: 50.h,
+                    spacing: 23.h,
                     children: [
                       Text(
                         '₹ $price',
-                        style: theme.titleLarge?.copyWith(
+                        style: theme.titleMedium?.copyWith(
                           color: appColor.mainColor,
                           fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "0.5 km away",
+                        style: theme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
@@ -162,14 +167,14 @@ class SearchScreen extends StatelessWidget {
         Text(start, style: theme.bodyMedium),
 
         Container(
-          height: 15.h,
+          height: 12.h,
           width: 2.w,
           color: appColor.mainColor,
           margin: 6.all,
         ),
         Text(duration, style: theme.bodySmall),
         Container(
-          height: 15.h,
+          height: 12.h,
           width: 2.w,
           color: appColor.mainColor,
           margin: 6.all,
