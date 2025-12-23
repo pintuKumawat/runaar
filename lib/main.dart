@@ -9,7 +9,6 @@ import 'package:runaar/provider/login_provider.dart';
 import 'package:runaar/provider/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 
-
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -17,17 +16,22 @@ void main() {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-          create: (_) => LoginProvider(),
-        ),
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
 
-        ChangeNotifierProvider(create: (_)=>SignupProvider())
-        
-    ],
-    child: const ScreenUtilSetup(child: MyApp())));
+        ChangeNotifierProvider(create: (_) => SignupProvider()),
+      ],
+      child: const ScreenUtilSetup(child: MyApp()),
+    ),
+  );
 }
+
+// Vinit
+// Vinit
+// Vinit
+// Vinit
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
