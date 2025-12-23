@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 
 class LoginProvider extends ChangeNotifier {
   final TextEditingController loginPhoneController = TextEditingController();
