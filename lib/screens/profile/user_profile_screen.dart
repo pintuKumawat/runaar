@@ -297,7 +297,9 @@ import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
-import 'package:runaar/screens/profile/delete_account_screen.dart';
+import 'package:runaar/screens/profile/other/delete_account_screen.dart';
+import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
+import 'package:runaar/screens/profile/other/wallet_screen.dart';
 import 'package:runaar/screens/profile/vehicle/add_vehicle_screen.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
 
@@ -335,8 +337,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _sectionTitle("Rides", theme),
           _profileTile(Icons.directions_car, "My Rides", theme),
           _profileTile(Icons.history, "Trip History", theme),
-          _profileTile(Icons.star_outline, "My Ratings", theme),
 
+          // _profileTile(Icons.star_outline, "My Ratings", theme),
           12.height,
 
           _sectionTitle("Vehicle", theme),
@@ -344,11 +346,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _profileTile(Icons.add_circle_outline, "Add Vehicle", theme),
 
           12.height,
+          _sectionTitle("Reward", theme),
+          _profileTile(Icons.card_giftcard, "Refer & Earn", theme),
+
+          12.height,
 
           _sectionTitle("Payments", theme),
           _profileTile(Icons.account_balance_wallet_outlined, "Wallet", theme),
-          _profileTile(Icons.receipt_long, "Transaction History", theme),
 
+          // _profileTile(Icons.receipt_long, "Transaction History", theme),
           12.height,
 
           _sectionTitle("Support & Legal", theme),
@@ -363,7 +369,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           _sectionTitle("Danger Zone", theme),
           _profileTile(
             Icons.delete_forever_outlined,
-            "Delete Account",
+            "Deactivate Account",
             theme,
             danger: true,
           ),
@@ -480,8 +486,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       case "Add Vehicle":
         appNavigator.push(AddVehicleScreen(userId: 1));
         break;
-      case "Delete Account":
+      case "Deactivate Account":
         appNavigator.push(DeleteAccountScreen(userId: 1));
+        break;
+      case "Refer & Earn":
+        appNavigator.push(ReferEarnScreen());
+        break;
+      case "Wallet":
+        appNavigator.push(WalletScreen());
         break;
       case "Logout":
         _showLogoutSheet();

@@ -126,10 +126,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   Widget _label(String text, TextTheme theme) {
     return Text(
       text,
-      style: theme.titleSmall?.copyWith(
-        fontWeight: FontWeight.w600,
-        
-      ),
+      style: theme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
     );
   }
 
@@ -158,7 +155,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Checkbox(value: agree, onChanged: (v) => setState(() => agree = v!)),
+        Checkbox(
+          value: agree,
+          checkColor: Colors.white,
+          onChanged: (v) => setState(() => agree = v!),
+        ),
         6.width,
         Expanded(
           child: Text(

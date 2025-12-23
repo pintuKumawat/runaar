@@ -37,7 +37,6 @@ class RideDetailsScreen extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: 0.all,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -49,35 +48,20 @@ class RideDetailsScreen extends StatelessWidget {
                     ),
                   ),
 
-                  6.height,
+            
                   _routeCard(theme),
 
-                  6.height,
+                  
                   _priceCard(theme),
 
-                  6.height,
+            
                   _driverCard(theme),
 
-                  6.height,
+              
                   _vehicleDetails(theme),
-                  6.height,
+                  
                   _passengerList(theme),
-                  // _infoTile(
-                  //   icon: Icons.verified,
-                  //   title: 'Verified Profile',
-                  //   theme: theme,
-                  // ),
-                  // _infoTile(
-                  //   icon: Icons.warning_amber_rounded,
-                  //   title: 'Sometimes cancels rides',
-                  //   theme: theme,
-                  // ),
-                  // _infoTile(
-                  //   icon: Icons.info_outline,
-                  //   title:
-                  //       "Your booking won't be confirmed until the driver approves",
-                  //   theme: theme,
-                  // ),
+        
                   _infoTile(
                     icon: FontAwesomeIcons.whatsapp,
                     title: 'Chat with driver',
@@ -175,7 +159,6 @@ class RideDetailsScreen extends StatelessWidget {
       child: Padding(
         padding: 10.all,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _timeLine(theme),
             14.width,
@@ -213,14 +196,14 @@ class RideDetailsScreen extends StatelessWidget {
         Container(
           height: 15.h,
           width: 2.w,
-          margin: 6.all,
+          margin: 3.all,
           color: appColor.mainColor,
         ),
         Text('0h59', style: theme.bodySmall),
         Container(
           height: 15.h,
           width: 2.w,
-          margin: 6.all,
+          margin: 3.all,
           color: appColor.mainColor,
         ),
         Text('15:00', style: theme.bodyMedium),
@@ -338,7 +321,6 @@ class RideDetailsScreen extends StatelessWidget {
             Text(title, style: theme.bodyMedium?.copyWith(color: appColor.secondColor)),
             Spacer(),
             Icon(Icons.keyboard_arrow_right_outlined,),
-
           ],
         ),
       ),

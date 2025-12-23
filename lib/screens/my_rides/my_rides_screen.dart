@@ -97,6 +97,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
       "rating": "4.2",
       "start": "09:00 AM",
       "end": "11:00 AM",
+      "seats": "2",
     },
     {
       "from": "Surat",
@@ -106,6 +107,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
       "rating": "4.2",
       "start": "09:00 AM",
       "end": "11:00 AM",
+      "seats": "2",
     },
     {
       "from": "Surat",
@@ -115,6 +117,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
       "rating": "4.2",
       "start": "09:00 AM",
       "end": "11:00 AM",
+      "seats": "2",
     },
   ];
 
@@ -193,6 +196,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           status: d["status"],
           bookingId: d["bookingId"],
           publishedId: d["publishedId"],
+          seats: d["seats"],
           type: type,
         );
       },
@@ -209,6 +213,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     required String name,
     String? rating,
     String? status,
+    String? seats,
     String? bookingId,
     String? publishedId,
     required String type,
@@ -266,6 +271,14 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                         ),
                       ),
                       if (status != null) ...[_statusView(theme, status)],
+                      if (type == "request" && seats != null) ...[
+                        Row(
+                          children: [
+                            Text("Seats: ", style: theme.bodySmall),
+                            Text(seats, style: theme.bodySmall?.copyWith(fontWeight: .w600)),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ],

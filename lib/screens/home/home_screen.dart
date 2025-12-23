@@ -159,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text('$seats', style: theme.titleMedium),
               ),
               _seatButton(Icons.add, () {
-                if (seats < 8) setState(() => seats++);
+                if (seats < 7) setState(() => seats++);
               }),
             ],
           ),
@@ -184,6 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required IconData icon,
     required String hint,
     required TextTheme theme,
+    // required TextEditingController controller
   }) {
     return Container(
       margin: .only(bottom: 12.h),
@@ -193,9 +194,10 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: .circular(14.r),
       ),
       child: TextField(
+        // controller: controller,
         style: theme.bodyLarge,
         decoration: InputDecoration(
-          icon: Icon(icon, size: 24.sp, ),
+          icon: Icon(icon, size: 24.sp),
           hintText: hint,
         ),
       ),
