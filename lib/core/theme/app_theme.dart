@@ -13,9 +13,12 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.light,
 
+      // textTheme: GoogleFonts.interTextTheme(
+      //   customTextTheme,
+      // ).apply(fontFamilyFallback: ['Noto Sans Devanagari']),
       textTheme: GoogleFonts.interTextTheme(
         customTextTheme,
-      ).apply(fontFamilyFallback: ['Noto Sans Devanagari']),
+      ).apply(fontFamilyFallback: ['sans-serif']),
 
       scaffoldBackgroundColor: appColor.backgroundColor,
 
@@ -205,7 +208,9 @@ class AppTheme {
       ),
 
       popupMenuTheme: PopupMenuThemeData(color: Colors.white, iconSize: 22.sp),
-      dropdownMenuTheme: DropdownMenuThemeData(textStyle: customTextTheme.labelMedium)
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: customTextTheme.labelMedium,
+      ),
     );
   }
 }
