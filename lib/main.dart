@@ -12,7 +12,6 @@ import 'package:runaar/provider/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
-import 'package:runaar/screens/home/web_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +29,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SignupProvider()),
 
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
-        ChangeNotifierProvider(create: (_)=>HomeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
@@ -44,11 +43,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, lanProvider, child) {
-        // If no language selected yet → set English
         final locale = lanProvider.appLocale ?? const Locale("en");
         return SafeArea(
           child: MaterialApp(
-            // navigatorKey: navigatorKey,
             locale: locale,
             supportedLocales: const [Locale('en'), Locale('hi')],
             localizationsDelegates: const [
@@ -70,7 +67,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: appTheme.lightTheme(context),
             themeMode: ThemeMode.light,
-            home:LoginScreen(),
+            home: LoginScreen(),
             //LocalWebViewScreen()
             // LoginScreen(),
           ),

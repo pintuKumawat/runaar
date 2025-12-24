@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 class HomeProvider extends ChangeNotifier {
 
-  // Seat counter 
-
   int _seats=1;
   int get seats=>_seats;
 
