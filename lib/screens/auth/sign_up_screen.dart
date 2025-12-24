@@ -26,12 +26,7 @@ class _SignupScreenState extends State<SignupScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        // automaticallyImplyActions: false
-        automaticallyImplyLeading: false,
-        // title: const Text("Sign Up"),
-        // centerTitle: true,
-      ),
+      appBar: AppBar(),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
