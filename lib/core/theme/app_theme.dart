@@ -128,7 +128,7 @@ class AppTheme {
       ),
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: appColor.mainColor.withOpacity(0.3),
+        color: appColor.buttonColor,
         circularTrackColor: appColor.textColor,
       ),
 

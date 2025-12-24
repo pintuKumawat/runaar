@@ -9,12 +9,14 @@ import 'package:runaar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:runaar/provider/home_provider.dart';
 import 'package:runaar/provider/language_provider.dart';
-import 'package:runaar/provider/login_provider.dart';
-import 'package:runaar/provider/signup_provider.dart';
+import 'package:runaar/provider/auth/validate/login_provider.dart';
+import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/home/web_view.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -25,7 +27,6 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-
         ChangeNotifierProvider(create: (_) => SignupProvider()),
 
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
