@@ -28,11 +28,6 @@ void main() {
   );
 }
 
-// Vinit
-// Vinit
-// Vinit
-// Vinit
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -57,10 +52,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
