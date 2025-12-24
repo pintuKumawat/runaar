@@ -28,10 +28,6 @@ void main() {
   );
 }
 
-// Vinit
-// Vinit
-// Vinit
-// Vinit
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
