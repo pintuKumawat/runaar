@@ -57,10 +57,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat
-//pintu kumawat

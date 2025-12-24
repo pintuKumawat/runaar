@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/provider/signup_provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key}); 
@@ -14,6 +16,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final provider = context.watch<SignupProvider>();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -43,8 +46,10 @@ class _SignupScreenState extends State<SignupScreen> {
         
             /// USERNAME
             TextFormField(
+              onChanged: provider.userNameValidate,
               decoration: const InputDecoration(
                 hintText: "Enter username",
+              
                 prefixIcon: Icon(Icons.person),
               ),
             ),
@@ -53,6 +58,7 @@ class _SignupScreenState extends State<SignupScreen> {
         
             /// EMAIL
             TextFormField(
+              onChanged: provider.emailValidate,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 hintText: "Enter email",
@@ -64,6 +70,7 @@ class _SignupScreenState extends State<SignupScreen> {
         
             /// MOBILE NUMBER
             TextFormField(
+              onChanged: provider.validMobileNumber,
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 hintText: "Enter mobile number",
@@ -75,6 +82,7 @@ class _SignupScreenState extends State<SignupScreen> {
         
             /// PASSWORD
             TextFormField(
+              onChanged: provider.validPassword,
               obscureText: !isPasswordVisible,
               decoration: InputDecoration(
                 hintText: "Enter password",

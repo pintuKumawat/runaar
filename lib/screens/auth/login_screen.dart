@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 15.height,
 
-                /// 🔐 PASSWORD (LIVE VALIDATION)
+                ///  PASSWORD (LIVE VALIDATION)
                 TextFormField(
   controller: provider.loginPasswordController,
   obscureText: !provider.isPasswordVisible,
