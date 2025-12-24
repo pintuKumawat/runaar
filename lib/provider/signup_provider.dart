@@ -1,88 +1,109 @@
 import 'package:flutter/material.dart';
 
-class SignupProvider extends ChangeNotifier  {
-    final TextEditingController signUserController = TextEditingController();
-    final TextEditingController signPhoneController = TextEditingController();
-    final TextEditingController signEmailController = TextEditingController();
+class SignupProvider extends ChangeNotifier {
+  final TextEditingController signUserController = TextEditingController();
+  final TextEditingController signPhoneController = TextEditingController();
+  final TextEditingController signEmailController = TextEditingController();
   final TextEditingController signPasswordController = TextEditingController();
 
-String? userNameError;
-String? emailError;
-String? phoneNumberError;
-String? passwordError;
+  String? userNameError;
+  String? emailError;
+  String? phoneNumberError;
+  String? passwordError;
 
-bool isloading =false;
-bool isPasswordVisible=false;
+  bool isLoading = false;
+  bool isPasswordVisible = false;
 
-void togglePasswordVisibility(){
-  isPasswordVisible=!isPasswordVisible;
-  notifyListeners();
-}
-void userNameValidate(String value){
-  if(value.isEmpty){
-    userNameError="user name is requiree";
-  }else if(value.length<2){
-    userNameError="user name have atleast 2 character";
-  }else{
-    userNameError=null;
-  }
-  notifyListeners();
-}
-
-void emailValidate(String value){
-  final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-  if(value.isEmpty){
-    emailError="Email is required";
-  }else if(!emailRegex.hasMatch(value)){
-    emailError="Plese Enter valid mail";
-  }else{
-    emailError=null;
-  }
-notifyListeners();
-
-}
-
-void validMobileNumber(String value){
-
-  if(value.isEmpty){
-
-    phoneNumberError="Please Enter mobile number";
-  }else if(value.length<10){
-    phoneNumberError=" Please Enter valid mobile number";
-
-  }else{
-    phoneNumberError=null;
-
+  // Toggle password visibility
+  void togglePasswordVisibility() {
+    isPasswordVisible = !isPasswordVisible;
+    notifyListeners();
   }
 
-  notifyListeners();
+  void validateUserName(String value) {
+    if (value.isEmpty) {
+      userNameError = "User name is required";
+    } else if (value.length < 2) {
+      userNameError = "User name must have at least 2 characters";
+    } else {
+      userNameError = null;
+    }
+    notifyListeners();
+  }
 
+  void validateEmail(String value) {
+    final emailRegex =
+        RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
 
-}
+    if (value.isEmpty) {
+      emailError = "Email is required";
+    } else if (!emailRegex.hasMatch(value)) {
+      emailError = "Please enter a valid email";
+    } else {
+      emailError = null;
+    }
+    notifyListeners();
+  }
 
-void validPassword(String value){
+  void validateMobileNumber(String value) {
+    if (value.isEmpty) {
+      phoneNumberError = "Please enter mobile number";
+    } else if (value.length != 10) {
+      phoneNumberError = "Please enter valid mobile number";
+    } else {
+      phoneNumberError = null;
+    }
+    notifyListeners();
+  }
 
-  final passwordRegex =
+  void validatePassword(String value) {
+    final passwordRegex =
         RegExp(r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$');
 
-  if(value.isEmpty){
-    passwordError="Please Enter password";
-
-  }else if(!passwordRegex.hasMatch(value)){
-    passwordError="Please Enter Valid Password";
-    
-
-  }else{
-    passwordError=null;
-
+    if (value.isEmpty) {
+      passwordError = "Please enter password";
+    } else if (!passwordRegex.hasMatch(value)) {
+      passwordError =
+          "Password must be 8 characters";
+    } else {
+      passwordError = null;
+    }
+    notifyListeners();
   }
 
-}
+  bool validateAll() {
+    validateUserName(signUserController.text);
+    validateEmail(signEmailController.text);
+    validateMobileNumber(signPhoneController.text);
+    validatePassword(signPasswordController.text);
 
-validAll(){
+    return userNameError == null &&
+        emailError == null &&
+        phoneNumberError == null &&
+        passwordError == null;
+  }
 
-}
 
+   Future<void> signup() async {
+    if (!validateAll()) return;
 
+    isLoading = true;
+    notifyListeners();
 
+  //  await Future.delayed(const Duration(seconds: 2));
+
+    // isLoading = false;
+    // notifyListeners();
+
+   // appSnackbar.showSingleSnackbar(context, "Login Successful");
+  }
+
+  @override
+  void dispose() {
+    signUserController.dispose();
+    signPhoneController.dispose();
+    signEmailController.dispose();
+    signPasswordController.dispose();
+    super.dispose();
+  }
 }

@@ -4,128 +4,125 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/provider/signup_provider.dart';
 
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key}); 
-
-  @override
-  State<SignupScreen> createState() => _SignupScreenState();
-}
-
-class _SignupScreenState extends State<SignupScreen> {
-  bool isPasswordVisible = false;
+class SignupScreen extends StatelessWidget {
+  const SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-     final provider = context.watch<SignupProvider>();
+    final provider = context.watch<SignupProvider>();
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        // automaticallyImplyActions: false
-        automaticallyImplyLeading: false,
-        // title: const Text("Sign Up"),
-        // centerTitle: true,
-      ),
+      appBar: AppBar(automaticallyImplyLeading: false),
       body: SingleChildScrollView(
-        padding: 10.all,
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-        //  mainAxisAlignment: .center,
           children: [
-            /// TITLE
-            CircleAvatar(radius: 60.r, backgroundColor: Colors.black),
-            25.height,
+            CircleAvatar(radius: 60, backgroundColor: Colors.black),
+            const SizedBox(height: 25),
+
             Text(
               "Create Account",
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: theme.textTheme.headlineSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
-        
-            25.height,
-        
+
+            const SizedBox(height: 25),
+
             /// USERNAME
             TextFormField(
-              onChanged: provider.userNameValidate,
-              decoration: const InputDecoration(
+              controller: provider.signUserController,
+              onChanged: provider.validateUserName,
+              decoration: InputDecoration(
                 hintText: "Enter username",
-              
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: const Icon(Icons.person),
+                errorText: provider.userNameError,
               ),
             ),
-        
-            10.height,
-        
+
+            const SizedBox(height: 10),
+
             /// EMAIL
             TextFormField(
-              onChanged: provider.emailValidate,
+              controller: provider.signEmailController,
+              onChanged: provider.validateEmail,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Enter email",
-                prefixIcon: Icon(Icons.email),
+                prefixIcon: const Icon(Icons.email),
+                errorText: provider.emailError,
               ),
             ),
-        
-            10.height,
-        
-            /// MOBILE NUMBER
+
+            const SizedBox(height: 10),
+
+            /// MOBILE
             TextFormField(
-              onChanged: provider.validMobileNumber,
+              controller: provider.signPhoneController,
+              onChanged: provider.validateMobileNumber,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Enter mobile number",
-                prefixIcon: Icon(Icons.phone),
+                prefixIcon: const Icon(Icons.phone),
+                errorText: provider.phoneNumberError,
               ),
             ),
-        
-            10.height,
-        
+
+            const SizedBox(height: 10),
+
             /// PASSWORD
             TextFormField(
-              onChanged: provider.validPassword,
-              obscureText: !isPasswordVisible,
+              controller: provider.signPasswordController,
+              onChanged: provider.validatePassword,
+              obscureText: !provider.isPasswordVisible,
               decoration: InputDecoration(
                 hintText: "Enter password",
                 prefixIcon: const Icon(Icons.lock),
+                errorText: provider.passwordError,
                 suffixIcon: IconButton(
                   icon: Icon(
-                    isPasswordVisible
+                    provider.isPasswordVisible
                         ? Icons.visibility
                         : Icons.visibility_off,
                   ),
-                  onPressed: () {
-                    setState(() {
-                      isPasswordVisible = !isPasswordVisible;
-                    });
-                  },
+                  onPressed: provider.togglePasswordVisibility,
                 ),
               ),
             ),
-        
-            25.height,
-        
+
+            const SizedBox(height: 25),
+
             /// SIGNUP BUTTON
             SizedBox(
               width: double.infinity,
-              height: 56.h,
+              height: 56,
               child: ElevatedButton(
-                onPressed: () {},
-                child: const Text("Sign Up"),
+                onPressed: provider.isLoading
+                    ? null
+                    : () async {
+                        await provider.signup();
+
+                        if (provider.validateAll()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Signup Successful")),
+                          );
+                        }
+                      },
+                child: provider.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Sign Up"),
               ),
             ),
-        
-            10.height,
-        
-            /// LOGIN TEXT
+
+            const SizedBox(height: 10),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account?"),
-                4.width,
+                const Text("Already have an account? "),
                 InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: () => Navigator.pop(context),
                   child: Text(
                     "Login",
                     style: TextStyle(color: appColor.secondColor),

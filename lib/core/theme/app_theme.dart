@@ -164,9 +164,9 @@ class AppTheme {
           color: appColor.textColor,
         ),
 
-        errorStyle: customTextTheme.bodyMedium?.copyWith(color: Colors.red),
+        errorStyle: customTextTheme.bodySmall?.copyWith(color: Colors.red),
 
-        errorMaxLines: 2,
+        errorMaxLines: 1,
 
         prefixIconColor: appColor.textColor,
         suffixIconColor: appColor.textColor,

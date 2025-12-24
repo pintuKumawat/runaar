@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/provider/home_provider.dart';
 import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -138,33 +140,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _seatSelector(TextTheme theme) {
-    return Container(
-      padding: 14.hv(16),
-      margin: .only(bottom: 12.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: .circular(14.r),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Number of Seats', style: theme.bodyLarge),
-          Row(
-            children: [
-              _seatButton(Icons.remove, () {
-                if (seats > 1) setState(() => seats--);
-              }),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14.w),
-                child: Text('$seats', style: theme.titleMedium),
-              ),
-              _seatButton(Icons.add, () {
-                if (seats < 7) setState(() => seats++);
-              }),
-            ],
-          ),
-        ],
-      ),
+    return Consumer<HomeProvider>(builder: (context, homeProvider, child){
+     return Container(
+        padding: 14.hv(16),
+        margin: .only(bottom: 12.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: .circular(14.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Number of Seats', style: theme.bodyLarge),
+            Row(
+              children: [
+                _seatButton(Icons.remove, () {
+                homeProvider.decrement();
+                }),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w),
+                  child: Text("${homeProvider.seats}", style: theme.titleMedium),
+                ),
+                _seatButton(Icons.add, () {
+              homeProvider.increment();
+                }),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
     );
   }
 
