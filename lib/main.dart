@@ -5,11 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/provider/login_provider.dart';
-import 'package:runaar/provider/signup_provider.dart';
+import 'package:runaar/provider/auth/validate/login_provider.dart';
+import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -20,7 +22,6 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-
         ChangeNotifierProvider(create: (_) => SignupProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
