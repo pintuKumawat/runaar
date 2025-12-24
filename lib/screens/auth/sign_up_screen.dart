@@ -26,16 +26,21 @@ class _SignupScreenState extends State<SignupScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false),
+      appBar: AppBar(
+        // automaticallyImplyActions: false
+        automaticallyImplyLeading: false,
+        // title: const Text("Sign Up"),
+        // centerTitle: true,
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: 10.all,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           //  mainAxisAlignment: .center,
           children: [
-            CircleAvatar(radius: 60, backgroundColor: Colors.black),
-            const SizedBox(height: 25),
-
+            /// TITLE
+            CircleAvatar(radius: 60.r, backgroundColor: Colors.black),
+            25.height,
             Text(
               "Create Account",
               style: theme.textTheme.headlineSmall?.copyWith(
@@ -51,7 +56,7 @@ class _SignupScreenState extends State<SignupScreen> {
               onChanged: provider.validateUserName,
               decoration: InputDecoration(
                 hintText: "Enter username",
-
+                errorText: provider.userNameError,
                 prefixIcon: Icon(Icons.person),
               ),
             ),
@@ -60,12 +65,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
             /// EMAIL
             TextFormField(
-              onChanged: provider.emailValidate,
+              controller: signUpController.emailController,
+              onChanged: provider.validateEmail,
               keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                hintText: "Enter email",
-                prefixIcon: const Icon(Icons.email),
+              decoration: InputDecoration(
                 errorText: provider.emailError,
+                hintText: "Enter email",
+                prefixIcon: Icon(Icons.email),
               ),
             ),
 
@@ -73,12 +79,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
             /// MOBILE NUMBER
             TextFormField(
-              onChanged: provider.validMobileNumber,
+              controller: signUpController.mobileController,
+              onChanged: provider.validateMobileNumber,
               keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                hintText: "Enter mobile number",
-                prefixIcon: const Icon(Icons.phone),
+              decoration: InputDecoration(
                 errorText: provider.phoneNumberError,
+                hintText: "Enter mobile number",
+                prefixIcon: Icon(Icons.phone),
               ),
             ),
 
@@ -86,18 +93,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
             /// PASSWORD
             TextFormField(
-              onChanged: provider.validPassword,
+              controller: signUpController.passwordController,
+              onChanged: provider.validatePassword,
               obscureText: !isPasswordVisible,
               decoration: InputDecoration(
                 hintText: "Enter password",
                 errorText: provider.passwordError,
                 prefixIcon: const Icon(Icons.lock),
-                errorText: provider.passwordError,
                 suffixIcon: IconButton(
                   icon: Icon(
                     isPasswordVisible ? Icons.visibility : Icons.visibility_off,
                   ),
-                  onPressed: provider.togglePasswordVisibility,
+                  onPressed: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
                 ),
               ),
             ),
@@ -107,23 +118,27 @@ class _SignupScreenState extends State<SignupScreen> {
             /// SIGNUP BUTTON
             SizedBox(
               width: double.infinity,
-              height: 56,
+              height: 56.h,
               child: ElevatedButton(
-                onPressed: () {},
-                child: const Text("Sign Up"),
+                onPressed: provider.isLoading
+                    ? null
+                    : () async => _signUp(provider),
+                child: provider.isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text("Sign Up"),
               ),
             ),
 
             10.height,
 
-            /// LOGIN TEXT
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account? "),
+                const Text("Already have an account?"),
+                4.width,
                 InkWell(
                   onTap: () {
-                    Navigator.pop(context);
+                    appNavigator.push(LoginScreen());
                   },
                   child: Text(
                     "Login",
