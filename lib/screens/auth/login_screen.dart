@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/controllers/auth/login_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // MOBILE NUMBER (LIVE VALIDATION)
               TextFormField(
-                controller: provider.loginPhoneController,
+                controller: loginController.mobileController,
                 keyboardType: TextInputType.phone,
                 onChanged: provider.validatePhone,
                 decoration: InputDecoration(
@@ -58,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               ///  PASSWORD (LIVE VALIDATION)
               TextFormField(
-                controller: provider.loginPasswordController,
+                controller: loginController.passwordController,
                 obscureText: !provider.isPasswordVisible,
                 onChanged: provider.validatePassword,
                 decoration: InputDecoration(
@@ -91,20 +95,14 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: double.infinity,
                 height: 56.h,
-                child: provider.isLoading
-                    ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: () async {
-                          await provider.login();
-
-                          // Navigate only if validation passed
-                          if (provider.phoneError == null &&
-                              provider.passwordError == null) {
-                            appNavigator.pushAndRemoveUntil(const BottomNav());
-                          }
-                        },
-                        child: const Text("Login"),
-                      ),
+                child: ElevatedButton(
+                  onPressed: provider.isLoading
+                      ? null
+                      : () async => _loginUser(provider: provider),
+                  child: provider.isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("Login"),
+                ),
               ),
 
               15.height,
@@ -136,5 +134,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _loginUser({required LoginProvider provider}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await provider.login(
+      number: loginController.mobileController.text,
+      password: loginController.passwordController.text,
+    );
+    if (provider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
+      return;
+    }
+    appSnackbar.showSingleSnackbar(
+      context,
+      provider.response?.message ?? "Login Successfull!!",
+    );
+    prefs.setInt(savedData.userId, provider.response?.userId ?? 0);
+    appNavigator.pushReplacement(BottomNav(initialIndex: 2,));
   }
 }

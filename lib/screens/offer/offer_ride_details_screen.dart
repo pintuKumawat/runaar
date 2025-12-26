@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 
 class OfferRideDetailsScreen extends StatefulWidget {
   const OfferRideDetailsScreen({super.key});
@@ -28,7 +30,9 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () => appNavigator.pushAndRemoveUntil(
+              BottomNav(initialIndex: 1, rideIndex: 1),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -80,12 +80,12 @@ class SearchScreen extends StatelessWidget {
     return InkWell(
       onTap: () => appNavigator.push(RideDetailsScreen(tripId: tripId)),
       child: Card(
-        
-        child: Column(
-          children: [
-            Padding(
-              padding: 10.all,
-              child: Row(
+        child: Padding(
+          padding: 10.all,
+          child: Column(
+            crossAxisAlignment: .start,
+            children: [
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _timeLine(startTime, duration, endTime, theme),
@@ -128,32 +128,44 @@ class SearchScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+              8.height,
+              const Divider(),
+              
 
-            const Divider(),
-
-            /// FOOTER
-            ListTile(
-              contentPadding: 10.all,
-              leading: CircleAvatar(
-                radius: 22.r,
-                backgroundColor: Colors.grey.shade300,
-                child: Icon(Icons.person, size: 26.sp),
+              /// FOOTER
+              Text(
+                "Posted By:",
+                style: theme.bodySmall?.copyWith(color: Colors.black45),
               ),
-              title: Text(name, style: theme.bodyLarge),
-              subtitle: rating != null
-                  ? RatingBarIndicator(
-                      rating: double.parse(rating),
-                      itemBuilder: (_, _) =>
-                          const Icon(Icons.star, color: Colors.amber),
-                      itemCount: 5,
-                      itemSize: 16.sp,
-                      unratedColor: Colors.grey.shade300,
-                    )
-                  : null,
-              trailing: Icon(Icons.directions_car, color: Colors.grey),
-            ),
-          ],
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 24.r,
+                  backgroundColor: Colors.grey.shade300,
+                  child: Icon(Icons.person, size: 28.sp),
+                ),
+                title: Text(
+                  'Nihit Singh',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Padding(
+                  padding: EdgeInsets.only(top: 4.h),
+                  child: RatingBarIndicator(
+                    rating: 4.6,
+                    itemBuilder: (_, _) =>
+                        const Icon(Icons.star, color: Colors.amber),
+                    itemCount: 5,
+                    itemSize: 16.sp,
+                    unratedColor: Colors.grey.shade300,
+                  ),
+                ),
+                trailing: Icon(Icons.phone),
+              ),
+            ],
+          ),
         ),
       ),
     );

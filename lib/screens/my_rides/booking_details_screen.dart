@@ -11,7 +11,7 @@ class BookingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-BookingStatus currentStatus = BookingStatus.completed;
+    BookingStatus currentStatus = BookingStatus.completed;
 
     return Scaffold(
       appBar: AppBar(title: Text("Booking Details")),
@@ -41,9 +41,7 @@ BookingStatus currentStatus = BookingStatus.completed;
       child: Container(
         padding: 12.hv(6),
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: status.backgroundColor,
-        ),
+        decoration: BoxDecoration(color: status.backgroundColor),
         child: Text(
           status.label,
           textAlign: .end,
@@ -149,33 +147,45 @@ BookingStatus currentStatus = BookingStatus.completed;
 
   Widget _driverCard(TextTheme theme) {
     return Card(
-      child: ListTile(
-        contentPadding: 10.all,
-        leading: CircleAvatar(
-          radius: 30.h,
-          backgroundColor: Colors.grey.shade300,
-          child: Icon(Icons.person, size: 30.sp),
-        ),
-        title: Row(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: .start,
           children: [
             Text(
-              "Amit Sharma",
-              style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              "Posted By:",
+              style: theme.bodySmall?.copyWith(color: Colors.black45),
             ),
-            4.width,
-            Icon(Icons.verified, color: Colors.green,size: 18.sp,)
+            ListTile(
+              contentPadding: 5.vertical,
+              leading: CircleAvatar(
+                radius: 24.r,
+                backgroundColor: Colors.grey.shade300,
+                child: Icon(Icons.person, size: 28.sp),
+              ),
+              title: Text(
+                'Nihit Singh',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Padding(
+                padding: EdgeInsets.only(top: 4.h),
+                child: RatingBarIndicator(
+                  rating: 4.6,
+                  itemBuilder: (_, _) =>
+                      const Icon(Icons.star, color: Colors.amber),
+                  itemCount: 5,
+                  itemSize: 16.sp,
+                  unratedColor: Colors.grey.shade300,
+                ),
+              ),
+              trailing: Icon(Icons.chevron_right, color: Colors.grey),
+              onTap: () {
+                // Navigate to driver profile / details
+              },
+            ),
           ],
-        ),
-        subtitle: RatingBarIndicator(
-          rating: 4.6,
-          itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
-          itemCount: 5,
-          itemSize: 16.sp,
-          unratedColor: Colors.grey.shade300,
-        ),
-        trailing: Text(
-          "₹ 750",
-          style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
     );

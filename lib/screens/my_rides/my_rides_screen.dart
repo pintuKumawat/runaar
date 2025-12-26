@@ -275,7 +275,12 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                         Row(
                           children: [
                             Text("Seats: ", style: theme.bodySmall),
-                            Text(seats, style: theme.bodySmall?.copyWith(fontWeight: .w600)),
+                            Text(
+                              seats,
+                              style: theme.bodySmall?.copyWith(
+                                fontWeight: .w600,
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -360,33 +365,45 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     String? rating,
     String type,
   ) {
-    return ListTile(
-      contentPadding: 10.all,
+    return Padding(
+      padding: 10.hv(5),
+      child: Column(
+        crossAxisAlignment: .start,
+        children: [
+          Text(
+            "Posted By:",
+            style: theme.bodySmall?.copyWith(color: Colors.black45),
+          ),
+          ListTile(
+            contentPadding: 5.vertical,
 
-      leading: CircleAvatar(
-        radius: 22.r,
-        backgroundColor: Colors.grey.shade300,
-        child: const Icon(Icons.person),
-      ),
-      title: Text(name, style: theme.bodyMedium),
-      subtitle: rating == null
-          ? null
-          : Row(
-              children: [
-                RatingBarIndicator(
-                  rating: double.tryParse(rating) ?? 0.0,
-                  itemBuilder: (_, _) =>
-                      const Icon(Icons.star, color: Colors.amber),
-                  itemCount: 5,
-                  itemSize: 14.sp,
-                ),
-                6.width,
-                Text(rating, style: theme.bodySmall),
-              ],
+            leading: CircleAvatar(
+              radius: 22.r,
+              backgroundColor: Colors.grey.shade300,
+              child: const Icon(Icons.person),
             ),
-      trailing: Icon(
-        type == "published" ? Icons.schedule : Icons.directions_car,
-        color: Colors.grey,
+            title: Text(name, style: theme.bodyMedium),
+            subtitle: rating == null
+                ? null
+                : Row(
+                    children: [
+                      RatingBarIndicator(
+                        rating: double.tryParse(rating) ?? 0.0,
+                        itemBuilder: (_, _) =>
+                            const Icon(Icons.star, color: Colors.amber),
+                        itemCount: 5,
+                        itemSize: 14.sp,
+                      ),
+                      6.width,
+                      Text(rating, style: theme.bodySmall),
+                    ],
+                  ),
+            trailing: Icon(
+              type == "published" ? Icons.schedule : Icons.directions_car,
+              color: Colors.grey,
+            ),
+          ),
+        ],
       ),
     );
   }

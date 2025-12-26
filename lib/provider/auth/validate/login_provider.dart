@@ -1,15 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:runaar/core/services/api_response.dart';
+import 'package:runaar/core/utils/controllers/auth/login_controller.dart';
+import 'package:runaar/models/auth/login_model.dart';
+import 'package:runaar/repos/auth/login_repo.dart';
 
 class LoginProvider extends ChangeNotifier {
-  final TextEditingController loginPhoneController = TextEditingController();
-  final TextEditingController loginPasswordController = TextEditingController();
+  // final TextEditingController loginPhoneController = TextEditingController();
+  // final TextEditingController loginPasswordController = TextEditingController();
 
   String? phoneError;
   String? passwordError;
   bool isLoading = false;
-
-    ///  Password visibility
   bool isPasswordVisible = false;
+
+  LoginModel? _response;
+  String? _errorMessage;
+
+  LoginModel? get response => _response;
+  String? get errorMessage => _errorMessage;
 
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
@@ -29,14 +37,14 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void validatePassword(String value) {
-    final passwordRegex =
-        RegExp(r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$');
+    final passwordRegex = RegExp(
+      r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$',
+    );
 
     if (value.isEmpty) {
       passwordError = "Password is required";
     } else if (!passwordRegex.hasMatch(value)) {
-      passwordError =
-          "Password must be at least 8 character";
+      passwordError = "Password must be at least 8 character";
     } else {
       passwordError = null;
     }
@@ -44,29 +52,36 @@ class LoginProvider extends ChangeNotifier {
   }
 
   bool validateAll() {
-    validatePhone(loginPhoneController.text);
-    validatePassword(loginPasswordController.text);
+    validatePhone(loginController.mobileController.text);
+    validatePassword(loginController.passwordController.text);
     return phoneError == null && passwordError == null;
   }
 
-  Future<void> login() async {
+  Future<void> login({required String number, required String password}) async {
     if (!validateAll()) return;
 
     isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
-    await Future.delayed(const Duration(seconds: 2));
-
-    isLoading = false;
-    notifyListeners();
-
-   // appSnackbar.showSingleSnackbar(context, "Login Successful");
+    try {
+      final result = await loginRepo.login(number: number, password: password);
+      _response = result;
+    } on ApiException catch (e) {
+      _errorMessage = e.message;
+      debugPrint("❌ API Exception: $e");
+    } catch (e) {
+      debugPrint("❌ Unexpected error: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   @override
   void dispose() {
-    loginPhoneController.dispose();
-    loginPasswordController.dispose();
+    loginController.mobileController.dispose();
+    loginController.passwordController.dispose();
     super.dispose();
   }
 }

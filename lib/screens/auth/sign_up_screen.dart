@@ -119,7 +119,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     ? null
                     : () async => _signUp(provider),
                 child: provider.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const CircularProgressIndicator()
                     : const Text("Sign Up"),
               ),
             ),

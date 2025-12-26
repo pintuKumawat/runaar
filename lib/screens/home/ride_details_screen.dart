@@ -48,20 +48,16 @@ class RideDetailsScreen extends StatelessWidget {
                     ),
                   ),
 
-            
                   _routeCard(theme),
 
-                  
                   _priceCard(theme),
 
-            
                   _driverCard(theme),
 
-              
                   _vehicleDetails(theme),
-                  
+
                   _passengerList(theme),
-        
+
                   _infoTile(
                     icon: FontAwesomeIcons.whatsapp,
                     title: 'Chat with driver',
@@ -80,7 +76,8 @@ class RideDetailsScreen extends StatelessWidget {
       ),
     );
   }
- Widget _vehicleDetails(TextTheme theme) {
+
+  Widget _vehicleDetails(TextTheme theme) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -151,8 +148,6 @@ class RideDetailsScreen extends StatelessWidget {
       trailing: Text("1 Seat", style: theme.titleSmall),
     );
   }
-
-  
 
   Widget _routeCard(TextTheme theme) {
     return Card(
@@ -243,21 +238,22 @@ class RideDetailsScreen extends StatelessWidget {
         child: Column(
           children: [
             Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Seats left", style: theme.bodyMedium),
-            Text(
-              "2",
-              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Seats left", style: theme.bodyMedium),
+                Text(
+                  "2",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        4.height,
+            4.height,
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                
-                Text('1 passenger', style: theme.bodyMedium),
+                Text('price/seat', style: theme.bodyMedium),
                 Text(
                   '₹ 190.00',
                   style: theme.titleMedium?.copyWith(
@@ -275,33 +271,44 @@ class RideDetailsScreen extends StatelessWidget {
 
   Widget _driverCard(TextTheme theme) {
     return Card(
-      child: ListTile(
-        contentPadding: 12.all,
-        leading: CircleAvatar(
-          radius: 24.r,
-          backgroundColor: Colors.grey.shade300,
-          child: Icon(Icons.person, size: 28.sp),
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text(
+              "Posted By:",
+              style: theme.bodySmall?.copyWith(color: Colors.black45),
+            ),
+            ListTile(
+              contentPadding: 5.vertical,
+              leading: CircleAvatar(
+                radius: 24.r,
+                backgroundColor: Colors.grey.shade300,
+                child: Icon(Icons.person, size: 28.sp),
+              ),
+              title: Text(
+                'Nihit Singh',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Padding(
+                padding: EdgeInsets.only(top: 4.h),
+                child: RatingBarIndicator(
+                  rating: 4.6,
+                  itemBuilder: (_, _) =>
+                      const Icon(Icons.star, color: Colors.amber),
+                  itemCount: 5,
+                  itemSize: 16.sp,
+                  unratedColor: Colors.grey.shade300,
+                ),
+              ),
+              trailing: Icon(Icons.phone),
+              
+            ),
+          ],
         ),
-        title: Text(
-          'Nihit Singh',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Padding(
-          padding: EdgeInsets.only(top: 4.h),
-          child: RatingBarIndicator(
-            rating: 4.6,
-            itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
-            itemCount: 5,
-            itemSize: 16.sp,
-            unratedColor: Colors.grey.shade300,
-          ),
-        ),
-        trailing: Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {
-          // Navigate to driver profile / details
-        },
       ),
     );
   }
@@ -318,9 +325,12 @@ class RideDetailsScreen extends StatelessWidget {
           children: [
             Icon(icon, size: 20.sp, color: appColor.secondColor),
             12.width,
-            Text(title, style: theme.bodyMedium?.copyWith(color: appColor.secondColor)),
+            Text(
+              title,
+              style: theme.bodyMedium?.copyWith(color: appColor.secondColor),
+            ),
             Spacer(),
-            Icon(Icons.keyboard_arrow_right_outlined,),
+            Icon(Icons.keyboard_arrow_right_outlined),
           ],
         ),
       ),

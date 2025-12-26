@@ -39,7 +39,7 @@
 //       child: Scaffold(
 //         body: IndexedStack(index: _currentIndex, children: _pages),
 //         bottomNavigationBar: BottomNavigationBar(
-          
+
 //           currentIndex: _currentIndex,
 //           onTap: (value) => _onTabSelected(value),
 //           items: [
@@ -70,8 +70,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:runaar/core/constants/app_color.dart';
@@ -83,22 +81,25 @@ import 'package:runaar/screens/offer/offer_ride_screen.dart';
 import 'package:runaar/screens/profile/user_profile_screen.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({super.key});
+  final int initialIndex;
+  final int? rideIndex;
+  const BottomNav({super.key, required this.initialIndex, this.rideIndex});
 
   @override
   State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int _currentIndex = 2; // Home default
+  late int _currentIndex;
   late final List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
-    _pages = const [
+    _currentIndex = widget.initialIndex;
+    _pages = [
       OfferRide(), // Offer Ride
-      MyRidesScreen(initialIndex: 0,), // My Rides
+      MyRidesScreen(initialIndex: widget.rideIndex ?? 0), // My Rides
       HomeScreen(),
       NotificationScreen(), // Notifications
       UserProfileScreen(),
@@ -115,7 +116,7 @@ class _BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       body: IndexedStack(index: _currentIndex, children: _pages),
-    
+
       /// 🔻 CUSTOM BOTTOM BAR
       bottomNavigationBar: Container(
         height: (kBottomNavigationBarHeight + 12.h) * textScale,
@@ -129,7 +130,7 @@ class _BottomNavState extends State<BottomNav> {
               label: "Offer Ride",
             ),
             _buildNavItem(icon: Icons.history, index: 1, label: "My Rides"),
-    
+
             Expanded(
               child: Transform.translate(
                 offset: Offset(0, -5.h),
@@ -161,7 +162,7 @@ class _BottomNavState extends State<BottomNav> {
                 ),
               ),
             ),
-    
+
             _buildNavItem(
               icon: Icons.notifications,
               index: 3,

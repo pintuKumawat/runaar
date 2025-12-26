@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:runaar/provider/home_provider.dart';
@@ -12,6 +13,9 @@ import 'package:runaar/provider/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
+import 'package:runaar/screens/auth/sign_up_screen.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +31,6 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
         ChangeNotifierProvider(create: (_) => SignupProvider()),
-
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
@@ -36,8 +39,36 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool? isLoggedIn;
+  String? role;
+  bool? isFirstLaunch;
+
+  Future<void> _loadAppState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      isLoggedIn = prefs.getBool(savedData.isLoggedIn);
+      isFirstLaunch = prefs.getBool(savedData.isFirstLauch);
+    });
+
+    debugPrint(
+      "🚀 App Started | isLoggedIn: $isLoggedIn | firstLaunch: $isFirstLaunch | role: $role",
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAppState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +98,22 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: appTheme.lightTheme(context),
             themeMode: ThemeMode.light,
-            home: LoginScreen(),
-            //LocalWebViewScreen()
-            // LoginScreen(),
+            home: _getHome(),
           ),
         );
       },
     );
+  }
+
+  Widget _getHome() {
+    if (isFirstLaunch ?? false) {
+      return const SignupScreen();
+    }
+
+    if (isLoggedIn ?? false) {
+      return const BottomNav(initialIndex: 2);
+    }
+
+    return const LoginScreen();
   }
 }

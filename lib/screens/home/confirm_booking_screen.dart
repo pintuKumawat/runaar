@@ -4,8 +4,16 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
 
-class ConfirmBookingScreen extends StatelessWidget {
+class ConfirmBookingScreen extends StatefulWidget {
   const ConfirmBookingScreen({super.key});
+
+  @override
+  State<ConfirmBookingScreen> createState() => _ConfirmBookingScreenState();
+}
+
+class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
+  String _selectedPaymentMethod = 'Cash'; // Default payment method
+  final List<String> _paymentMethods = ['Cash', 'Online'];
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +34,7 @@ class ConfirmBookingScreen extends StatelessWidget {
             Text(
               'Check your booking request details',
               style: theme.titleMedium,
-              overflow: .ellipsis
+              overflow: .ellipsis,
             ),
             12.height,
 
@@ -35,10 +43,7 @@ class ConfirmBookingScreen extends StatelessWidget {
             20.height,
 
             /// DATE
-            Text(
-              'Mon, 22 Dec',
-              style: theme.titleMedium,
-            ),
+            Text('Mon, 22 Dec', style: theme.titleMedium),
             10.height,
 
             /// ROUTE
@@ -48,6 +53,11 @@ class ConfirmBookingScreen extends StatelessWidget {
 
             /// PRICE SUMMARY
             _priceSummary(theme),
+
+            24.height,
+
+            /// PAYMENT METHOD
+            _paymentMethodSection(theme),
 
             24.height,
 
@@ -94,15 +104,7 @@ class ConfirmBookingScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// TIMELINE
-        Column(
-          children: [
-
-           30.height,
-            _dot(),
-            _line(),
-            _dot(),
-          ],
-        ),
+        Column(children: [30.height, _dot(), _line(), _dot()]),
         14.width,
 
         /// LOCATIONS
@@ -113,8 +115,7 @@ class ConfirmBookingScreen extends StatelessWidget {
               _locationTile(
                 time: '16:30',
                 title: 'Jaipur Junction',
-                subtitle:
-                    'Railway Station Rd, Gopalbari, Rajasthan',
+                subtitle: 'Railway Station Rd, Gopalbari, Rajasthan',
                 theme: theme,
               ),
               20.height,
@@ -140,57 +141,163 @@ class ConfirmBookingScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(time,
-            style: theme.bodySmall?.copyWith(color: Colors.grey)),
+        Text(time, style: theme.bodySmall?.copyWith(color: Colors.grey)),
         4.height,
-        Text(title,
-            style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+        Text(
+          title,
+          style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+        ),
         2.height,
-        Text(subtitle, style: theme.bodySmall,overflow: .ellipsis,maxLines: 2,),
+        Text(
+          subtitle,
+          style: theme.bodySmall,
+          overflow: .ellipsis,
+          maxLines: 2,
+        ),
       ],
     );
   }
 
   Widget _priceSummary(TextTheme theme) {
-    return Container(
-      padding: 14.all,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text('Price summary', style: theme.titleMedium),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Price/Seats"),
+                Text(
+                  "190",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Seats Booking"),
+                Text(
+                  "2",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            8.height,
+            const Divider(),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  "Total Price",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "₹380",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: appColor.mainColor,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Price summary',
-                  style: theme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w600)),
-              8.height,
-              Text('1 seat · ₹190.00',
-                  style: theme.bodyLarge
-                      ?.copyWith(fontWeight: FontWeight.bold)),
-              4.height,
-              Text('Pay in the car',
-                  style: theme.bodySmall
-                      ?.copyWith(color: Colors.grey)),
-            ],
+    );
+  }
+
+  Widget _paymentMethodSection(TextTheme theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Payment Method', style: theme.titleMedium),
+        10.height,
+        Container(
+          padding: .symmetric(horizontal: 12.w),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey.shade300),
           ),
+          child: DropdownButton<String>(
+            value: _selectedPaymentMethod,
+            isExpanded: true,
+            underline: const SizedBox(),
+            icon: Icon(Icons.arrow_drop_down, color: appColor.mainColor),
+            dropdownColor: Colors.white,
+            items: _paymentMethods.map((String method) {
+              return DropdownMenuItem<String>(
+                value: method,
+                child: Text(method, style: theme.bodyMedium),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _selectedPaymentMethod = newValue;
+                });
+              }
+            },
+          ),
+        ),
+
+        // Optional: Show additional info based on payment method
+        10.height,
+        if (_selectedPaymentMethod == 'Online')
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+            padding: 12.all,
             decoration: BoxDecoration(
-              color: appColor.mainColor.withOpacity(.1),
-              borderRadius: BorderRadius.circular(20),
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.green.shade100),
             ),
-            child: Text(
-              'Cash',
-              style: theme.bodyMedium
-                  ?.copyWith(color: appColor.mainColor),
+            child: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.green, size: 16),
+                8.width,
+                Text(
+                  'Payment will be processed securely',
+                  style: theme.bodySmall?.copyWith(
+                    color: Colors.green.shade800,
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
-      ),
+          ),
+
+        if (_selectedPaymentMethod == 'Cash')
+          Container(
+            padding: 12.all,
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: .circular(8),
+              border: Border.all(color: Colors.blue.shade100),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, color: Colors.blue, size: 16),
+                8.width,
+                Text(
+                  'Pay directly to the driver after the ride',
+                  style: theme.bodySmall?.copyWith(color: Colors.blue.shade800),
+                ),
+              ],
+            ),
+          ),
+      ],
     );
   }
 
@@ -198,15 +305,15 @@ class ConfirmBookingScreen extends StatelessWidget {
     return Container(
       padding: 12.all,
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade200,
+        borderRadius: .circular(12),
       ),
       child: TextField(
         maxLines: 4,
         decoration: InputDecoration(
           hintText:
               "Hello, I've just booked your ride! I'd be glad to travel with you.",
-          hintStyle: theme.bodyMedium?.copyWith(color: Colors.grey),
+          hintStyle: theme.bodyMedium?.copyWith(color: Colors.grey.shade600),
           border: InputBorder.none,
         ),
       ),
@@ -220,7 +327,10 @@ class ConfirmBookingScreen extends StatelessWidget {
         width: double.infinity,
         child: ElevatedButton.icon(
           onPressed: () {
-            appNavigator.push(BookingDoneScreen());
+            appNavigator.push(
+              BookingDoneScreen(),
+              // BookingDoneScreen(paymentMethod: _selectedPaymentMethod),
+            );
           },
           icon: const Icon(Icons.event_seat),
           label: const Text('Request to book'),
