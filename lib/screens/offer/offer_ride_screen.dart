@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
-import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 
 class OfferRide extends StatefulWidget {
   const OfferRide({super.key});
@@ -171,20 +169,20 @@ class _OfferRideState extends State<OfferRide> {
     });
   }
 
-  Future<void> _loadNotificationCount() async {
-    // final notifications = await ApiService.notificationList(userId, l10n);
-    // if (notifications.first.message != null &&
-    //     notifications.isNotEmpty &&
-    //     mounted) {
-    //   int unread = notifications
-    //       .map((n) => n.message?.where((m) => m?.isRead == 0).length ?? 0)
-    //       .fold(0, (a, b) => a + b);
+  // Future<void> _loadNotificationCount() async {
+  //   // final notifications = await ApiService.notificationList(userId, l10n);
+  //   // if (notifications.first.message != null &&
+  //   //     notifications.isNotEmpty &&
+  //   //     mounted) {
+  //   //   int unread = notifications
+  //   //       .map((n) => n.message?.where((m) => m?.isRead == 0).length ?? 0)
+  //   //       .fold(0, (a, b) => a + b);
 
-    // context
-    //     .watch<NotificationProvider>()
-    //     .setCount(unread);
-    // }
-  }
+  //   // context
+  //   //     .watch<NotificationProvider>()
+  //   //     .setCount(unread);
+  //   // }
+  // }
 
   Future<void> _pickDepartureDate() async {
     // Pick date first

@@ -12,7 +12,7 @@ import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/formatter/formater.dart'
     hide FirstLetterCapitalFormatter;
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
-import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
+import 'package:runaar/screens/profile/vehicle/vehicle_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddVehicleScreen extends StatefulWidget {
@@ -50,11 +50,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    addVehicleController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   addVehicleController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   void initState() {
@@ -266,7 +266,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
                     borderRadius: .circular(10.r),
                     child: Image.file(
                       image,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       width: double.infinity,
                     ),
                   ),
@@ -348,6 +348,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       vehicleProvider.reponse?.message ?? "",
     );
 
-    appNavigator.pushReplacement(VehicleList(userId: userId));
+    appNavigator.pushReplacement(VehicleListScreen(userId: userId));
   }
 }
