@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/firebase_options.dart';
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:runaar/provider/home_provider.dart';
@@ -13,12 +15,15 @@ import 'package:runaar/provider/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
-import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+
+  );
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
