@@ -106,8 +106,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget _getHome() {
-    if (isFirstLaunch ?? false) {
-      return const SignupScreen();
+    if (isFirstLaunch ?? true) {
+      return BottomNav(initialIndex: 2);
     }
 
     if (isLoggedIn ?? false) {

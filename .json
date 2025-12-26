@@ -29,7 +29,7 @@
     "person_phone_number": "+911234567890",
   }
 }
-// trid details
+// trip details
 "request": {
   "trip_id": 1
 } 
@@ -80,3 +80,85 @@
     },
   }
 }
+
+//profile screen
+"request":{
+  "user_id":"USR123"
+}
+"response":{
+  "user_name":"Pintu kumawat",
+  "user_mobNo":"9090909090",
+  "user_email":"pintu@gmail.com",
+  "user_dob":"14-01-2026",
+  "user_image":"imageURL",
+  "user_rating":"4.6",
+  "rafer_points":"87",
+  "wallet_blance":"1250.75",
+  "is_licence_verified":"pending" , 
+  "identity_verfication":"pending",
+  "email_verification":"verify",
+  "phone_verification":"verify",
+
+
+}
+
+//User Edit profile
+
+"request":{
+  "user_id":"USR123",
+  "user_name":"pintu",
+  "user_email":"pintu@gmail.com",
+  "user_dob":"18-06-2003",
+  "user_gender":"male",
+}
+
+"response":{
+
+  
+}
+//Change Password
+"request":{
+  "user_id":"USR123",
+  "password":"12345678"
+}
+"response":{
+
+  
+}
+
+//add vehicle
+
+"request":{
+  "brand_name":"Tata",
+  "model_name":"Safari",
+  "vehicle_number":"RJ23MS3536",
+  "vehicl_type":"sedan",
+  "fuel_type":"petrol",
+  "number_of_seats":"3",
+  "color":"black",
+  "vehicle_image":"file",
+  "rc_image":"file"
+
+
+  
+
+
+}"response"{
+}
+//Vehicle list
+
+
+"request":{
+  "user_id":"USR123",
+
+
+}
+
+"response":{
+  "vehicle_id":"",
+  "vehicle_brand":"",
+  "vehicle_number":"",
+  "vehicel_image":""
+
+}
+
