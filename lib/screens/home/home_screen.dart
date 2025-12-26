@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime selectedDate = DateTime.now();
-  int seats = 1;
+ // int seats = 1;
 
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(

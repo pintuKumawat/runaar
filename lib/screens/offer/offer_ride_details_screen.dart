@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 
 class OfferRideDetailsScreen extends StatefulWidget {
@@ -231,29 +233,33 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
   }
 
   Widget _seatSelector(TextTheme theme) {
-    return Container(
-      padding: 14.hv(16),
-      decoration: BoxDecoration(color: Colors.white),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Number of Seats', style: theme.titleSmall),
-          Row(
-            children: [
-              _seatButton(Icons.remove, () {
-                if (seats > 1) setState(() => seats--);
-              }),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14.w),
-                child: Text('$seats', style: theme.titleMedium),
-              ),
-              _seatButton(Icons.add, () {
-                if (seats < 8) setState(() => seats++);
-              }),
-            ],
-          ),
-        ],
-      ),
+    return Consumer<OfferProvider>(
+      builder: (BuildContext context, provider,child) {  
+      return Container(
+        padding: 14.hv(16),
+        decoration: BoxDecoration(color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Number of Seats', style: theme.titleSmall),
+            Row(
+              children: [
+                _seatButton(Icons.remove, () {
+                 provider.decrement();
+                }),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 14.w),
+                  child: Text('${provider.seats}', style: theme.titleMedium),
+                ),
+                _seatButton(Icons.add, () {
+                provider.increment();
+                }),
+              ],
+            ),
+          ],
+        ),
+      );
+      }
     );
   }
 

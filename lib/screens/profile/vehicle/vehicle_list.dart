@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_details_screen.dart';
 
 class VehicleList extends StatefulWidget {
@@ -135,22 +137,34 @@ class _VehicleListState extends State<VehicleList> {
   void _onDeleteVehicle(int index) {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Delete Vehicle"),
-        content: const Text("Are you sure you want to delete this vehicle?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() => vehicles.removeAt(index));
-              Navigator.pop(context);
-            },
-            child: const Text("Delete"),
-          ),
-        ],
+      builder: (_) => Consumer<DeleteVehicleProvider>(
+        builder: (BuildContext context, deleteVehicleProvider, child) {  
+        return AlertDialog(
+          title: const Text("Delete Vehicle"),
+          content: const Text("Are you sure you want to delete this vehicle?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async{
+               
+              await deleteVehicleProvider.deleteVehicle(vehicleId: 1);
+              if(deleteVehicleProvider.errorMessage!=null){
+                appSnackbar.showSingleSnackbar(context, deleteVehicleProvider.errorMessage??"");
+
+                return ;
+              } appSnackbar.showSingleSnackbar(context, deleteVehicleProvider.response?.message??"");
+
+                
+                // Navigator.pop(context);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+        }
       ),
     );
   }

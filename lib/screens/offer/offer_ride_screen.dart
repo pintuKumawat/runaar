@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
+import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 
 class OfferRide extends StatefulWidget {
   const OfferRide({super.key});
@@ -198,9 +200,9 @@ class _OfferRideState extends State<OfferRide> {
               height: 56.h,
               child: ElevatedButton(
                 onPressed: () {
-                  // appNavigator.push(OfferRideDetailsScreen());
-                  debugPrint(offerController.originController.text);
-                  debugPrint(offerController.originCityController.text);
+                   appNavigator.push(OfferRideDetailsScreen());
+                  // debugPrint(offerController.originController.text);
+                  // debugPrint(offerController.originCityController.text);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
