@@ -44,15 +44,8 @@ class _ReferEarnScreenState extends State<ReferEarnScreen> {
       padding: 20.all,
       decoration: BoxDecoration(
         borderRadius: .circular(16.r),
-        // gradient: LinearGradient(
-        //   colors: [
-        //   appColor.mainColor,
-        //   appColor.mainColor,
-        //   appColor.mainColor,
-        //   appColor.secondColor,
-        //   ],
-        // ),
-        color: appColor.mainColor
+
+        color: appColor.mainColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

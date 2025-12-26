@@ -184,10 +184,14 @@ class BookingDetailsScreen extends StatelessWidget {
                   unratedColor: Colors.grey.shade300,
                 ),
               ),
-              trailing: Icon(Icons.chevron_right, color: Colors.grey),
-              onTap: () {
-                // Navigate to driver profile / details
-              },
+              trailing: Text(
+                "Call",
+                style: theme.bodyMedium?.copyWith(
+                  fontWeight: .w600,
+                  color: appColor.secondColor,
+                ),
+              ),
+              
             ),
           ],
         ),
