@@ -1,0 +1,82 @@
+// Home screen
+"request": {
+  "origin_lat": 26.9124,
+  "origin_long": 75.7873,
+  "origin_address": "Jaipur Junction, Railway Station Rd, Gopalbari",
+  "origin_city": "Jaipur",
+  "destination_lat": 27.3590,
+  "destination_long": 75.5717,
+  "destination_address": "Ringas Junction, Reengus",
+  "destination_city": "Ringas",
+  "booking_seats": 2,
+  "dept_date": "2024-01-22"
+}
+// search result
+"response": {
+  "trip_id": "100",
+  "origin_time": "11:10",
+  "origin_city": "Jaipur",
+  "seat_price": 200,
+  "destination_time": "12:00",
+  "destination_city": "Reengus",
+  "distance_from_search": 0.5, // in killometers
+  "dept_date": "22 Sep 2025",
+  "person_detail": {
+    "person_image": "https://example.com/profile1.jpg",
+    "person_name": "Sushil",
+    "person_verified": "1/0",
+    "person_ratings": 1.0,
+    "person_phone_number": "+911234567890",
+  }
+}
+// trid details
+"request": {
+  "trip_id": 1
+} 
+"response": {
+  "trip_id": "100",
+  "trip_date": "22 Sep 2025",
+  "origin_time": "11:10",
+  "origin_city": "Jaipur",
+  "origin_address": "54, Radha Mukut Vihar Patel Marg, New Sanganer Rd, Mansarovar",
+  "destination_time": "12:00",
+  "destination_city": "Reengus",
+  "destination_address": "Ringas Junction",
+  "seat_price": 190.00,
+  "available_seats": 2,
+  "person_detail": {
+    "person_name": "Nihit Singh",
+    "person_phone": "+911234567890",
+    "person_email": "xyz@gmail.com",
+    "person_rating": 4.6,
+    "person_image": "https://example.com/profile.jpg",
+    "person_verified": true,
+  },
+  "vehicle": {
+    "vehicle_model": "Baleno",
+    "vehicle_color": "Grey",
+    "vehicle_number": "GJ 01 AB 4567",
+  },
+  "passengers": [
+    {
+      "passenger_name": "Rahul Patel",
+      "seats_booked": 1,
+      "rating": 4.3
+    },
+  ],
+  "accept_online": "1/0"
+}
+// Booking process
+"request": {
+  "booking_request": {
+    "trip_id": "100",
+    "user_id": "USR123",
+    "booking_details": {
+      "seats_requested": 2,
+      "total_price": 380,
+      "payment_method": "cash", // cash or online
+      "payment_status": "pending",
+      "special_message": "Hello, I'd like to book your ride. I have 2 bags."
+    },
+  }
+}
