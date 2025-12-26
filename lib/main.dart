@@ -21,6 +21,7 @@ import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
 import 'package:runaar/provider/vehicle/vehicle_details_provider.dart';
 import 'package:runaar/repos/details_vechile_repo.dart';
+import 'package:runaar/provider/vehicle/vehicle_list_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +48,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) =>OfferProvider()),
         ChangeNotifierProvider(create: (_)=>DeleteVehicleProvider()),
         ChangeNotifierProvider(create: (_)=>VehicleDetailsProvider()),
+        ChangeNotifierProvider(create: (_) => OfferProvider()),
+        ChangeNotifierProvider(create: (_) => DeleteVehicleProvider()),
+        ChangeNotifierProvider(create: (_) => VehicleListProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

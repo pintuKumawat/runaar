@@ -16,7 +16,7 @@ import 'package:runaar/screens/profile/other/delete_account_screen.dart';
 import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
 import 'package:runaar/screens/profile/other/wallet_screen.dart';
 import 'package:runaar/screens/profile/vehicle/add_vehicle_screen.dart';
-import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
+import 'package:runaar/screens/profile/vehicle/vehicle_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -313,7 +313,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         appNavigator.push(MyRidesScreen(initialIndex: 1));
         break;
       case "My Vehicles":
-        appNavigator.push(VehicleList(userId: 1));
+        appNavigator.push(VehicleListScreen(userId: 1));
         break;
       case "Add Vehicle":
         appNavigator.push(AddVehicleScreen(userId: 1));
