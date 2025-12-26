@@ -193,7 +193,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),
-              hintText: 'Price per seat',
+              hintText: 'Enter Price/seat',
               hintStyle: theme.bodyMedium,
             ),
           ),

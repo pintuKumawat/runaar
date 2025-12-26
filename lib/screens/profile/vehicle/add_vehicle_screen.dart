@@ -1,11 +1,19 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/controllers/profile/vehicles/add_vehicle_controller.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/formatter/formater.dart'
     hide FirstLetterCapitalFormatter;
+import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
+import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   final int userId;
@@ -18,11 +26,11 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final brandCtrl = TextEditingController();
-  final modelCtrl = TextEditingController();
-  final numberCtrl = TextEditingController();
-  final seatsCtrl = TextEditingController();
-  final colorCtrl = TextEditingController();
+  final brandCtrl = addVehicleController.brandController;
+  final modelCtrl = addVehicleController.modelController;
+  final numberCtrl = addVehicleController.numberController;
+  final seatsCtrl = addVehicleController.seatsController;
+  final colorCtrl = addVehicleController.colorController;
 
   String vehicleType = "Sedan";
   String fuelType = "Petrol";
@@ -32,14 +40,26 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  int userId = 0;
+
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+
   @override
   void dispose() {
-    brandCtrl.dispose();
-    modelCtrl.dispose();
-    numberCtrl.dispose();
-    seatsCtrl.dispose();
-    colorCtrl.dispose();
+    addVehicleController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getuserId();
   }
 
   @override
@@ -101,7 +121,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
               24.height,
 
-              /// IMAGES
               Row(
                 children: [
                   Expanded(
@@ -193,7 +212,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           return null;
         }
 
-        // ------------------ BRAND / MODEL / COLOR VALIDATION ------------------
         if (ctrl == brandCtrl || ctrl == modelCtrl || ctrl == colorCtrl) {
           if (value == null || value.isEmpty) {
             return "Required field";
@@ -245,7 +263,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             child: image == null
                 ? Center(child: Icon(Icons.camera_alt, size: 36.sp))
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(10.r),
+                    borderRadius: .circular(10.r),
                     child: Image.file(
                       image,
                       fit: BoxFit.cover,
@@ -260,7 +278,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     );
   }
 
-  // -------------------- PICK IMAGE --------------------
   Future<void> _pickImage({required Function(File) onPicked}) async {
     final picked = await _picker.pickImage(
       source: ImageSource.camera,
@@ -272,7 +289,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     }
   }
 
-  // -------------------- IMAGE PREVIEW --------------------
   void _showImageDialog(File image) {
     showDialog(
       context: context,
@@ -283,33 +299,55 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }
 
   Widget _bottomBar() {
+    final vehicleProvider = context.read<AddVehicleProvider>();
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
         height: 56.h,
         child: ElevatedButton(
           onPressed: _saveVehicle,
-          child: Text("Save Vehicle"),
+          child: vehicleProvider.isLoading
+              ? const CircularProgressIndicator()
+              : const Text("Save Vehicle"),
         ),
       ),
     );
   }
 
-  // -------------------- SAVE --------------------
-  void _saveVehicle() {
+  Future<void> _saveVehicle() async {
+    final vehicleProvider = context.read<AddVehicleProvider>();
     if (!_formKey.currentState!.validate()) return;
 
     if (vehicleImage == null || rcImage == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please upload all images")));
+      appSnackbar.showSingleSnackbar(context, "Please upload all images");
       return;
     }
 
-    // 🔗 API / Provider integration
+    await vehicleProvider.addVehicle(
+      userId: userId,
+      brand: addVehicleController.brandController.text,
+      vModel: addVehicleController.modelController.text,
+      vNumber: addVehicleController.numberController.text,
+      vType: vehicleType,
+      fType: fuelType,
+      seats: int.parse(seatsCtrl.text),
+      color: addVehicleController.brandController.text,
+      vImage: vehicleImage!,
+      rcImage: rcImage!,
+    );
 
-    ScaffoldMessenger.of(
+    if (vehicleProvider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(
+        context,
+        vehicleProvider.errorMessage ?? "",
+      );
+      return;
+    }
+    appSnackbar.showSingleSnackbar(
       context,
-    ).showSnackBar(const SnackBar(content: Text("Vehicle added successfully")));
+      vehicleProvider.reponse?.message ?? "",
+    );
+
+    appNavigator.pushReplacement(VehicleList(userId: userId));
   }
 }

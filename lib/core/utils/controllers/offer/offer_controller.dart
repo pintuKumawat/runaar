@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class OfferController {
-  TextEditingController originController = TextEditingController();
-  TextEditingController originCityController = TextEditingController();
-  TextEditingController originLatController = TextEditingController();
-  TextEditingController originLongController = TextEditingController();
-  TextEditingController destinationController = TextEditingController();
-  TextEditingController destinationCityController = TextEditingController();
-  TextEditingController destinationLatController = TextEditingController();
-  TextEditingController destinationLongController = TextEditingController();
-  TextEditingController originDateController = TextEditingController();
-  TextEditingController destinationDateController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
+  final TextEditingController originController = TextEditingController();
+  final TextEditingController originCityController = TextEditingController();
+  final TextEditingController originLatController = TextEditingController();
+  final TextEditingController originLongController = TextEditingController();
+  final TextEditingController destinationController = TextEditingController();
+  final TextEditingController destinationCityController = TextEditingController();
+  final TextEditingController destinationLatController = TextEditingController();
+  final TextEditingController destinationLongController = TextEditingController();
+  final TextEditingController originDateController = TextEditingController();
+  final TextEditingController destinationDateController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
 
   void clear() {
     originController.clear();

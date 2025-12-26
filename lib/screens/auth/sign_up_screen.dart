@@ -49,7 +49,8 @@ class _SignupScreenState extends State<SignupScreen> {
             /// USERNAME
             TextFormField(
               controller: signUpController.nameController,
-              onChanged: provider.validateUserName,inputFormatters: [FirstLetterCapitalFormatter()],
+              onChanged: provider.validateUserName,
+              inputFormatters: [FirstLetterCapitalFormatter()],
               decoration: InputDecoration(
                 hintText: "Enter username",
                 errorText: provider.userNameError,
@@ -170,6 +171,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
     prefs.setBool(savedData.isFirstLauch, false);
 
-    appNavigator.pushReplacement(LoginScreen());
+    appNavigator.pushAndRemoveUntil(LoginScreen());
   }
 }

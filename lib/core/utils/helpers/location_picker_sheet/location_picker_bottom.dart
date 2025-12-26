@@ -45,7 +45,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
     }
 
     setState(() => isLoading = true);
-    final result = await GooglePlacesService.getPredictions(value);
+    final result = await googlePlacesService.getPredictions(value);
     if (mounted) {
       setState(() {
         suggestions = result;
@@ -97,7 +97,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
         desiredAccuracy: LocationAccuracy.bestForNavigation,
       );
 
-      final customPlace = await GooglePlacesService.getPlaceFromLatLng(
+      final customPlace = await googlePlacesService.getPlaceFromLatLng(
         position.latitude,
         position.longitude,
       );
@@ -231,7 +231,7 @@ class _LocationPickerBottomSheetState extends State<LocationPickerBottomSheet> {
                           title: Text(place.fullText),
                           onTap: () async {
                             final details =
-                                await GooglePlacesService.getPlaceDetails(
+                                await googlePlacesService.getPlaceDetails(
                                   place.placeId,
                                 );
 

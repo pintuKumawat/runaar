@@ -152,6 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
       provider.response?.message ?? "Login Successfull!!",
     );
     prefs.setInt(savedData.userId, provider.response?.userId ?? 0);
-    appNavigator.pushReplacement(BottomNav(initialIndex: 2));
+    appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
   }
 }

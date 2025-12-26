@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/home/home_controller.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/provider/home_provider.dart';
+import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,11 +18,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DateTime selectedDate = DateTime.now();
- // int seats = 1;
+  DateTime departureDate = DateTime.now();
+  int seats = 1;
 
-  Future<void> _pickDate() async {
-    final DateTime? picked = await showDatePicker(
+  Future<void> _pickDepartureDate() async {
+    // Pick date first
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       builder: (context, child) {
         return Theme(
@@ -38,13 +41,20 @@ class _HomeScreenState extends State<HomeScreen> {
           child: child!,
         );
       },
-      initialDate: selectedDate,
+      initialDate: departureDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (picked != null) {
-      setState(() => selectedDate = picked);
-    }
+
+    if (pickedDate == null) return;
+
+    setState(() {
+      departureDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+      );
+    });
   }
 
   @override
@@ -107,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             14.height,
 
             GestureDetector(
-              onTap: _pickDate,
+              onTap: _pickDepartureDate,
               child: Container(
                 padding: 18.hv(16),
                 decoration: BoxDecoration(
@@ -123,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text('Date of Departure', style: theme.bodySmall),
                         4.height,
                         Text(
-                          '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                          '${departureDate.day}/${departureDate.month}/${departureDate.year}',
                           style: theme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -143,9 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 56.h,
               child: ElevatedButton(
                 onPressed: () {
-                  // appNavigator.push(SearchScreen());
-                  debugPrint(homeController.originController.text);
-                  debugPrint(homeController.originCityController.text);
+                  appNavigator.push(SearchScreen());
+                  // debugPrint(homeController.originController.text);
+                  // debugPrint(homeController.originCityController.text);
                 },
                 child: Row(
                   mainAxisAlignment: .center,
