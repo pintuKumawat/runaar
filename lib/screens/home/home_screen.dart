@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/controllers/home/home_controller.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/provider/home_provider.dart';
-import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black),
+            ),
+          ),
+          child: child!,
+        );
+      },
       initialDate: selectedDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
@@ -73,11 +91,15 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icons.my_location,
               hint: 'Enter Pickup Location',
               theme: theme,
+              controller: homeController.originController,
+              type: 'pickup',
             ),
             _inputTile(
               icon: Icons.location_on,
               hint: 'Enter Drop Location',
               theme: theme,
+              controller: homeController.destinationController,
+              type: 'drop',
             ),
 
             _seatSelector(theme),
@@ -120,7 +142,11 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () => appNavigator.push(SearchScreen()),
+                onPressed: () {
+                  // appNavigator.push(SearchScreen());
+                  debugPrint(homeController.originController.text);
+                  debugPrint(homeController.originCityController.text);
+                },
                 child: Row(
                   mainAxisAlignment: .center,
                   children: [
@@ -140,36 +166,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _seatSelector(TextTheme theme) {
-    return Consumer<HomeProvider>(builder: (context, homeProvider, child){
-     return Container(
-        padding: 14.hv(16),
-        margin: .only(bottom: 12.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: .circular(14.r),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Number of Seats', style: theme.bodyLarge),
-            Row(
-              children: [
-                _seatButton(Icons.remove, () {
-                homeProvider.decrement();
-                }),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w),
-                  child: Text("${homeProvider.seats}", style: theme.titleMedium),
-                ),
-                _seatButton(Icons.add, () {
-              homeProvider.increment();
-                }),
-              ],
-            ),
-          ],
-        ),
-      );
-    }
+    return Consumer<HomeProvider>(
+      builder: (context, homeProvider, child) {
+        return Container(
+          padding: 14.hv(16),
+          margin: .only(bottom: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: .circular(14.r),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Number of Seats', style: theme.bodyLarge),
+              Row(
+                children: [
+                  _seatButton(Icons.remove, () {
+                    homeProvider.decrement();
+                  }),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    child: Text(
+                      "${homeProvider.seats}",
+                      style: theme.titleMedium,
+                    ),
+                  ),
+                  _seatButton(Icons.add, () {
+                    homeProvider.increment();
+                  }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -185,11 +215,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> openLocationPicker(String type) async {
+    final result = await showModalBottomSheet<AutocompletePrediction>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.white,
+      builder: (_) =>
+          LocationPickerBottomSheet(type: type, screenType: "search"),
+    );
+
+    if (result != null) {
+      // Update text fields when user selects location
+      if (type == 'pickup') {
+        homeController.originController.text = result.fullText;
+      } else {
+        homeController.destinationController.text = result.fullText;
+      }
+    }
+  }
+
   Widget _inputTile({
     required IconData icon,
     required String hint,
     required TextTheme theme,
-    // required TextEditingController controller
+    required String type,
+    required TextEditingController controller,
   }) {
     return Container(
       margin: .only(bottom: 12.h),
@@ -199,7 +250,10 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: .circular(14.r),
       ),
       child: TextField(
-        // controller: controller,
+        inputFormatters: [FirstLetterCapitalFormatter()],
+        controller: controller,
+        readOnly: true,
+        onTap: () => openLocationPicker(type),
         style: theme.bodyLarge,
         decoration: InputDecoration(
           icon: Icon(icon, size: 24.sp),

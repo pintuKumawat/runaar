@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/core/utils/helpers/formatter/formater.dart'
+    hide FirstLetterCapitalFormatter;
 
 class AddVehicleScreen extends StatefulWidget {
   final int userId;
@@ -144,8 +147,62 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }) {
     return TextFormField(
       controller: ctrl,
+      inputFormatters: ctrl == numberCtrl
+          ? [UpperCaseTextFormatter()]
+          : [FirstLetterCapitalFormatter()],
       keyboardType: keyboardType,
-      validator: (v) => v == null || v.isEmpty ? "Required" : null,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      validator: (value) {
+        if (ctrl == numberCtrl) {
+          if (value == null || value.isEmpty) {
+            return "Please enter vehicle number";
+          }
+
+          final allowedChars = RegExp(r'^[A-Za-z0-9]+$');
+          if (!allowedChars.hasMatch(value)) {
+            return "Only letters and numbers allowed";
+          }
+
+          if (value.length != 10) {
+            return "Vehicle number must be exactly 10 characters";
+          }
+
+          final hasLetter = RegExp(r'[A-Za-z]').hasMatch(value);
+          final hasDigit = RegExp(r'[0-9]').hasMatch(value);
+          if (!hasLetter || !hasDigit) {
+            return "Must contain both letters and numbers";
+          }
+
+          return null;
+        }
+
+        if (ctrl == seatsCtrl) {
+          if (value == null || value.isEmpty) {
+            return "Please enter number of seats";
+          }
+
+          final seats = int.tryParse(value);
+          if (seats == null) {
+            return "Only numeric characters allowed";
+          }
+
+          if (seats > 7) {
+            return "Seats cannot be more than 7";
+          }
+
+          return null;
+        }
+
+        // ------------------ BRAND / MODEL / COLOR VALIDATION ------------------
+        if (ctrl == brandCtrl || ctrl == modelCtrl || ctrl == colorCtrl) {
+          if (value == null || value.isEmpty) {
+            return "Required field";
+          }
+          return null;
+        }
+
+        return null;
+      },
     );
   }
 

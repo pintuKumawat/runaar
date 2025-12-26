@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
+import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 
 class OfferRide extends StatefulWidget {
   const OfferRide({super.key});
@@ -20,32 +22,125 @@ class _OfferRideState extends State<OfferRide> {
   /// ---------------- DATE PICKERS ----------------
 
   Future<void> _pickDepartureDate() async {
-    final DateTime? picked = await showDatePicker(
+    // Pick date first
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black),
+            ),
+          ),
+          child: child!,
+        );
+      },
       initialDate: departureDate,
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
     );
-    if (picked != null) {
-      setState(() {
-        departureDate = picked;
-        if (arrivalDate.isBefore(departureDate)) {
-          arrivalDate = departureDate;
-        }
-      });
-    }
+
+    if (pickedDate == null) return;
+
+    // Pick time after date
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(departureDate),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime == null) return;
+
+    setState(() {
+      departureDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+
+      if (arrivalDate.isBefore(departureDate)) {
+        arrivalDate = departureDate;
+      }
+    });
   }
 
   Future<void> _pickArrivalDate() async {
-    final DateTime? picked = await showDatePicker(
+    // Pick date first
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black),
+            ),
+          ),
+          child: child!,
+        );
+      },
       initialDate: arrivalDate,
       firstDate: departureDate,
       lastDate: DateTime(2100),
     );
-    if (picked != null) {
-      setState(() => arrivalDate = picked);
-    }
+
+    if (pickedDate == null) return;
+
+    // Pick time after date
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(arrivalDate),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime == null) return;
+
+    setState(() {
+      arrivalDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+    });
   }
 
   @override
@@ -66,11 +161,15 @@ class _OfferRideState extends State<OfferRide> {
               icon: Icons.my_location,
               hint: 'Enter Pickup Location',
               theme: theme,
+              controller: offerController.originController,
+              type: 'pickup',
             ),
             _inputTile(
               icon: Icons.location_on,
               hint: 'Enter Drop Location',
               theme: theme,
+              controller: offerController.destinationController,
+              type: 'drop',
             ),
             Text('Select Car', style: theme.titleMedium),
             6.height,
@@ -98,7 +197,11 @@ class _OfferRideState extends State<OfferRide> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () => appNavigator.push(OfferRideDetailsScreen()),
+                onPressed: () {
+                  // appNavigator.push(OfferRideDetailsScreen());
+                  debugPrint(offerController.originController.text);
+                  debugPrint(offerController.originCityController.text);
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -119,6 +222,8 @@ class _OfferRideState extends State<OfferRide> {
     required IconData icon,
     required String hint,
     required TextTheme theme,
+    required String type,
+    required TextEditingController controller,
   }) {
     return Container(
       margin: .only(bottom: 12.h),
@@ -128,6 +233,10 @@ class _OfferRideState extends State<OfferRide> {
         borderRadius: .circular(14.r),
       ),
       child: TextField(
+        inputFormatters: [FirstLetterCapitalFormatter()],
+        controller: controller,
+        readOnly: true,
+        onTap: () => openLocationPicker(type),
         style: theme.bodyLarge,
         decoration: InputDecoration(
           icon: Icon(icon, size: 24.sp),
@@ -177,6 +286,8 @@ class _OfferRideState extends State<OfferRide> {
     required VoidCallback onTap,
     required TextTheme theme,
   }) {
+    String dateTime =
+        '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -194,7 +305,7 @@ class _OfferRideState extends State<OfferRide> {
                 Text(title, style: theme.bodySmall),
                 4.height,
                 Text(
-                  '${date.day}/${date.month}/${date.year}',
+                  dateTime,
                   style: theme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ],
@@ -204,5 +315,25 @@ class _OfferRideState extends State<OfferRide> {
         ),
       ),
     );
+  }
+
+  Future<void> openLocationPicker(String type) async {
+    final result = await showModalBottomSheet<AutocompletePrediction>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Colors.white,
+      builder: (_) =>
+          LocationPickerBottomSheet(type: type, screenType: "offer"),
+    );
+
+    if (result != null) {
+      // Update text fields when user selects location
+      if (type == 'pickup') {
+        offerController.originController.text = result.fullText;
+      } else {
+        offerController.destinationController.text = result.fullText;
+      }
+    }
   }
 }

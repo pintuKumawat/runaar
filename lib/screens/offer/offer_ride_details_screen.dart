@@ -187,6 +187,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
         children: [
           TextField(
             controller: priceController,
+            
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),

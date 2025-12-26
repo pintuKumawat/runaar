@@ -457,6 +457,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/screens/my_rides/booking_details_screen.dart';
 import 'package:runaar/screens/my_rides/published_ride_details_screen.dart';
 
@@ -597,6 +598,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
               child: TextField(
                 controller: _searchCtrl,
                 onChanged: (v) => setState(() => query = v),
+                inputFormatters: [FirstLetterCapitalFormatter()],
                 decoration: InputDecoration(
                   hintText: "Search by city or route",
                   prefixIcon: const Icon(Icons.search),

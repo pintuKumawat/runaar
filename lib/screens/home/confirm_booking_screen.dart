@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
 
 class ConfirmBookingScreen extends StatefulWidget {
@@ -309,7 +310,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
         borderRadius: .circular(12),
       ),
       child: TextField(
-        maxLines: 4,
+        maxLines: 4,inputFormatters: [FirstLetterCapitalFormatter()],
         decoration: InputDecoration(
           hintText:
               "Hello, I've just booked your ride! I'd be glad to travel with you.",

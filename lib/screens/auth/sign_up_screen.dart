@@ -6,6 +6,7 @@ import 'package:runaar/core/utils/controllers/auth/sign_up_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
             /// USERNAME
             TextFormField(
               controller: signUpController.nameController,
-              onChanged: provider.validateUserName,
+              onChanged: provider.validateUserName,inputFormatters: [FirstLetterCapitalFormatter()],
               decoration: InputDecoration(
                 hintText: "Enter username",
                 errorText: provider.userNameError,

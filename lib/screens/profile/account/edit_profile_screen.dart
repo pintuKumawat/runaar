@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final int userId;
@@ -204,7 +205,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _nameField(TextTheme textTheme) {
     return TextFormField(
       controller: nameCtrl,
-      style: textTheme.bodyMedium,
+      style: textTheme.bodyMedium,inputFormatters: [FirstLetterCapitalFormatter()],
       decoration: const InputDecoration(
         // labelText: "Full Name",
         prefixIcon: Icon(Icons.person_outline),
