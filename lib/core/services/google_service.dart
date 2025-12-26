@@ -74,7 +74,7 @@ class GooglePlacesService {
     required double piclng,
     required double dropLat,
     required double droplng,
-    double averageSpeedKmh = 60, // default average driving speed
+    double averageSpeedKmh = 60,
   }) async {
     try {
       final distanceInMeters = Geolocator.distanceBetween(

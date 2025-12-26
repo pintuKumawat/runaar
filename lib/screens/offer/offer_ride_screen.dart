@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
+import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
+import 'package:runaar/provider/offerProvider/offer_provider.dart';
+import 'package:runaar/provider/vehicle/vehicle_list_provider.dart';
+import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OfferRide extends StatefulWidget {
@@ -23,6 +29,23 @@ class _OfferRideState extends State<OfferRide> {
   String selectedVehicle = 'Van';
   final List<String> vehicles = ['Ertiga', 'Creta', 'Scorpio', 'Van'];
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getuserId().then((_) {
+        context.read<VehicleListProvider>().vehicleList(userId: userId);
+      });
+    });
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   getuserId().then((_) {
+  //     context.read<VehicleListProvider>().vehicleList(userId: userId);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -78,11 +101,7 @@ class _OfferRideState extends State<OfferRide> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () {
-                  // appNavigator.push(OfferRideDetailsScreen());
-                  debugPrint(offerController.originController.text);
-                  debugPrint(offerController.originCityController.text);
-                },
+                onPressed: _loadData,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -97,6 +116,35 @@ class _OfferRideState extends State<OfferRide> {
         ),
       ),
     );
+  }
+
+  Future<void> _loadData() async {
+    final provider = context.read<OfferProvider>();
+    String arrivalTime = '${arrivalDate.hour}:${arrivalDate.minute}';
+    String deptTime = '${departureDate.hour}:${departureDate.minute}';
+    final data = LoadOfferData(
+      userId: userId,
+      originLat: offerController.originLatController.text,
+      originLong: offerController.originLongController.text,
+      originAddress: offerController.originController.text,
+      originCity: offerController.originCityController.text,
+      destinationLat: offerController.destinationLatController.text,
+      destinationLong: offerController.destinationLongController.text,
+      destinationAddress: offerController.destinationController.text,
+      destinationCity: offerController.destinationCityController.text,
+      deptDate:
+          '${departureDate.day}/${departureDate.month}/${departureDate.year}',
+      arrivalDate:
+          '${arrivalDate.day}/${arrivalDate.month}/${arrivalDate.year}',
+      deptTime: deptTime,
+      arrivalTime: arrivalTime,
+      vehicleId: offerController.selectedVehicleId,
+    );
+
+    provider.setDetail(data);
+
+    if (!mounted) return;
+    appNavigator.push(OfferRideDetailsScreen());
   }
 
   Widget _inputTile({
@@ -128,6 +176,24 @@ class _OfferRideState extends State<OfferRide> {
   }
 
   Widget _vehicleSelector(TextTheme theme) {
+    VehicleListProvider provider = context.watch<VehicleListProvider>();
+    final vehicleData = provider.response?.data ?? [];
+
+    if (provider.isLoading == true) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (vehicleData.isEmpty) {
+      return Container(
+        padding: 12.all,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: .circular(14.r),
+        ),
+        child: Text("No vehicles added", style: theme.bodyMedium),
+      );
+    }
+
     return Container(
       margin: .only(bottom: 12.h),
       padding: .symmetric(horizontal: 12.w),
@@ -136,25 +202,30 @@ class _OfferRideState extends State<OfferRide> {
         borderRadius: .circular(14.r),
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          dropdownColor: Colors.grey.shade200,
-          value: selectedVehicle,
+        child: DropdownButton<int>(
+          dropdownColor: Colors.white,
+          value: offerController.selectedVehicleId == 0
+              ? null
+              : offerController.selectedVehicleId,
           isExpanded: true,
           icon: Icon(Icons.keyboard_arrow_down, size: 22.sp),
-          items: vehicles.map((vehicle) {
+          items: vehicleData.map((v) {
             return DropdownMenuItem(
-              value: vehicle,
+              value: v.vehicleId,
               child: Row(
                 children: [
                   Icon(Icons.directions_car, size: 18.sp),
                   10.width,
-                  Text(vehicle, style: theme.bodyLarge),
+                  Text(
+                    "${v.vehicleBrand} ${v.model} (${v.vehicleNumber})",
+                    style: theme.bodyLarge,
+                  ),
                 ],
               ),
             );
           }).toList(),
           onChanged: (value) {
-            setState(() => selectedVehicle = value!);
+            setState(() => offerController.selectedVehicleId = value!);
           },
         ),
       ),

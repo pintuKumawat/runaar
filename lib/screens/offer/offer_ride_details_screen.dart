@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/services/google_service.dart';
+import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 
@@ -14,17 +18,45 @@ class OfferRideDetailsScreen extends StatefulWidget {
 }
 
 class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
-  final TextEditingController priceController = TextEditingController();
-
   bool luggageAllowed = true;
   bool petsAllowed = false;
   bool smokingAllowed = false;
-  int seats = 1;
+
+  String duration = "";
+  String distance = "";
+
+  Future<void> _calculateDistance(
+    double originLat,
+    double originLong,
+    double destLat,
+    double destLong,
+  ) async {
+    final time = await googlePlacesService.getDistanceAndTime(
+      picLat: originLat,
+      piclng: originLong,
+      dropLat: destLat,
+      droplng: destLong,
+    );
+    setState(() {
+      duration = time['formatted_time'];
+      distance = time['distance_km'].toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
+    final offerProvider = context.read<OfferProvider>();
+    final data = offerProvider.data;
 
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _calculateDistance(
+        double.parse(data?.originLat ?? ""),
+        double.parse(data?.originLong ?? ""),
+        double.parse(data?.destinationLat ?? ""),
+        double.parse(data?.destinationLong ?? ""),
+      ),
+    );
     return Scaffold(
       appBar: AppBar(title: const Text('Ride Details')),
       bottomNavigationBar: BottomAppBar(
@@ -32,17 +64,17 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () => appNavigator.pushAndRemoveUntil(
-              BottomNav(initialIndex: 1, rideIndex: 1),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.publish, size: 20.sp),
-                8.width,
-                const Text('PUBLISH RIDE'),
-              ],
-            ),
+            onPressed: () => _publish(offerProvider),
+            child: offerProvider.isLoading
+                ? const CircularProgressIndicator()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.publish, size: 20.sp),
+                      8.width,
+                      const Text('PUBLISH RIDE'),
+                    ],
+                  ),
           ),
         ),
       ),
@@ -51,7 +83,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _routeCard(theme),
+            _routeCard(theme, data),
             16.height,
             Text('Add ride preferences', style: theme.titleMedium),
             8.height,
@@ -88,32 +120,30 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
     );
   }
 
-  /// ---------------- WIDGETS ----------------
-  Widget _routeCard(TextTheme theme) {
+  Widget _routeCard(TextTheme theme, LoadOfferData? data) {
     return Card(
       child: Padding(
         padding: 10.all,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _timeLine(theme),
+            _timeLine(theme, data),
             14.width,
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _locationBlock(
-                    time: '14:00',
-                    city: 'Jaipur',
-                    address:
-                        '54, Radha Mukut Vihar Patel Marg, New Sanganer Rd, Mansarovar',
+                    time: data?.deptTime ?? "",
+                    city: data?.originCity ?? "",
+                    address: data?.originAddress ?? "",
                     theme: theme,
                   ),
                   18.height,
                   _locationBlock(
-                    time: '15:00',
-                    city: 'Reengus',
-                    address: 'Ringas Junction',
+                    time: data?.arrivalTime ?? "",
+                    city: data?.destinationCity ?? "",
+                    address: data?.destinationAddress ?? "",
                     theme: theme,
                   ),
                 ],
@@ -125,24 +155,24 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
     );
   }
 
-  Widget _timeLine(TextTheme theme) {
+  Widget _timeLine(TextTheme theme, LoadOfferData? data) {
     return Column(
       children: [
-        Text('14:00', style: theme.bodyMedium),
+        Text(data?.deptTime ?? "", style: theme.bodyMedium),
         Container(
-          height: 15.h,
+          height: 18.h,
           width: 2.w,
           margin: 6.all,
           color: appColor.mainColor,
         ),
-        Text('0h59', style: theme.bodySmall),
+        Text(duration, style: theme.bodySmall),
         Container(
-          height: 15.h,
+          height: 18.h,
           width: 2.w,
           margin: 6.all,
           color: appColor.mainColor,
         ),
-        Text('15:00', style: theme.bodyMedium),
+        Text(data?.arrivalTime ?? "", style: theme.bodyMedium),
       ],
     );
   }
@@ -167,7 +197,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
           ],
         ),
         4.height,
-        Text(address, style: theme.bodySmall),
+        Text(address, style: theme.bodySmall, maxLines: 2),
       ],
     );
   }
@@ -188,8 +218,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
       child: Column(
         children: [
           TextField(
-            controller: priceController,
-            
+            controller: offerController.priceController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),
@@ -234,32 +263,32 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
 
   Widget _seatSelector(TextTheme theme) {
     return Consumer<OfferProvider>(
-      builder: (BuildContext context, provider,child) {  
-      return Container(
-        padding: 14.hv(16),
-        decoration: BoxDecoration(color: Colors.white),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Number of Seats', style: theme.titleSmall),
-            Row(
-              children: [
-                _seatButton(Icons.remove, () {
-                 provider.decrement();
-                }),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.w),
-                  child: Text('${provider.seats}', style: theme.titleMedium),
-                ),
-                _seatButton(Icons.add, () {
-                provider.increment();
-                }),
-              ],
-            ),
-          ],
-        ),
-      );
-      }
+      builder: (BuildContext context, provider, child) {
+        return Container(
+          padding: 14.hv(16),
+          decoration: BoxDecoration(color: Colors.white),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Number of Seats', style: theme.titleSmall),
+              Row(
+                children: [
+                  _seatButton(Icons.remove, () {
+                    provider.decrement();
+                  }),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    child: Text('${provider.seats}', style: theme.titleMedium),
+                  ),
+                  _seatButton(Icons.add, () {
+                    provider.increment();
+                  }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -273,5 +302,42 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
         child: Icon(icon, color: appColor.mainColor, size: 18.sp),
       ),
     );
+  }
+
+  Future<void> _publish(OfferProvider provider) async {
+    final data = provider.data;
+
+    if (offerController.priceController.text.isEmpty) {
+      appSnackbar.showSingleSnackbar(context, "Please Enter price for Seats");
+      return;
+    }
+    await provider.tripPublish(
+      userId: data?.userId ?? 0,
+      originLat: data?.originLat ?? "",
+      originLong: data?.originLong ?? "",
+      originAddress: data?.originAddress ?? "",
+      originCity: data?.originCity ?? "",
+      destinationLat: data?.destinationLat ?? "",
+      destinationLong: data?.destinationLong ?? "",
+      destinationAddress: data?.destinationAddress ?? "",
+      destinationCity: data?.destinationCity ?? "",
+      deptDate: data?.deptDate ?? "",
+      arrivalDate: data?.arrivalDate ?? "",
+      deptTime: data?.deptTime ?? "",
+      arrivalTime: data?.arrivalTime ?? "",
+      vehicleId: data?.vehicleId ?? 0,
+      price: offerController.priceController.text,
+      availableSeats: provider.seats,
+      luggageAllowed: luggageAllowed ? 1 : 0,
+      petAllowed: petsAllowed ? 1 : 0,
+      smokingAllowed: smokingAllowed ? 1 : 0,
+    );
+    if (provider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
+      return;
+    }
+    appSnackbar.showSingleSnackbar(context, provider.reponse?.message ?? "");
+    if (!mounted) return;
+    appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 1, rideIndex: 1));
   }
 }

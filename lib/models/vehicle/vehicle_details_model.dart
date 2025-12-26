@@ -38,8 +38,8 @@ class VehicleDetail {
   String? fuelType;
   int? seats;
   String? color;
-  Null? vehicleImageUrl;
-  Null? rcImageUrl;
+  String? vehicleImageUrl;
+  String? rcImageUrl;
   String? createdAt;
   RtoJsonResponse? rtoJsonResponse;
   int? isActive;

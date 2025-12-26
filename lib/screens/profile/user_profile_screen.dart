@@ -33,8 +33,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   double walletBalance = 1250.75;
   int referralPoints = 450;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadVersion();
+  }
 
-   Future<void> _loadVersion() async {
+  Future<void> _loadVersion() async {
     final info = await PackageInfo.fromPlatform();
     setState(() {
       appVersion = '${info.version}+${info.buildNumber}';
