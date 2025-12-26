@@ -40,21 +40,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         children: [
           _profileHeader(theme),
           20.height,
-          
+
           /// WALLET & REFER CARDS
           Row(
             mainAxisAlignment: .spaceBetween,
             children: [
-              Expanded(
-                child: _referCard(theme),
-              ),
+              Expanded(child: _referCard(theme)),
               12.width,
-              Expanded(
-                child: _walletCard(theme),
-              ),
+              Expanded(child: _walletCard(theme)),
             ],
           ),
-          
+
           12.height,
           _sectionTitle("Account", theme),
           _profileTile(Icons.person_outline, "Edit Profile", theme),
@@ -146,109 +142,107 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  /// WALLET CARD WITH BALANCE - Two row layout
   Widget _walletCard(TextTheme theme) {
-    return InkWell(
-      onTap: () => appNavigator.push(WalletScreen()),
-      borderRadius: BorderRadius.circular(12.r),
-      child: Container(
-        padding: 16.all,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(color: Colors.grey.shade200, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            /// Row 1: Icon + Balance
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Icon(
-                  Icons.account_balance_wallet_outlined,
-                  color: Colors.blue.shade700,
-                  size: 20.sp,
-                ),
-                6.width,
-                Text(
-                  "₹${walletBalance.toStringAsFixed(2)}",
-                  style: theme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue.shade700,
+    return Card(
+      elevation: 3,
+
+      color: appColor.mainColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () => appNavigator.push(WalletScreen()),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 14.w,
+            vertical: 10.h, // :arrow_left: reduced height
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              /// Row: Icon + Balance
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.account_balance_wallet_rounded,
+                    color: appColor.secondColor,
+                    size: 20.sp,
                   ),
-                ),
-              ],
-            ),
-            
-            8.height,
-            
-            /// Row 2: Title
-            Text(
-              "Wallet",
-              style: theme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade700,
+                  8.width,
+                  Text(
+                    "₹${walletBalance.toStringAsFixed(2)}",
+                    style: theme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: appColor.buttonColor,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+
+              2.height,
+
+              Text(
+                "Wallet",
+                style: theme.bodySmall?.copyWith(
+                  color: Colors.grey.shade400,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _referCard(TextTheme theme) {
-    return InkWell(
-      onTap: () => appNavigator.push(ReferEarnScreen()),
-      borderRadius: BorderRadius.circular(12.r),
-      
-      child: Card(
-        margin: 16.all,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            /// Row 1: Icon + Points
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Icon(
-                  Icons.card_giftcard,
-                  color: Colors.green.shade700,
-                  size: 20.sp,
-                ),
-                6.width,
-                Text(
-                  "$referralPoints pts",
-                  style: theme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green.shade700,
+    return Card(
+      elevation: 3,
+      // shadowColor: Colors.black26,
+      color: appColor.mainColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () => appNavigator.push(ReferEarnScreen()),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 14.w,
+            vertical: 10.h, // :arrow_left: compact height
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              /// Row: Icon + Points
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.card_giftcard_rounded,
+                    color: appColor.secondColor,
+                    size: 20.sp,
                   ),
-                ),
-              ],
-            ),
-            
-            8.height,
-            
-            /// Row 2: Title
-            Text(
-              "Refer & Earn",
-              style: theme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w500,
-                color: Colors.grey.shade700,
+                  8.width,
+                  Text(
+                    "$referralPoints pts",
+                    style: theme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+
+              2.height, // :arrow_left: reduced spacing
+              /// Label
+              Text(
+                "Refer & Earn",
+                style: theme.bodySmall?.copyWith(
+                  color: Colors.grey.shade400,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -301,7 +295,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         appNavigator.push(VerificationScreen());
         break;
       case "My Rides":
-        appNavigator.push(MyRidesScreen(initialIndex: 0,));
+        appNavigator.push(MyRidesScreen(initialIndex: 0));
         break;
       case "Trip History":
         appNavigator.push(MyRidesScreen(initialIndex: 1));
@@ -314,12 +308,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         break;
       case "Deactivate Account":
         appNavigator.push(DeleteAccountScreen(userId: 1));
-        break;
-      case "Refer & Earn":
-        appNavigator.push(ReferEarnScreen());
-        break;
-      case "Wallet":
-        appNavigator.push(WalletScreen());
         break;
       case "Logout":
         _showLogoutSheet();

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 
 enum VerificationStatus { verified, pending, inProgress }
@@ -154,8 +155,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   Widget _uploadButton(VoidCallback onTap) {
     return OutlinedButton(
+      style: OutlinedButton.styleFrom(shape: CircleBorder()),
       onPressed: onTap,
-      child: Icon(Icons.upload_file, size: 18.sp),
+      child: Icon(Icons.add, size: 20.sp, color: appColor.secondColor),
     );
   }
 
