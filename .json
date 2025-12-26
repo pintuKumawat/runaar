@@ -11,6 +11,8 @@
   "booking_seats": 2,
   "dept_date": "2024-01-22"
 }
+
+
 // search result
 "response": {
   "trip_id": "100",
@@ -24,12 +26,14 @@
   "person_detail": {
     "person_image": "https://example.com/profile1.jpg",
     "person_name": "Sushil",
-    "person_verified": "1/0",
     "person_ratings": 1.0,
     "person_phone_number": "+911234567890",
+    "is_verified": 1 //1 or 0
   }
 }
-// trip details
+
+
+// trid details
 "request": {
   "trip_id": 1
 } 
@@ -50,7 +54,7 @@
     "person_email": "xyz@gmail.com",
     "person_rating": 4.6,
     "person_image": "https://example.com/profile.jpg",
-    "person_verified": true,
+    "is_verified": 1 //1 or 0
   },
   "vehicle": {
     "vehicle_model": "Baleno",
@@ -64,8 +68,10 @@
       "rating": 4.3
     },
   ],
-  "accept_online": "1/0"
+  "accept_online": "1" // 1 or 0
 }
+
+
 // Booking process
 "request": {
   "booking_request": {
@@ -76,89 +82,7 @@
       "total_price": 380,
       "payment_method": "cash", // cash or online
       "payment_status": "pending",
-      "special_message": "Hello, I'd like to book your ride. I have 2 bags."
+      "special_message": "Hello, I'd like to book your ride. I have 2 bags." // can be null
     },
   }
 }
-
-//profile screen
-"request":{
-  "user_id":"USR123"
-}
-"response":{
-  "user_name":"Pintu kumawat",
-  "user_mobNo":"9090909090",
-  "user_email":"pintu@gmail.com",
-  "user_dob":"14-01-2026",
-  "user_image":"imageURL",
-  "user_rating":"4.6",
-  "rafer_points":"87",
-  "wallet_blance":"1250.75",
-  "is_licence_verified":"pending" , 
-  "identity_verfication":"pending",
-  "email_verification":"verify",
-  "phone_verification":"verify",
-
-
-}
-
-//User Edit profile
-
-"request":{
-  "user_id":"USR123",
-  "user_name":"pintu",
-  "user_email":"pintu@gmail.com",
-  "user_dob":"18-06-2003",
-  "user_gender":"male",
-}
-
-"response":{
-
-  
-}
-//Change Password
-"request":{
-  "user_id":"USR123",
-  "password":"12345678"
-}
-"response":{
-
-  
-}
-
-//add vehicle
-
-"request":{
-  "brand_name":"Tata",
-  "model_name":"Safari",
-  "vehicle_number":"RJ23MS3536",
-  "vehicl_type":"sedan",
-  "fuel_type":"petrol",
-  "number_of_seats":"3",
-  "color":"black",
-  "vehicle_image":"file",
-  "rc_image":"file"
-
-
-  
-
-
-}"response"{
-}
-//Vehicle list
-
-
-"request":{
-  "user_id":"USR123",
-
-
-}
-
-"response":{
-  "vehicle_id":"",
-  "vehicle_brand":"",
-  "vehicle_number":"",
-  "vehicel_image":""
-
-}
-

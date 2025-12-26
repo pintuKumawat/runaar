@@ -308,7 +308,7 @@ Widget _referCard(TextTheme theme) {
         appNavigator.push(VerificationScreen());
         break;
       case "My Rides":
-        appNavigator.push(MyRidesScreen(initialIndex: 0));
+        appNavigator.push(MyRidesScreen(initialIndex: 0,));
         break;
       case "Trip History":
         appNavigator.push(MyRidesScreen(initialIndex: 1));
