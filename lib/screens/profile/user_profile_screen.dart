@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
@@ -31,6 +32,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String appVersion = "";
   double walletBalance = 1250.75;
   int referralPoints = 450;
+
+
+   Future<void> _loadVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      appVersion = '${info.version}+${info.buildNumber}';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
 import 'package:runaar/core/theme/app_theme.dart';
+import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/firebase_options.dart';
@@ -17,6 +18,9 @@ import 'package:runaar/provider/auth/validate/signup_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
+import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
+import 'package:runaar/provider/vehicle/vehicle_details_provider.dart';
+import 'package:runaar/repos/details_vechile_repo.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +44,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProvider(create: (_) => AddVehicleProvider()),
-        ChangeNotifierProvider(create: (_) =>OfferProvider())
+        ChangeNotifierProvider(create: (_) =>OfferProvider()),
+        ChangeNotifierProvider(create: (_)=>DeleteVehicleProvider()),
+        ChangeNotifierProvider(create: (_)=>VehicleDetailsProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
