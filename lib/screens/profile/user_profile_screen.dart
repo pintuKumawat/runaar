@@ -39,8 +39,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         padding: 10.all,
         children: [
           _profileHeader(theme),
-          20.height,
-
+          10.height,
+          
           /// WALLET & REFER CARDS
           Row(
             mainAxisAlignment: .spaceBetween,
@@ -50,7 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               Expanded(child: _walletCard(theme)),
             ],
           ),
-
+          
           12.height,
           _sectionTitle("Account", theme),
           _profileTile(Icons.person_outline, "Edit Profile", theme),
