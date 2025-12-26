@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class OfferRide extends StatefulWidget {
   const OfferRide({super.key});
@@ -16,139 +18,30 @@ class _OfferRideState extends State<OfferRide> {
   DateTime departureDate = DateTime.now();
   DateTime arrivalDate = DateTime.now();
 
+  int userId = 0;
+
   String selectedVehicle = 'Van';
   final List<String> vehicles = ['Ertiga', 'Creta', 'Scorpio', 'Van'];
 
-  /// ---------------- DATE PICKERS ----------------
-
-  Future<void> _pickDepartureDate() async {
-    // Pick date first
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Colors.black),
-            ),
-          ),
-          child: child!,
-        );
-      },
-      initialDate: departureDate,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate == null) return;
-
-    // Pick time after date
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(departureDate),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (pickedTime == null) return;
-
-    setState(() {
-      departureDate = DateTime(
-        pickedDate.year,
-        pickedDate.month,
-        pickedDate.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
-
-      if (arrivalDate.isBefore(departureDate)) {
-        arrivalDate = departureDate;
-      }
-    });
+  Future<void> _initializeAndLoadData() async {
+    await getuserId();
+    if (userId != 0) {
+      // fetchvehicleList(userId);
+      _loadNotificationCount();
+    }
   }
 
-  Future<void> _pickArrivalDate() async {
-    // Pick date first
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Colors.black),
-            ),
-          ),
-          child: child!,
-        );
-      },
-      initialDate: arrivalDate,
-      firstDate: departureDate,
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate == null) return;
-
-    // Pick time after date
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(arrivalDate),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.black,
-              onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (pickedTime == null) return;
-
-    setState(() {
-      arrivalDate = DateTime(
-        pickedDate.year,
-        pickedDate.month,
-        pickedDate.day,
-        pickedTime.hour,
-        pickedTime.minute,
-      );
-    });
+  @override
+  void initState() {
+    super.initState();
+    _initializeAndLoadData();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-
     return Scaffold(
-      appBar: AppBar(title: const Text('OFFER RIDE'), centerTitle: true),
+      appBar: AppBar(title: const Text('OFFER RIDE')),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
@@ -278,6 +171,151 @@ class _OfferRideState extends State<OfferRide> {
         ),
       ),
     );
+  }
+
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+
+  Future<void> _loadNotificationCount() async {
+    // final notifications = await ApiService.notificationList(userId, l10n);
+    // if (notifications.first.message != null &&
+    //     notifications.isNotEmpty &&
+    //     mounted) {
+    //   int unread = notifications
+    //       .map((n) => n.message?.where((m) => m?.isRead == 0).length ?? 0)
+    //       .fold(0, (a, b) => a + b);
+
+    // context
+    //     .watch<NotificationProvider>()
+    //     .setCount(unread);
+    // }
+  }
+
+  Future<void> _pickDepartureDate() async {
+    // Pick date first
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black),
+            ),
+          ),
+          child: child!,
+        );
+      },
+      initialDate: departureDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate == null) return;
+
+    // Pick time after date
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(departureDate),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime == null) return;
+
+    setState(() {
+      departureDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+
+      if (arrivalDate.isBefore(departureDate)) {
+        arrivalDate = departureDate;
+      }
+    });
+  }
+
+  Future<void> _pickArrivalDate() async {
+    // Pick date first
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.black),
+            ),
+          ),
+          child: child!,
+        );
+      },
+      initialDate: arrivalDate,
+      firstDate: departureDate,
+      lastDate: DateTime(2100),
+    );
+
+    if (pickedDate == null) return;
+
+    // Pick time after date
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(arrivalDate),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              surface: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime == null) return;
+
+    setState(() {
+      arrivalDate = DateTime(
+        pickedDate.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+    });
   }
 
   Widget _dateTile({

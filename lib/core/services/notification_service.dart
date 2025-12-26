@@ -17,9 +17,9 @@ class NotificationService {
 
   static const AndroidNotificationChannel _androidChannel =
       AndroidNotificationChannel(
-        'framefusion_channel',
-        'Frame Fusion Notifications',
-        description: 'Notification channel for Frame Fusion App',
+        'runaar_channel',
+        'Runaar Notifications',
+        description: 'Notification channel for Runaar App',
         importance: Importance.max,
         playSound: true,
         showBadge: true,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_details_screen.dart';
 
 class VehicleList extends StatefulWidget {
@@ -88,47 +88,13 @@ class _VehicleListState extends State<VehicleList> {
           style: textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
         ),
 
-        trailing: popMenu(data, index, textTheme),
+        trailing: IconButton(
+          icon: Icon(Icons.delete),
+          color: Colors.red,
+          onPressed: () => _onDeleteVehicle(index),
+        ),
       ),
     );
-  }
-
-  Widget popMenu(Map<String, String> data, int index, TextTheme textTheme) {
-    return PopupMenuButton<String>(
-      onSelected: (value) {
-        if (value == "edit") {
-          _onEditVehicle(data);
-        } else if (value == "delete") {
-          _onDeleteVehicle(index);
-        }
-      },
-      itemBuilder: (_) => [
-        PopupMenuItem(
-          value: "edit",
-          child: ListTile(
-            dense: true,
-            leading: Icon(Icons.edit, size: 18.sp),
-            title: Text("Edit", style: textTheme.bodyMedium),
-          ),
-        ),
-        PopupMenuItem(
-          value: "delete",
-          child: ListTile(
-            dense: true,
-            leading: Icon(Icons.delete, color: Colors.red, size: 18.sp),
-            title: Text(
-              "Delete",
-              style: textTheme.bodyMedium?.copyWith(color: Colors.red),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // -------------------- EDIT VEHICLE --------------------
-  void _onEditVehicle(Map<String, String> data) {
-    appSnackbar.showSingleSnackbar(context, "Edit ${data["model"]}");
   }
 
   // -------------------- DELETE VEHICLE --------------------
@@ -136,6 +102,7 @@ class _VehicleListState extends State<VehicleList> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
+        backgroundColor: appColor.buttonColor,
         title: const Text("Delete Vehicle"),
         content: const Text("Are you sure you want to delete this vehicle?"),
         actions: [
@@ -146,7 +113,7 @@ class _VehicleListState extends State<VehicleList> {
           ElevatedButton(
             onPressed: () {
               setState(() => vehicles.removeAt(index));
-              Navigator.pop(context);
+              appNavigator.pop();
             },
             child: const Text("Delete"),
           ),

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AddVehicleController {
-  TextEditingController brandController = TextEditingController();
-  TextEditingController modelController = TextEditingController();
-  TextEditingController numberController = TextEditingController();
-  TextEditingController seatsController = TextEditingController();
-  TextEditingController colorController = TextEditingController();
+  final TextEditingController brandController = TextEditingController();
+  final TextEditingController modelController = TextEditingController();
+  final TextEditingController numberController = TextEditingController();
+  final TextEditingController seatsController = TextEditingController();
+  final TextEditingController colorController = TextEditingController();
 
   void clear() {
     brandController.clear();

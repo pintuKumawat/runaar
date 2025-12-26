@@ -3,6 +3,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
@@ -14,6 +16,7 @@ import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
 import 'package:runaar/screens/profile/other/wallet_screen.dart';
 import 'package:runaar/screens/profile/vehicle/add_vehicle_screen.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -40,7 +43,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         children: [
           _profileHeader(theme),
           10.height,
-          
+
           /// WALLET & REFER CARDS
           Row(
             mainAxisAlignment: .spaceBetween,
@@ -50,7 +53,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               Expanded(child: _walletCard(theme)),
             ],
           ),
-          
+
           12.height,
           _sectionTitle("Account", theme),
           _profileTile(Icons.person_outline, "Edit Profile", theme),
@@ -349,9 +352,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 12.width,
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      appNavigator.pushAndRemoveUntil(LoginScreen());
-                    },
+                    onPressed: () => _logout(),
+                    // appNavigator.pushAndRemoveUntil(LoginScreen());
                     child: const Text("Logout"),
                   ),
                 ),
@@ -361,5 +363,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(savedData.userId, 0);
+    prefs.setBool(savedData.isLoggedIn, false);
+    await Future.delayed(Duration(milliseconds: 300));
+    appSnackbar.showSingleSnackbar(context, "Logout successfull");
+    appNavigator.pushAndRemoveUntil(LoginScreen());
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoginController {
-  final TextEditingController mobileController = TextEditingController();
+   final TextEditingController mobileController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   void clear() {

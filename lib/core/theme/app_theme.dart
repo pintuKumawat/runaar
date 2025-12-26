@@ -211,6 +211,7 @@ class AppTheme {
       dropdownMenuTheme: DropdownMenuThemeData(
         textStyle: customTextTheme.labelMedium,
       ),
+      bottomSheetTheme: BottomSheetThemeData(backgroundColor: Colors.white),
     );
   }
 }
