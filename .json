@@ -11,6 +11,8 @@
   "booking_seats": 2,
   "dept_date": "2024-01-22"
 }
+
+
 // search result
 "response": {
   "trip_id": "100",
@@ -24,11 +26,13 @@
   "person_detail": {
     "person_image": "https://example.com/profile1.jpg",
     "person_name": "Sushil",
-    "person_verified": "1/0",
     "person_ratings": 1.0,
     "person_phone_number": "+911234567890",
+    "is_verified": 1 //1 or 0
   }
 }
+
+
 // trid details
 "request": {
   "trip_id": 1
@@ -50,7 +54,7 @@
     "person_email": "xyz@gmail.com",
     "person_rating": 4.6,
     "person_image": "https://example.com/profile.jpg",
-    "person_verified": true,
+    "is_verified": 1 //1 or 0
   },
   "vehicle": {
     "vehicle_model": "Baleno",
@@ -64,8 +68,10 @@
       "rating": 4.3
     },
   ],
-  "accept_online": "1/0"
+  "accept_online": "1" // 1 or 0
 }
+
+
 // Booking process
 "request": {
   "booking_request": {
@@ -76,7 +82,305 @@
       "total_price": 380,
       "payment_method": "cash", // cash or online
       "payment_status": "pending",
-      "special_message": "Hello, I'd like to book your ride. I have 2 bags."
+      "special_message": "Hello, I'd like to book your ride. I have 2 bags." // can be null
     },
   }
+} "response": {}
+
+
+// Booking History List
+"request": {
+  "user_id": "userId"
+} "response": {
+  "origin_time": "08:30 AM",
+  "origin_city": "New Delhi",
+  "price_per_seat": 750,
+  "destination_time": "01:30 PM",
+  "destination_city": "Jaipur",
+  "booking_status": "confirmed",
+  "person_details": {
+    "person_image": "https://example.com/amit.jpg",
+    "person_name": "Amit Sharma",
+    "person_rating": 4.6,
+    "person_phone": "000000000",
+    "is_verified": 1 //1 or 0
+  },
+  "booking_id": "BK1001",
+  "trip_date": "25 Sep 2025"
+},
+
+
+// Booking complete details
+"request": {
+  "booking_id": "booking id"
+} "response": {
+  "booking_id": "BK1001",
+  "booking_status": "completed", // pending, confirmed, completed, cancelled
+  "trip_status": "completed", // Completed, Cancelled, yet to start 
+  "trip_date": "Mon, 22 Sep 2025",
+  "origin": {
+    "time": "08:30 AM",
+    "city": "New Delhi",
+    "address": "New Delhi Railway Station Main Gate Area Central Delhi",
+    "latitude": 28.6423,
+    "longitude": 77.2207
+  },
+  "destination": {
+    "time": "01:30 PM",
+    "city": "Jaipur",
+    "address": "Jaipur Pink City Bus Stand Road Rajasthan Area",
+    "latitude": 26.9124,
+    "longitude": 75.7873
+  },
+  "person": {
+    "person_id": "DRV101",
+    "name": "Nihit Singh",
+    "phone": "+919876543210",
+    "rating": 4.6,
+    "image": "https://example.com/nihit.jpg",
+    "is_verified": true,
+  },
+  "vehicle": {
+    "model": "Swift Dzire",
+    "color": "White",
+    "car_number": "DL 3C AB 1234",
+  },
+  "booking_summary": {
+    "seats_booked": 2,
+    "price_per_seat": 750,
+    "total_amount": 1500,
+    "payment_method": "cash", // cash, online
+    "payment_status": "completed", // pending, completed, failed
+    "booking_date": "21 Sep 2025, 10:30 AM",
+  },
+  "passenger_info": {
+    "passenger_id": "USR123",
+    "name": "John Doe",
+    "phone": "+919876543211",
+    "email": "john@example.com"
+  },
+}
+
+
+// Notification screen
+"request": {
+  "user_id": "123"
+} "response": {
+  "unread_count": 5,
+  "notifications": {
+    "notification_id": "NOTIF1001",
+    "title": "Ride Confirmed",
+    "message": "Your ride from Delhi to Jaipur on 22 Sep 2025 is confirmed.",
+    "is_read": false,
+    "type": "booking_alert", // trip_alert, message, promotion, payment, system   
+    "metadata": {
+      "booking_id": "BK1001",
+      "trip_id": "TRIP100",
+      "action_type": "booking_confirmed", // booking_confirmed, ride_started, ride_completed, payment_successful, etc.
+    }
+  },
+}
+
+
+// Offer Ride
+"request": {
+  "origin_lat": 26.9124,
+  "origin_long": 75.7873,
+  "origin_address": "Jaipur Junction, Railway Station Rd, Gopalbari",
+  "origin_city": "Jaipur",
+  "destination_lat": 27.3590,
+  "destination_long": 75.5717,
+  "destination_address": "Ringas Junction, Reengus",
+  "destination_city": "Ringas",
+  "dept_date": "2024-01-22 12:50:44",
+  "arrival_date": "2024-01-22 16:50:44",
+  "selected_vehicle_id": "123",
+  "price_per_seat": "300",
+  "available_seats": 7,
+  "luggage_allowed": 1, //1 or 0
+  "pet_allowed": 1, //1 or 0
+  "smoking_allowed": 1, //1 or 0
+}
+"response": {}
+
+
+// Published ride list
+"request": {
+  "driver_id": "driver id"
+} "response": {
+  "origin_time": "08:30 AM",
+  "origin_city": "New Delhi",
+  "price_per_seat": 750,
+  "destination_time": "01:30 PM",
+  "destination_city": "Jaipur",
+  "published_status": "open",
+  "published_date": "2024-01-22 16:50:44",
+  "trip_id": "BK1001",
+},
+
+
+// published ride detail
+"request": {
+  "trip_id": "trip id"
+} "response": {
+  "trip_id": "BK1001",
+  "trip_status": "completed", // Completed, Cancelled, yet to start 
+  "trip_date": "2024-01-22 16:50:44",
+  "origin": {
+    "time": "08:30 AM",
+    "city": "New Delhi",
+    "address": "New Delhi Railway Station Main Gate Area Central Delhi",
+    "latitude": 28.6423,
+    "longitude": 77.2207
+  },
+  "destination": {
+    "time": "01:30 PM",
+    "city": "Jaipur",
+    "address": "Jaipur Pink City Bus Stand Road Rajasthan Area",
+    "latitude": 26.9124,
+    "longitude": 75.7873
+  },
+  "person": {
+    "person_id": "DRV101",
+    "name": "Nihit Singh",
+    "phone": "+919876543210",
+    "rating": 4.6,
+    "image": "https://example.com/nihit.jpg",
+    "is_verified": true,
+  },
+  "vehicle": {
+    "model": "Swift Dzire",
+    "color": "White",
+    "car_number": "DL 3C AB 1234",
+  },
+  "booking_summary": {
+    "seats_left": 2,
+    "payment_method": "cash", // cash, online
+  },
+  "passenger_info": {
+    "passenger_id": "USR123",
+    "name": "John Doe",
+    "phone": "+919876543211",
+    "email": "john@example.com"
+  },
+}
+
+
+// request list
+"request": {
+  "user_id": "user id"
+}
+"response": {
+  "booking_id": "BK1001",
+  "origin": {
+    "time": "08:30 AM",
+    "city": "New Delhi",
+  },
+  "destination": {
+    "time": "01:30 PM",
+    "city": "Jaipur",
+  },
+  "booking_summary": {
+    "seats_requested": 2,
+    "payment_method": "cash", // cash, online
+  },
+  "passenger_info": {
+    "passenger_id": "USR123",
+    "name": "John Doe",
+    "phone": "+919876543211",
+    "rating": 4.6,
+    "photo": "Image"
+  },
+}
+
+
+// deactivate account
+"request": {
+  "user_id": "userid",
+  "password": "password"
+}
+"response": {}
+
+
+// vehicle details
+"request": {
+  "vehicle_id": "vehicle id"
+}
+"response": {
+  "brand": "Hyundai",
+  "model": "Creta",
+  "number": "RJ 14 CD 5678",
+  "type": "SUV",
+  "fuel": "Petrol",
+  "seats": "5",
+  "color": "Black",
+  "vehicleImage": "image", // File or Network image later
+  "rcImage": "image",
+}
+
+
+//profile screen
+"request":{
+  "user_id":"USR123"
+}
+"response":{
+  "user_name":"Pintu kumawat",
+  "user_mobNo":"9090909090",
+  "user_email":"pintu@gmail.com",
+  "user_dob":"14-01-2026",
+  "user_image":"imageURL",
+  "user_rating":"4.6",
+  "rafer_points":"87",
+  "wallet_blance":"1250.75",
+  "is_licence_verified":"pending" ,
+  "identity_verfication":"pending",
+  "email_verification":"verify",
+  "phone_verification":"verify"
+}
+
+
+//User Edit profile
+"request":{
+  "user_id":"USR123",
+  "user_name":"pintu",
+  "user_email":"pintu@gmail.com",
+  "user_dob":"18-06-2003",
+  "user_gender":"male",
+}
+"response":{}
+
+
+//Change Password
+"request":{
+  "user_id":"USR123",
+  "password":"12345678"
+}
+"response":{}
+
+
+//add vehicle
+"request":{
+  "brand_name":"Tata",
+  "model_name":"Safari",
+  "vehicle_number":"RJ23MS3536",
+  "vehicl_type":"sedan",
+  "fuel_type":"petrol",
+  "number_of_seats":"3",
+  "color":"black",
+  "vehicle_image":"file",
+  "rc_image":"file"
+}"response"{
+}
+
+
+//Vehicle list
+"request":{
+  "user_id":"USR123"
+}
+"response":{
+  "vehicle_id":"",
+  "vehicle_brand":"",
+  "vehicle_number":"",
+  "vehicel_image":""
+
 }

@@ -12,7 +12,6 @@ class VehicleDetailsScreen extends StatefulWidget {
 }
 
 class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
-  // ---------------- MOCK VEHICLE DATA ----------------
   final Map<String, dynamic> vehicle = {
     "brand": "Hyundai",
     "model": "Creta",
@@ -21,7 +20,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     "fuel": "Petrol",
     "seats": "5",
     "color": "Black",
-    "vehicleImage": null, // File or Network image later
+    "vehicleImage": null,
     "rcImage": null,
   };
 
@@ -54,7 +53,6 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     );
   }
 
-  // -------------------- IMAGE SECTION --------------------
   Widget _imageSection(TextTheme theme) {
     return Row(
       children: [

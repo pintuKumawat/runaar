@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 
@@ -28,7 +29,10 @@ class BookingDetailsScreen extends StatelessWidget {
             // 6.height,
             _vehicleDetails(theme),
             // 6.height,
-            _passengerInfo(theme),
+            _seatInfo(theme),
+            _priceSummary(theme),
+            _paymentDetails(theme),
+            _passengerList(theme),
           ],
         ),
       ),
@@ -191,6 +195,107 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
+  Widget _priceSummary(TextTheme theme) {
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text('Price summary', style: theme.titleMedium),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Price/Seats"),
+                Text(
+                  "190",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Seats Booking"),
+                Text(
+                  "2",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            8.height,
+            const Divider(),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text(
+                  "Total Price",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "₹380",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: appColor.mainColor,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _paymentDetails(TextTheme theme) {
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: .start,
+          children: [
+            Text('Payment Details', style: theme.titleMedium),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Payment Method"),
+                Text(
+                  "Cash/Online",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+            8.height,
+            Row(
+              mainAxisAlignment: .spaceBetween,
+              children: [
+                Text("Payment Status"),
+                Text(
+                  "Pending",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _vehicleDetails(TextTheme theme) {
     return Card(
       child: Padding(
@@ -228,7 +333,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _passengerInfo(TextTheme theme) {
+  Widget _seatInfo(TextTheme theme) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -253,6 +358,44 @@ class BookingDetailsScreen extends StatelessWidget {
         height: 56.h,
         child: ElevatedButton(onPressed: null, child: Text("Ride Completed")),
       ),
+    );
+  }
+
+  Widget _passengerList(TextTheme theme) {
+    return Card(
+      child: Padding(
+        padding: 10.all,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Passengers (2)",
+              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            12.height,
+            _passengerTile(theme, "Rahul Patel", 4.3),
+            _passengerTile(theme, "Neha Verma", 4.1),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _passengerTile(TextTheme theme, String name, double rating) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: CircleAvatar(
+        backgroundColor: Colors.grey.shade300,
+        child: Icon(Icons.person),
+      ),
+      title: Text(name, style: theme.titleSmall),
+      subtitle: RatingBarIndicator(
+        rating: rating,
+        itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
+        itemCount: 5,
+        itemSize: 16.sp,
+      ),
+      trailing: Text("1 Seat", style: theme.titleSmall),
     );
   }
 }
