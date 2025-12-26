@@ -454,12 +454,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:runaar/core/constants/app_color.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/screens/my_rides/booking_details_screen.dart';
 import 'package:runaar/screens/my_rides/published_ride_details_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyRidesScreen extends StatefulWidget {
   final int initialIndex;
@@ -472,8 +475,15 @@ class MyRidesScreen extends StatefulWidget {
 class _MyRidesScreenState extends State<MyRidesScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
   String query = "";
+  int userId = 0;
 
-  // ---------------- MOCK DATA ----------------
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
 
   final List<Map<String, String>> booked = [
     {
@@ -581,6 +591,16 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
   ];
 
   bool match(String v) => v.toLowerCase().contains(query.toLowerCase());
+
+  Future<void> _fetchData() async {
+    await context.read<PublishedListProvider>().publishedList(userId: userId);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getuserId().then((value) => _fetchData());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -732,11 +752,8 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                     spacing: 25.h,
                     children: [
                       Text(
-                        "₹ $price",
-                        style: theme.titleMedium?.copyWith(
-                          color: appColor.mainColor,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        "₹$price/seat",
+                        style: theme.titleMedium?.copyWith(fontWeight: .bold),
                       ),
                       if (status != null) ...[_statusView(theme, status)],
                       if (type == "request" && seats != null) ...[
@@ -831,12 +848,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     );
   }
 
-  Widget _normalFooter(
-    TextTheme theme,
-    String name,
-    String? rating,
-    
-  ) {
+  Widget _normalFooter(TextTheme theme, String name, String? rating) {
     return Padding(
       padding: 10.all,
       child: Column(
@@ -869,10 +881,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                       Text(rating, style: theme.bodySmall),
                     ],
                   ),
-            trailing: Icon(
-              Icons.directions_car,
-              color: Colors.grey,
-            ),
+            trailing: Icon(Icons.directions_car, color: Colors.grey),
           ),
         ],
       ),
