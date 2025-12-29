@@ -5,7 +5,6 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/home/home_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/l10n/app_localizations.dart';
@@ -182,12 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
         '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
     await homeProvider.rideSearch(
-      // deptDate: date,
-      // originCity: homeController.originCityController.text,
-      // destinationCity: homeController.destinationCityController.text,
-      deptDate: "2024-12-20",
-      originCity: "Delhi",
-      destinationCity: "Jaipur",
+      deptDate: date,
+      originCity: homeController.originCityController.text,
+      destinationCity: homeController.destinationCityController.text,
+      // deptDate: "2024-12-20",
+      // originCity: "Delhi",
+      // destinationCity: "Jaipur",
     );
 
     appNavigator.push(SearchScreen());

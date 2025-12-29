@@ -19,24 +19,19 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   /// selected language from UI
   String selectedLanguage = 'en';
 
-  
   @override
   void initState() {
-    // TODO: implement initState
-    WidgetsBinding.instance.addPostFrameCallback((_){
-   _loadCurrentLanguage();
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadCurrentLanguage();
     });
   }
 
-  _loadCurrentLanguage(){
-    final lanProvider=context.read<LanguageProvider>();
-    selectedLanguage=lanProvider.appLocale?.languageCode ?? 'en';
-    setState(() {
-      
-    });
+  void _loadCurrentLanguage() {
+    final lanProvider = context.read<LanguageProvider>();
+    selectedLanguage = lanProvider.appLocale?.languageCode ?? 'en';
+    setState(() {});
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -116,34 +111,32 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
   }
 
   Widget _changeLanguageButton() {
-    final isEnabled = selectedLanguage != currentLanguage;
-
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
         height: 56.h,
         child: ElevatedButton(
-        onPressed: (){
-          _applyLanguageChange();
-        },
+          onPressed: () {
+            _applyLanguageChange();
+          },
           child: const Text("Change Language"),
         ),
       ),
     );
   }
-void _applyLanguageChange() async {
-  await context
-      .read<LanguageProvider>()
-      .changeLanguage(Locale(selectedLanguage));
 
-  appSnackbar.showSingleSnackbar(
-    context,
-    selectedLanguage == 'hi'
-        ? "भाषा बदल दी गई है"
-        : "Language changed successfully",
-  );
+  void _applyLanguageChange() async {
+    await context.read<LanguageProvider>().changeLanguage(
+      Locale(selectedLanguage),
+    );
 
-  Navigator.pop(context); // optional
-}
+    appSnackbar.showSingleSnackbar(
+      context,
+      selectedLanguage == 'hi'
+          ? "भाषा बदल दी गई है"
+          : "Language changed successfully",
+    );
 
+    Navigator.pop(context); // optional
+  }
 }

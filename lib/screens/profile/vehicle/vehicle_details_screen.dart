@@ -6,7 +6,6 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/vehicle/vehicle_details_model.dart';
-import 'package:runaar/models/vehicle/vehicle_list_model.dart';
 import 'package:runaar/provider/vehicle/vehicle_details_provider.dart';
 
 class VehicleDetailsScreen extends StatefulWidget {
