@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 
-enum BookingStatus { confirmed, rejected, cancelled, completed, pending }
+enum BookingStatus {
+  confirmed,
+  rejected,
+  cancelled,
+  completed,
+  pending,
+  started,
+}
 
 extension BookingStatusExtension on BookingStatus {
   String get label {
@@ -15,6 +22,8 @@ extension BookingStatusExtension on BookingStatus {
         return "Completed";
       case BookingStatus.pending:
         return "Pending";
+      case BookingStatus.started:
+        return "Started";
     }
   }
 
@@ -23,6 +32,8 @@ extension BookingStatusExtension on BookingStatus {
       case BookingStatus.confirmed:
         return Colors.blue.shade100;
       case BookingStatus.completed:
+        return Colors.green.shade100;
+      case BookingStatus.started:
         return Colors.green.shade100;
       case BookingStatus.pending:
         return Colors.orange.shade100;
@@ -38,6 +49,8 @@ extension BookingStatusExtension on BookingStatus {
       case BookingStatus.confirmed:
         return Colors.blue.shade800;
       case BookingStatus.completed:
+        return Colors.green.shade800;
+      case BookingStatus.started:
         return Colors.green.shade800;
       case BookingStatus.pending:
         return Colors.orange.shade800;

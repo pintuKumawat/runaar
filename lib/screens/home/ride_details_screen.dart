@@ -7,7 +7,7 @@ import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/screens/home/confirm_booking_screen.dart';
 
 class RideDetailsScreen extends StatelessWidget {
-  final String tripId;
+  final int tripId;
   const RideDetailsScreen({super.key, required this.tripId});
 
   @override

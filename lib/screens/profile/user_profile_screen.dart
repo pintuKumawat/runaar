@@ -32,10 +32,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String appVersion = "";
   double walletBalance = 1250.75;
   int referralPoints = 450;
-
+  int userId = 0;
   @override
   void initState() {
     super.initState();
+    getuserId();
     _loadVersion();
   }
 
@@ -46,10 +47,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     });
   }
 
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(title: Text(userName)),
       body: ListView(
@@ -300,10 +308,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void _handleTap(String title) {
     switch (title) {
       case "Edit Profile":
-        appNavigator.push(EditProfileScreen(userId: 1));
+        appNavigator.push(EditProfileScreen(userId: userId));
         break;
       case "Change Password":
-        appNavigator.push(ChangePasswordScreen(userId: 1));
+        appNavigator.push(ChangePasswordScreen(userId: userId));
         break;
       case "Language":
         appNavigator.push(LanguageChangeScreen());
@@ -318,13 +326,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         appNavigator.push(MyRidesScreen(initialIndex: 1));
         break;
       case "My Vehicles":
-        appNavigator.push(VehicleListScreen(userId: 1));
+        appNavigator.push(VehicleListScreen(userId: userId));
         break;
       case "Add Vehicle":
-        appNavigator.push(AddVehicleScreen(userId: 1));
+        appNavigator.push(AddVehicleScreen(userId: userId));
         break;
       case "Deactivate Account":
-        appNavigator.push(DeleteAccountScreen(userId: 1));
+        appNavigator.push(DeleteAccountScreen(userId: userId));
         break;
       case "Logout":
         _showLogoutSheet();

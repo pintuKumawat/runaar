@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
@@ -12,11 +13,26 @@ class BookingDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    BookingStatus currentStatus = BookingStatus.completed;
+    BookingStatus currentStatus = BookingStatus.cancelled;
+
+    DateTime departureTime = DateTime(
+      2026,
+      9,
+      22,
+      15,
+      30,
+    ); // Mon, 22 Sep 2025 05:30 PM
+    DateTime now = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(title: Text("Booking Details")),
-      bottomNavigationBar: _statusButton(theme),
+      bottomNavigationBar: _statusButton(
+        theme,
+        currentStatus,
+        departureTime,
+        now,
+        context,
+      ),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
@@ -191,7 +207,6 @@ class BookingDetailsScreen extends StatelessWidget {
                   color: appColor.secondColor,
                 ),
               ),
-              
             ),
           ],
         ),
@@ -355,12 +370,100 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _statusButton(TextTheme theme) {
+  Widget _statusButton(
+    TextTheme theme,
+    BookingStatus status,
+    DateTime departureTime,
+    DateTime currentTime,
+    BuildContext context,
+  ) {
+    String buttonText = "Ride Completed";
+    bool isEnabled = false;
+
+    // Calculate if departure time is within 1 hour
+    bool isWithinOneHourOfDeparture =
+        currentTime.isAfter(departureTime.subtract(Duration(hours: 1))) &&
+        !currentTime.isAfter(departureTime);
+
+    bool hasDepartureTimeArrived = currentTime.isAfter(departureTime);
+
+    switch (status) {
+      case BookingStatus.cancelled:
+        buttonText = "Ride Cancelled";
+        isEnabled = false;
+        break;
+      case BookingStatus.started:
+        buttonText = "Ride Started";
+        isEnabled = false;
+        break;
+      case BookingStatus.completed:
+        buttonText = "Ride Completed";
+        isEnabled = false;
+        break;
+      case BookingStatus.pending:
+        if (hasDepartureTimeArrived || isWithinOneHourOfDeparture) {
+          buttonText = "Cannot Cancel Now";
+          isEnabled = false;
+        } else {
+          buttonText = "Cancel Ride";
+          isEnabled = true;
+        }
+        break;
+      case BookingStatus.confirmed:
+        if (hasDepartureTimeArrived || isWithinOneHourOfDeparture) {
+          buttonText = "Cannot Cancel Now";
+          isEnabled = false;
+        } else {
+          buttonText = "Cancel Ride";
+          isEnabled = true;
+        }
+        break;
+      default:
+        buttonText = "Ride Completed";
+        isEnabled = false;
+    }
+
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
         height: 56.h,
-        child: ElevatedButton(onPressed: null, child: Text("Ride Completed")),
+        child: ElevatedButton(
+          onPressed: isEnabled
+              ? () {
+                  // Handle cancel ride action
+                  _showCancelConfirmationDialog(context);
+                }
+              : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isEnabled ? Colors.red : Colors.grey.shade50,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(buttonText),
+        ),
+      ),
+    );
+  }
+
+  void _showCancelConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Cancel Ride"),
+        content: Text("Are you sure you want to cancel this ride?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("No"),
+          ),
+          TextButton(
+            onPressed: () {
+              // Handle cancellation logic
+              appNavigator.pop();
+              // You might want to update the booking status here
+            },
+            child: Text("Yes", style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

@@ -177,23 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _searchButton() async {
     final homeProvider = context.read<HomeProvider>();
     String date =
-        '${departureDate.day}-${departureDate.month}-${departureDate.year}';
+        '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
     await homeProvider.rideSearch(
-      deptDate: date,
-      originCity: homeController.originCityController.text,
-      destinationCity: homeController.destinationCityController.text,
+      // deptDate: date,
+      // originCity: homeController.originCityController.text,
+      // destinationCity: homeController.destinationCityController.text,
+      deptDate: "2024-12-20",
+      originCity: "Delhi",
+      destinationCity: "Jaipur",
     );
-
-    if (homeProvider.errorMessage != null) {
-      appSnackbar.showSingleSnackbar(context, homeProvider.errorMessage ?? "");
-      return;
-    }
 
     appNavigator.push(SearchScreen());
   }
-
-  
 
   Widget _seatSelector(TextTheme theme) {
     return Consumer<HomeProvider>(

@@ -1,17 +1,17 @@
 class PublishedListModel {
   String? status;
   String? message;
-  List<PublishedRide>? publishedRide;
+  List<PublishedTrip>? publishedTrip;
 
-  PublishedListModel({this.status, this.message, this.publishedRide});
+  PublishedListModel({this.status, this.message, this.publishedTrip});
 
   PublishedListModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
-    if (json['published_ride'] != null) {
-      publishedRide = <PublishedRide>[];
-      json['published_ride'].forEach((v) {
-        publishedRide!.add(new PublishedRide.fromJson(v));
+    if (json['published_trip'] != null) {
+      publishedTrip = <PublishedTrip>[];
+      json['published_trip'].forEach((v) {
+        publishedTrip!.add(new PublishedTrip.fromJson(v));
       });
     }
   }
@@ -20,15 +20,15 @@ class PublishedListModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
-    if (this.publishedRide != null) {
-      data['published_ride'] =
-          this.publishedRide!.map((v) => v.toJson()).toList();
+    if (this.publishedTrip != null) {
+      data['published_trip'] =
+          this.publishedTrip!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class PublishedRide {
+class PublishedTrip {
   int? tripId;
   String? originCity;
   String? seatPrice;
@@ -40,7 +40,7 @@ class PublishedRide {
   String? distanceFromSearch;
   String? deptDate;
 
-  PublishedRide(
+  PublishedTrip(
       {this.tripId,
       this.originCity,
       this.seatPrice,
@@ -52,7 +52,7 @@ class PublishedRide {
       this.distanceFromSearch,
       this.deptDate});
 
-  PublishedRide.fromJson(Map<String, dynamic> json) {
+  PublishedTrip.fromJson(Map<String, dynamic> json) {
     tripId = json['trip_id'];
     originCity = json['origin_city'];
     seatPrice = json['seat_price'];

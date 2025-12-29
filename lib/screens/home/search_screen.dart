@@ -1,11 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/provider/home_provider.dart';
 import 'package:runaar/screens/home/ride_details_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -21,11 +25,41 @@ class _SearchScreenState extends State<SearchScreen> {
     final homeProvider = context.watch<HomeProvider>();
     return Scaffold(
       appBar: AppBar(title: const Text('Available Rides')),
-      body: ListView.builder(padding: 10.all, itemBuilder: (context, index) {}),
+      body: RefreshIndicator(
+        onRefresh: () async => context.read<HomeProvider>(),
+        child: homeProvider.isLoading
+            ? const CircularProgressIndicator()
+            : homeProvider.errorMessage != null
+            ? Center(child: Text(homeProvider.errorMessage ?? ""))
+            : ListView.builder(
+                padding: 10.all,
+                itemCount: homeProvider.response?.availableRide?.length,
+                itemBuilder: (context, index) {
+                  final data = homeProvider.response?.availableRide?[index];
+                  return _rideCard(
+                    theme: theme,
+                    price: data?.seatPrice ?? "",
+                    startTime: removeSeconds(data?.originTime ?? ""),
+                    duration: getTimeDifference(
+                      data?.originTime ?? "",
+                      data?.destinationTime ?? "",
+                    ),
+                    endTime: removeSeconds(data?.originTime ?? ""),
+                    from: data?.originCity ?? "",
+                    to: data?.destinationCity ?? "",
+                    personName: data?.personName ?? "",
+                    tripId: data?.tripId ?? 0,
+                    date: formatDate(data?.deptDate ?? ""),
+                    personImage: data?.personImage,
+                    rating: data?.personRatings,
+                    personNumber: data?.personPhoneNumber,
+                    distance: data?.distanceFromSearch ?? "",
+                  );
+                },
+              ),
+      ),
     );
   }
-
-  /// ---------------- RIDE CARD ----------------
 
   Widget _rideCard({
     required TextTheme theme,
@@ -35,10 +69,13 @@ class _SearchScreenState extends State<SearchScreen> {
     required String endTime,
     required String from,
     required String to,
-    required String name,
-    required String tripId,
+    required String personName,
+    required int tripId,
     required String date,
-    String? rating,
+    required String distance,
+    int? rating,
+    String? personImage,
+    String? personNumber,
   }) {
     return InkWell(
       onTap: () => appNavigator.push(RideDetailsScreen(tripId: tripId)),
@@ -69,14 +106,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     spacing: 23.h,
                     children: [
                       Text(
-                        '₹ $price',
-                        style: theme.titleMedium?.copyWith(
-                          color: appColor.mainColor,
+                        '₹$price/seat',
+                        style: theme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        "0.5 km away",
+                        "$distance km away",
                         style: theme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -100,13 +136,19 @@ class _SearchScreenState extends State<SearchScreen> {
                 style: theme.bodySmall?.copyWith(color: Colors.black45),
               ),
               ListTile(
+                contentPadding: 2.vertical,
                 leading: CircleAvatar(
                   radius: 24.r,
                   backgroundColor: Colors.grey.shade300,
-                  child: Icon(Icons.person, size: 28.sp),
+                  child: personImage == null
+                      ? Icon(Icons.person, size: 28.sp)
+                      : CachedNetworkImage(
+                          imageUrl: "${apiMethods.baseUrl}/$personImage",
+                          fit: .cover,
+                        ),
                 ),
                 title: Text(
-                  'Nihit Singh',
+                  personName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.titleSmall?.copyWith(
@@ -116,7 +158,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 subtitle: Padding(
                   padding: EdgeInsets.only(top: 4.h),
                   child: RatingBarIndicator(
-                    rating: 4.6,
+                    rating: double.parse("$rating"),
                     itemBuilder: (_, _) =>
                         const Icon(Icons.star, color: Colors.amber),
                     itemCount: 5,
@@ -124,7 +166,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     unratedColor: Colors.grey.shade300,
                   ),
                 ),
-                trailing: Icon(Icons.phone),
+                trailing: GestureDetector(
+                  onTap: () {
+                    var num = "+91$personNumber";
+                    launch("tel:$num");
+                  },
+                  child: Icon(Icons.phone),
+                ),
               ),
             ],
           ),
@@ -132,8 +180,6 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
-
-  /// ---------------- TIMELINE ----------------
 
   Widget _timeLine(String start, String duration, String end, TextTheme theme) {
     return Column(
@@ -158,8 +204,6 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  /// ---------------- LOCATION TEXT ----------------
-
   Widget _locationText(String text, TextTheme theme) {
     return Row(
       children: [
@@ -169,4 +213,30 @@ class _SearchScreenState extends State<SearchScreen> {
       ],
     );
   }
+
+  String removeSeconds(String time) {
+    final parts = time.split(':');
+    return "${parts[0]}:${parts[1]}";
+  }
+
+  String getTimeDifference(String originTime, String destinationTime) {
+    Duration toDuration(String time) {
+      final parts = time.split(':');
+      final hours = int.parse(parts[0]);
+      final minutes = int.parse(parts[1]);
+      return Duration(hours: hours, minutes: minutes);
+    }
+
+    Duration origin = toDuration(originTime);
+    Duration destination = toDuration(destinationTime);
+    Duration diff = destination - origin;
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    return "${twoDigits(diff.inHours)}:${twoDigits(diff.inMinutes.remainder(60))}";
+  }
+
+  String formatDate(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return DateFormat("dd MMM yy").format(date).toUpperCase();
+  }
+
 }

@@ -51,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: loginController.mobileController,
                 keyboardType: TextInputType.phone,
                 onChanged: provider.validatePhone,
-                
+
                 decoration: InputDecoration(
                   hintText: "Enter mobile number",
                   prefixIcon: const Icon(Icons.phone),
@@ -151,7 +151,10 @@ class _LoginScreenState extends State<LoginScreen> {
       context,
       provider.response?.message ?? "Login Successfull!!",
     );
-    prefs.setInt(savedData.userId, provider.response?.userId ?? 0);
+    debugPrint(provider.response?.userId.toString());
+    prefs.setBool(savedData.isFirstLauch, false);
+    prefs.setBool(savedData.isLoggedIn, true);
+    prefs.setInt(savedData.userId, provider.response!.userId!);
     appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
   }
 }

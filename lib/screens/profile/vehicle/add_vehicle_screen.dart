@@ -6,14 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/vehicles/add_vehicle_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/formatter/formater.dart'
     hide FirstLetterCapitalFormatter;
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_list_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AddVehicleScreen extends StatefulWidget {
   final int userId;
@@ -40,27 +38,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  int userId = 0;
-
-  Future<void> getuserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    var id = prefs.getInt(savedData.userId);
-    setState(() {
-      userId = id ?? 0;
-    });
-  }
-
   // @override
   // void dispose() {
   //   addVehicleController.dispose();
   //   super.dispose();
   // }
-
-  @override
-  void initState() {
-    super.initState();
-    getuserId();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +306,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     }
 
     await vehicleProvider.addVehicle(
-      userId: userId,
+      userId: widget.userId,
       brand: addVehicleController.brandController.text,
       vModel: addVehicleController.modelController.text,
       vNumber: addVehicleController.numberController.text,
@@ -348,6 +330,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       vehicleProvider.reponse?.message ?? "",
     );
 
-    appNavigator.pushReplacement(VehicleListScreen(userId: userId));
+    appNavigator.pushReplacement(VehicleListScreen(userId: widget.userId));
   }
 }

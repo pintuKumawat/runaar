@@ -14,6 +14,8 @@ import 'package:runaar/provider/home_provider.dart';
 import 'package:runaar/provider/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
+import 'package:runaar/provider/my_rides/booking_list_provider.dart';
+import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
@@ -22,6 +24,7 @@ import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
 import 'package:runaar/provider/vehicle/vehicle_details_provider.dart';
 import 'package:runaar/provider/vehicle/vehicle_list_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
+import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -50,6 +53,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => DeleteVehicleProvider()),
         ChangeNotifierProvider(create: (_) => VehicleListProvider()),
         ChangeNotifierProvider(create: (_) => PublishedListProvider()),
+        ChangeNotifierProvider(create: (_) => PublishedDetailProvier()),
+        ChangeNotifierProvider(create: (_) => BookingListProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
@@ -65,7 +70,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool? isLoggedIn;
-  String? role;
   bool? isFirstLaunch;
 
   Future<void> _loadAppState() async {
@@ -77,7 +81,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     debugPrint(
-      "🚀 App Started | isLoggedIn: $isLoggedIn | firstLaunch: $isFirstLaunch | role: $role",
+      "🚀 App Started | isLoggedIn: $isLoggedIn | firstLaunch: $isFirstLaunch ",
     );
   }
 
@@ -116,6 +120,7 @@ class _MyAppState extends State<MyApp> {
             theme: appTheme.lightTheme(context),
             themeMode: ThemeMode.light,
             home: _getHome(),
+            // home: const BottomNav(initialIndex: 2),
           ),
         );
       },
@@ -124,7 +129,7 @@ class _MyAppState extends State<MyApp> {
 
   Widget _getHome() {
     if (isFirstLaunch ?? true) {
-      return BottomNav(initialIndex: 2);
+      return SignupScreen();
     }
 
     if (isLoggedIn ?? false) {
