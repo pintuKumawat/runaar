@@ -95,6 +95,23 @@ abstract class AppLocalizations {
     Locale('hi')
   ];
 
+  /// No description provided for @enterDropLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Drop Location'**
+  String get enterDropLocation;
+
+  /// No description provided for @enterPickupLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter Pickup Location'**
+  String get enterPickupLocation;
+
+  /// No description provided for @findRide.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Ride'**
+  String get findRide;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

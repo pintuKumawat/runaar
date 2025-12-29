@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/provider/home_provider.dart';
+import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/screens/home/ride_details_screen.dart';
 
 class SearchScreen extends StatefulWidget {

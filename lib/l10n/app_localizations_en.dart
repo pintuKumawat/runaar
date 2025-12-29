@@ -8,5 +8,12 @@ import 'app_localizations.dart';
 class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
+  @override
+  String get enterDropLocation => 'Enter Drop Location';
 
+  @override
+  String get enterPickupLocation => 'Enter Pickup Location';
+
+  @override
+  String get findRide => 'Find Ride';
 }

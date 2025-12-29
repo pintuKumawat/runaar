@@ -1,7 +1,7 @@
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/vehicle/vehicle_details_model.dart';
 
-class DetailsVechileRepo {
+class VehicleDetailsRepo {
 
   Future<VehicleDetailsModel>vehicleDetails({
     required int id
@@ -19,4 +19,4 @@ class DetailsVechileRepo {
     });
   }
 }
-final DetailsVechileRepo detailsVechileRepo =DetailsVechileRepo();
+final VehicleDetailsRepo vehicleDetailsRepo  =VehicleDetailsRepo ();
