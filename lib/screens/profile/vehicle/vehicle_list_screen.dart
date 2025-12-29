@@ -43,9 +43,12 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         onRefresh: _fetchData,
         child: provider.isLoading!
             ? Center(child: const CircularProgressIndicator())
-            : vehicleData.isEmpty
+            : provider.errorMessage != null
             ? Center(
-                child: Text("No vehicles added", style: textTheme.bodyMedium),
+                child: Text(
+                  provider.errorMessage ?? "",
+                  style: textTheme.bodyMedium,
+                ),
               )
             : ListView.builder(
                 padding: 10.all,
@@ -65,6 +68,8 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         contentPadding: .only(left: 12.w),
         onTap: () => appNavigator.push(
           VehicleDetailsScreen(vehicleId: data.vehicleId ?? 0),
+
+          
         ),
         leading: CircleAvatar(
           radius: 35.r,

@@ -8,5 +8,12 @@ import 'app_localizations.dart';
 class AppLocalizationsHi extends AppLocalizations {
   AppLocalizationsHi([String locale = 'hi']) : super(locale);
 
+  @override
+  String get enterDropLocation => 'ड्रॉप स्थान दर्ज करें';
 
+  @override
+  String get enterPickupLocation => 'पिकअप स्थान दर्ज करें';
+
+  @override
+  String get findRide => 'राइड खोजें';
 }

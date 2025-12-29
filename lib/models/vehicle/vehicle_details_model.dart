@@ -1,28 +1,21 @@
 class VehicleDetailsModel {
   String? status;
-  String? message;
-  List<VehicleDetail>? vehicleDetail;
+  VehicleDetail? vehicleDetail;
 
-  VehicleDetailsModel({this.status, this.message, this.vehicleDetail});
+  VehicleDetailsModel({this.status, this.vehicleDetail});
 
   VehicleDetailsModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    message = json['message'];
-    if (json['vehicleDetail'] != null) {
-      vehicleDetail = <VehicleDetail>[];
-      json['vehicleDetail'].forEach((v) {
-        vehicleDetail!.add(new VehicleDetail.fromJson(v));
-      });
-    }
+    vehicleDetail = json['vehicle_detail'] != null
+        ? new VehicleDetail.fromJson(json['vehicle_detail'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
-    data['message'] = this.message;
     if (this.vehicleDetail != null) {
-      data['vehicleDetail'] =
-          this.vehicleDetail!.map((v) => v.toJson()).toList();
+      data['vehicle_detail'] = this.vehicleDetail!.toJson();
     }
     return data;
   }

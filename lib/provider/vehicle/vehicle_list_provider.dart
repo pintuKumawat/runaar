@@ -17,6 +17,7 @@ class VehicleListProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
+      
       final result = await vehicleListRepo.vehicleList(userId: userId);
       _response = result;
     } on ApiException catch (e) {

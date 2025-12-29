@@ -8,7 +8,8 @@ import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
-import 'package:runaar/provider/home_provider.dart';
+import 'package:runaar/l10n/app_localizations.dart';
+import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -60,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+   final lan=AppLocalizations.of(context)!;
     final theme = Theme.of(context).textTheme;
     final homeProvider = context.read<HomeProvider>();
     return Scaffold(
@@ -95,19 +97,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Find Ride', style: theme.titleMedium),
+            Text(lan.findRide, style: theme.titleMedium,),
             16.height,
 
             _inputTile(
               icon: Icons.my_location,
-              hint: 'Enter Pickup Location',
+              hint: lan.enterPickupLocation,
               theme: theme,
               controller: homeController.originController,
               type: 'pickup',
             ),
             _inputTile(
               icon: Icons.location_on,
-              hint: 'Enter Drop Location',
+              hint: lan.enterDropLocation,
               theme: theme,
               controller: homeController.destinationController,
               type: 'drop',

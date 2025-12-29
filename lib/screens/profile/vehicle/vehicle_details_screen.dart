@@ -1,7 +1,13 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/constants/app_color.dart';
+import 'package:runaar/core/services/api_response.dart';
+import 'package:runaar/models/vehicle/vehicle_details_model.dart';
+import 'package:runaar/models/vehicle/vehicle_list_model.dart';
+import 'package:runaar/provider/vehicle/vehicle_details_provider.dart';
 
 class VehicleDetailsScreen extends StatefulWidget {
   final int vehicleId;
@@ -25,41 +31,67 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
   };
 
   @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => loadData());
+  }
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Vehicle Details")),
-      body: SingleChildScrollView(
-        padding: 10.all,
-        child: Column(
-          crossAxisAlignment: .start,
-          children: [
-            _sectionTitle("Basic Information", textTheme),
-            12.height,
-
-            _detailTile("Brand", vehicle["brand"], textTheme),
-            _detailTile("Model", vehicle["model"], textTheme),
-            _detailTile("Vehicle Number", vehicle["number"], textTheme),
-            _detailTile("Vehicle Type", vehicle["type"], textTheme),
-            _detailTile("Fuel Type", vehicle["fuel"], textTheme),
-            _detailTile("Seats", vehicle["seats"], textTheme),
-            _detailTile("Color", vehicle["color"], textTheme),
-            24.height,
-            _imageSection(textTheme),
-          ],
-        ),
-      ),
+  Future<void> loadData() async {
+    await context.read<VehicleDetailsProvider>().vehicleDetails(
+      vehicleId: widget.vehicleId,
     );
   }
 
-  Widget _imageSection(TextTheme theme) {
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final vehicleProvider = context.watch<VehicleDetailsProvider>();
+    final data = vehicleProvider.response?.vehicleDetail;
+
+    return Scaffold(
+      appBar: AppBar(title: Text("Vehicle Details")),
+      body: vehicleProvider.isLoading!
+          ? CircularProgressIndicator()
+          : vehicleProvider.errorMesssage != null
+          ? Center(child: Text(vehicleProvider.errorMesssage ?? ""))
+          : SingleChildScrollView(
+              padding: 10.all,
+              child: Column(
+                crossAxisAlignment: .start,
+                children: [
+                  _sectionTitle("Basic Information", textTheme),
+                  12.height,
+
+                  _detailTile("Brand", data?.brand ?? "", textTheme),
+                  _detailTile("Model", data?.model ?? "", textTheme),
+                  _detailTile(
+                    "Vehicle Number",
+                    data?.vehicleNumber ?? "",
+                    textTheme,
+                  ),
+                  _detailTile(
+                    "Vehicle Type",
+                    data?.vehicleType ?? "",
+                    textTheme,
+                  ),
+                  _detailTile("Fuel Type", data?.fuelType ?? "", textTheme),
+                  _detailTile("Seats", data?.seats.toString() ?? "", textTheme),
+                  _detailTile("Color", data?.color ?? "", textTheme),
+                  24.height,
+                  _imageSection(textTheme, data),
+                ],
+              ),
+            ),
+    );
+  }
+
+  Widget _imageSection(TextTheme theme, VehicleDetail? data) {
     return Row(
       children: [
         Expanded(
           child: _imageCard(
             label: "Vehicle Image",
-            image: vehicle["vehicleImage"],
+            image: data?.vehicleImageUrl,
             theme: theme,
           ),
         ),
@@ -67,7 +99,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
         Expanded(
           child: _imageCard(
             label: "RC Image",
-            image: vehicle["rcImage"],
+            image: data?.rcImageUrl,
             theme: theme,
           ),
         ),
@@ -101,9 +133,10 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
                   )
                 : ClipRRect(
                     borderRadius: BorderRadius.circular(12.r),
-                    child: image is File
-                        ? Image.file(image, fit: BoxFit.cover)
-                        : Image.network(image, fit: BoxFit.cover),
+                    child: CachedNetworkImage(
+                      imageUrl: "${apiMethods.baseUrl}/$image",
+                      fit: BoxFit.cover,
+                    ),
                   ),
           ),
         ),
