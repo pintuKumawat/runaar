@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/vehicle/vehicle_details_model.dart';
-import 'package:runaar/repos/details_vechile_repo.dart';
+import 'package:runaar/repos/vehicle/details_vechile_repo.dart';
 
 class VehicleDetailsProvider extends ChangeNotifier {
 

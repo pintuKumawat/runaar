@@ -5,7 +5,7 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  final String bookingId;
+  final int bookingId;
 
   const BookingDetailsScreen({super.key, required this.bookingId});
 

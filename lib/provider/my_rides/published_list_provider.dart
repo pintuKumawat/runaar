@@ -10,7 +10,7 @@ class PublishedListProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  PublishedListModel? get reponse => _response;
+  PublishedListModel? get response => _response;
 
   Future<void> publishedList({required int userId}) async {
     _isLoading = true;

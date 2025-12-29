@@ -5,6 +5,7 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/home/home_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/provider/home_provider.dart';
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-
+    final homeProvider = context.read<HomeProvider>();
     return Scaffold(
       appBar: AppBar(
         title: Text('CARPOOL'),
@@ -152,19 +153,17 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () {
-                  appNavigator.push(SearchScreen());
-                  // debugPrint(homeController.originController.text);
-                  // debugPrint(homeController.originCityController.text);
-                },
-                child: Row(
-                  mainAxisAlignment: .center,
-                  children: [
-                    Icon(Icons.search, size: 22.sp),
-                    4.width,
-                    Text('SEARCH RIDE'),
-                  ],
-                ),
+                onPressed: _searchButton,
+                child: homeProvider.isLoading
+                    ? const CircularProgressIndicator()
+                    : Row(
+                        mainAxisAlignment: .center,
+                        children: [
+                          Icon(Icons.search, size: 22.sp),
+                          4.width,
+                          Text('SEARCH RIDE'),
+                        ],
+                      ),
               ),
             ),
 
@@ -174,6 +173,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Future<void> _searchButton() async {
+    final homeProvider = context.read<HomeProvider>();
+    String date =
+        '${departureDate.day}-${departureDate.month}-${departureDate.year}';
+
+    await homeProvider.rideSearch(
+      deptDate: date,
+      originCity: homeController.originCityController.text,
+      destinationCity: homeController.destinationCityController.text,
+    );
+
+    if (homeProvider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(context, homeProvider.errorMessage ?? "");
+      return;
+    }
+
+    appNavigator.push(SearchScreen());
+  }
+
+  
 
   Widget _seatSelector(TextTheme theme) {
     return Consumer<HomeProvider>(

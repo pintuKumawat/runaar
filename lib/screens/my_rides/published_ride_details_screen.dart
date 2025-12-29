@@ -4,7 +4,7 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 
 class PublishedRideDetailsScreen extends StatelessWidget {
-  final String publishedId;
+  final int publishedId;
 
   const PublishedRideDetailsScreen({super.key, required this.publishedId});
 

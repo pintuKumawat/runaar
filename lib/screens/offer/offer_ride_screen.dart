@@ -248,7 +248,6 @@ class _OfferRideState extends State<OfferRide> {
   //   //   int unread = notifications
   //   //       .map((n) => n.message?.where((m) => m?.isRead == 0).length ?? 0)
   //   //       .fold(0, (a, b) => a + b);
-
   //   // context
   //   //     .watch<NotificationProvider>()
   //   //     .setCount(unread);

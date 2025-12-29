@@ -1,64 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/provider/home_provider.dart';
 import 'package:runaar/screens/home/ride_details_screen.dart';
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-
+    final homeProvider = context.watch<HomeProvider>();
     return Scaffold(
       appBar: AppBar(title: const Text('Available Rides')),
-      body: ListView(
-        padding: 10.all,
-        children: [
-          _rideCard(
-            theme: theme,
-            tripId: "100",
-            price: '200',
-            startTime: '11:10',
-            duration: '0h 50m',
-            endTime: '12:00',
-            from: 'Jaipur',
-            to: 'Reengus',
-            name: 'Sushil',
-            rating: '1.0',
-            date: '22 Sep 2025',
-          ),
-
-          _rideCard(
-            theme: theme,
-            tripId: "101",
-            price: '170',
-            startTime: '11:30',
-            duration: '1h 00m',
-            endTime: '12:30',
-            from: 'Jaipur',
-            to: 'Reengus',
-            name: 'Pradeep',
-            date: '23 Sep 2025',
-          ),
-
-          _rideCard(
-            theme: theme,
-            tripId: "102",
-            price: '240',
-            startTime: '11:30',
-            duration: '1h 00m',
-            endTime: '12:30',
-            from: 'Jaipur',
-            to: 'Reengus',
-            name: 'Rajendra',
-            rating: '4.3',
-            date: '24 Sep 2025',
-          ),
-        ],
-      ),
+      body: ListView.builder(padding: 10.all, itemBuilder: (context, index) {}),
     );
   }
 
@@ -130,7 +93,6 @@ class SearchScreen extends StatelessWidget {
               ),
               8.height,
               const Divider(),
-              
 
               /// FOOTER
               Text(
