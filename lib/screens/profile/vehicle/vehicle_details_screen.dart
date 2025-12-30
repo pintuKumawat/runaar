@@ -44,43 +44,50 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final vehicleProvider = context.watch<VehicleDetailsProvider>();
-    final data = vehicleProvider.response?.vehicleDetail;
 
     return Scaffold(
       appBar: AppBar(title: Text("Vehicle Details")),
-      body: vehicleProvider.isLoading!
-          ? CircularProgressIndicator()
-          : vehicleProvider.errorMesssage != null
-          ? Center(child: Text(vehicleProvider.errorMesssage ?? ""))
-          : SingleChildScrollView(
-              padding: 10.all,
-              child: Column(
-                crossAxisAlignment: .start,
-                children: [
-                  _sectionTitle("Basic Information", textTheme),
-                  12.height,
+      body: Consumer<VehicleDetailsProvider>(
+        builder: (context, vehicleProvider, child) {
+          final data = vehicleProvider.response?.vehicleDetail;
+          return vehicleProvider.isLoading!
+              ? const Center(child: CircularProgressIndicator())
+              : vehicleProvider.errorMesssage != null
+              ? Center(child: Text(vehicleProvider.errorMesssage ?? ""))
+              : SingleChildScrollView(
+                  padding: 10.all,
+                  child: Column(
+                    crossAxisAlignment: .start,
+                    children: [
+                      _sectionTitle("Basic Information", textTheme),
+                      12.height,
 
-                  _detailTile("Brand", data?.brand ?? "", textTheme),
-                  _detailTile("Model", data?.model ?? "", textTheme),
-                  _detailTile(
-                    "Vehicle Number",
-                    data?.vehicleNumber ?? "",
-                    textTheme,
+                      _detailTile("Brand", data?.brand ?? "", textTheme),
+                      _detailTile("Model", data?.model ?? "", textTheme),
+                      _detailTile(
+                        "Vehicle Number",
+                        data?.vehicleNumber ?? "",
+                        textTheme,
+                      ),
+                      _detailTile(
+                        "Vehicle Type",
+                        data?.vehicleType ?? "",
+                        textTheme,
+                      ),
+                      _detailTile("Fuel Type", data?.fuelType ?? "", textTheme),
+                      _detailTile(
+                        "Seats",
+                        data?.seats.toString() ?? "",
+                        textTheme,
+                      ),
+                      _detailTile("Color", data?.color ?? "", textTheme),
+                      24.height,
+                      _imageSection(textTheme, data),
+                    ],
                   ),
-                  _detailTile(
-                    "Vehicle Type",
-                    data?.vehicleType ?? "",
-                    textTheme,
-                  ),
-                  _detailTile("Fuel Type", data?.fuelType ?? "", textTheme),
-                  _detailTile("Seats", data?.seats.toString() ?? "", textTheme),
-                  _detailTile("Color", data?.color ?? "", textTheme),
-                  24.height,
-                  _imageSection(textTheme, data),
-                ],
-              ),
-            ),
+                );
+        },
+      ),
     );
   }
 
@@ -112,12 +119,13 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
     required TextTheme theme,
   }) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: .center,
       children: [
         InkWell(
           onTap: image != null ? () => _showImageDialog(image) : null,
           child: Container(
             height: 140.h,
+            width: 200.w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: Colors.grey.shade400),
@@ -134,7 +142,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
                     borderRadius: BorderRadius.circular(12.r),
                     child: CachedNetworkImage(
                       imageUrl: "${apiMethods.baseUrl}/$image",
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                     ),
                   ),
           ),

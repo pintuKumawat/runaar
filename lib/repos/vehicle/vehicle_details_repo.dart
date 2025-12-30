@@ -9,7 +9,7 @@ class VehicleDetailsRepo {
     Map<String ,dynamic> body={"id":id};
 
     return apiMethods.post(endpoint: "vehicle/detail", body: body, onSuccess: (responseData){
-      if(responseData["stutas"].toString().toLowerCase()=="success"){
+      if(responseData["status"].toString().toLowerCase()=="success"){
         return VehicleDetailsModel.fromJson(responseData);
 
       }else{

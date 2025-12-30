@@ -281,23 +281,23 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }
 
   Widget _bottomBar() {
-    final vehicleProvider = context.read<AddVehicleProvider>();
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
         height: 56.h,
-        child: ElevatedButton(
-          onPressed: _saveVehicle,
-          child: vehicleProvider.isLoading
-              ? const CircularProgressIndicator()
-              : const Text("Save Vehicle"),
+        child: Consumer<AddVehicleProvider>(
+          builder: (context, vehicleProvider, child) => ElevatedButton(
+            onPressed: () => _saveVehicle(vehicleProvider),
+            child: vehicleProvider.isLoading
+                ? const CircularProgressIndicator()
+                : const Text("Save Vehicle"),
+          ),
         ),
       ),
     );
   }
 
-  Future<void> _saveVehicle() async {
-    final vehicleProvider = context.read<AddVehicleProvider>();
+  Future<void> _saveVehicle(AddVehicleProvider vehicleProvider) async {
     if (!_formKey.currentState!.validate()) return;
 
     if (vehicleImage == null || rcImage == null) {
@@ -313,7 +313,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       vType: vehicleType,
       fType: fuelType,
       seats: int.parse(seatsCtrl.text),
-      color: addVehicleController.brandController.text,
+      color: addVehicleController.colorController.text,
       vImage: vehicleImage!,
       rcImage: rcImage!,
     );

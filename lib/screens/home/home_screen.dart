@@ -114,8 +114,6 @@ class _HomeScreenState extends State<HomeScreen> {
               type: 'drop',
             ),
 
-            _seatSelector(theme),
-
             14.height,
 
             GestureDetector(
@@ -181,66 +179,18 @@ class _HomeScreenState extends State<HomeScreen> {
         '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
     await homeProvider.rideSearch(
-      deptDate: date,
-      originCity: homeController.originCityController.text,
-      destinationCity: homeController.destinationCityController.text,
-      // deptDate: "2024-12-20",
-      // originCity: "Delhi",
-      // destinationCity: "Jaipur",
+      // deptDate: date,
+      // originCity: homeController.originCityController.text,
+      // destinationCity: homeController.destinationCityController.text,
+      deptDate: "2024-12-20",
+      originCity: "Delhi",
+      destinationCity: "Jaipur",
     );
 
     appNavigator.push(SearchScreen());
   }
 
-  Widget _seatSelector(TextTheme theme) {
-    return Consumer<HomeProvider>(
-      builder: (context, homeProvider, child) {
-        return Container(
-          padding: 14.hv(16),
-          margin: .only(bottom: 12.h),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: .circular(14.r),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Number of Seats', style: theme.bodyLarge),
-              Row(
-                children: [
-                  _seatButton(Icons.remove, () {
-                    homeProvider.decrement();
-                  }),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 14.w),
-                    child: Text(
-                      "${homeProvider.seats}",
-                      style: theme.titleMedium,
-                    ),
-                  ),
-                  _seatButton(Icons.add, () {
-                    homeProvider.increment();
-                  }),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _seatButton(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: .circular(20.r),
-      child: CircleAvatar(
-        radius: 18.r,
-        backgroundColor: appColor.backgroundColor,
-        child: Icon(icon, color: appColor.mainColor, size: 18.sp),
-      ),
-    );
-  }
+  
 
   Future<void> openLocationPicker(String type) async {
     final result = await showModalBottomSheet<AutocompletePrediction>(
