@@ -35,6 +35,7 @@ class Trip {
   String? deptDate;
   String? seatPrice;
   String? availableSeats;
+  String? tripStatus;
   String? personName;
   String? personImage;
   int? personRatings;
@@ -45,29 +46,29 @@ class Trip {
   String? vehicleModel;
   String? vehicleColor;
 
-  Trip({
-    this.tripId,
-    this.tripDate,
-    this.originTime,
-    this.originCity,
-    this.originAddress,
-    this.destinationTime,
-    this.destinationAddress,
-    this.destinationCity,
-    this.distanceFromSearch,
-    this.deptDate,
-    this.seatPrice,
-    this.availableSeats,
-    this.personName,
-    this.personImage,
-    this.personRatings,
-    this.personPhoneNumber,
-    this.personEmail,
-    this.isVerified,
-    this.vehicleNumber,
-    this.vehicleModel,
-    this.vehicleColor,
-  });
+  Trip(
+      {this.tripId,
+      this.tripDate,
+      this.originTime,
+      this.originCity,
+      this.originAddress,
+      this.destinationTime,
+      this.destinationAddress,
+      this.destinationCity,
+      this.distanceFromSearch,
+      this.deptDate,
+      this.seatPrice,
+      this.availableSeats,
+      this.tripStatus,
+      this.personName,
+      this.personImage,
+      this.personRatings,
+      this.personPhoneNumber,
+      this.personEmail,
+      this.isVerified,
+      this.vehicleNumber,
+      this.vehicleModel,
+      this.vehicleColor});
 
   Trip.fromJson(Map<String, dynamic> json) {
     tripId = json['trip_id'];
@@ -82,6 +83,7 @@ class Trip {
     deptDate = json['dept_date'];
     seatPrice = json['seat_price'];
     availableSeats = json['available_seats'];
+    tripStatus = json['trip_status'];
     personName = json['person_name'];
     personImage = json['person_image'];
     personRatings = json['person_ratings'];
@@ -107,6 +109,7 @@ class Trip {
     data['dept_date'] = this.deptDate;
     data['seat_price'] = this.seatPrice;
     data['available_seats'] = this.availableSeats;
+    data['trip_status'] = this.tripStatus;
     data['person_name'] = this.personName;
     data['person_image'] = this.personImage;
     data['person_ratings'] = this.personRatings;
