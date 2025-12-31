@@ -32,9 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
         padding: 10.all,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          //  mainAxisAlignment: .center,
           children: [
-            /// TITLE
             CircleAvatar(radius: 60.r, backgroundColor: Colors.black),
             25.height,
             Text(
@@ -46,7 +44,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
             25.height,
 
-            /// USERNAME
             TextFormField(
               controller: signUpController.nameController,
               onChanged: provider.validateUserName,
@@ -60,7 +57,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
             10.height,
 
-            /// EMAIL
             TextFormField(
               controller: signUpController.emailController,
               onChanged: provider.validateEmail,
@@ -74,7 +70,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
             10.height,
 
-            /// MOBILE NUMBER
             TextFormField(
               controller: signUpController.mobileController,
               onChanged: provider.validateMobileNumber,
@@ -88,7 +83,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
             10.height,
 
-            /// PASSWORD
             TextFormField(
               controller: signUpController.passwordController,
               onChanged: provider.validatePassword,
@@ -112,7 +106,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
             25.height,
 
-            /// SIGNUP BUTTON
             SizedBox(
               width: double.infinity,
               height: 56.h,
@@ -152,6 +145,12 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _signUp(SignupProvider provider) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!provider.validateAll()) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Please enter all and correct data",
+      );
+    }
 
     await provider.signup(
       name: signUpController.nameController.text,
@@ -166,7 +165,7 @@ class _SignupScreenState extends State<SignupScreen> {
     }
     appSnackbar.showSingleSnackbar(
       context,
-      provider.response?.message ?? "Sign up Successful",
+      provider.response?.message ?? "Sign up Successfull",
     );
 
     prefs.setBool(savedData.isFirstLauch, false);

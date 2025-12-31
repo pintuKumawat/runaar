@@ -5,9 +5,6 @@ import 'package:runaar/models/auth/login_model.dart';
 import 'package:runaar/repos/auth/login_repo.dart';
 
 class LoginProvider extends ChangeNotifier {
-  // final TextEditingController loginPhoneController = TextEditingController();
-  // final TextEditingController loginPasswordController = TextEditingController();
-
   String? phoneError;
   String? passwordError;
   bool isLoading = false;
@@ -58,8 +55,6 @@ class LoginProvider extends ChangeNotifier {
   }
 
   Future<void> login({required String number, required String password}) async {
-    if (!validateAll()) return;
-
     isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -71,17 +66,11 @@ class LoginProvider extends ChangeNotifier {
       _errorMessage = e.message;
       debugPrint("❌ API Exception: $e");
     } catch (e) {
+      _errorMessage = e.toString();
       debugPrint("❌ Unexpected error: $e");
     } finally {
       isLoading = false;
       notifyListeners();
     }
-  }
-
-  @override
-  void dispose() {
-    loginController.mobileController.dispose();
-    loginController.passwordController.dispose();
-    super.dispose();
   }
 }

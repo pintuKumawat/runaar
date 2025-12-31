@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/services/api_response.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -177,20 +176,7 @@ class _PublishedRideDetailsScreenState
             ),
             ListTile(
               contentPadding: 5.vertical,
-              leading: CircleAvatar(
-                radius: 22.r,
-                backgroundColor: Colors.grey.shade300,
-                backgroundImage:
-                    data?.personImage != null && data!.personImage!.isNotEmpty
-                    ? CachedNetworkImageProvider(
-                        "${apiMethods.baseUrl}/${data.personImage}",
-                      )
-                    : null,
-                child:
-                    data?.personImage != null && data!.personImage!.isNotEmpty
-                    ? null
-                    : Icon(Icons.person, size: 24.sp),
-              ),
+              leading: defaultImage.userProvider(data?.personImage, 22.r),
               title: Row(
                 children: [
                   Text(
@@ -392,14 +378,7 @@ class _PublishedRideDetailsScreenState
     //   ),
     // );
     return ListTile(
-      leading: CircleAvatar(
-        radius: 22.r,
-        backgroundColor: Colors.green.shade300,
-        backgroundImage: image.isNotEmpty
-            ? CachedNetworkImageProvider("${apiMethods.baseUrl}/$image")
-            : null,
-        child: image.isEmpty ? Icon(Icons.person, size: 20.sp) : null,
-      ),
+      leading: defaultImage.userProvider(image, 22.r),
       title: Text(name, style: theme.titleSmall),
       subtitle: RatingBarIndicator(
         rating: rating,

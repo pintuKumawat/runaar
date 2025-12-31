@@ -1,16 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/my_rides/booking_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
+import 'package:runaar/provider/my_rides/request_list_provider.dart';
 import 'package:runaar/screens/my_rides/booking_details_screen.dart';
 import 'package:runaar/screens/my_rides/published_ride_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,9 +50,16 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     }
   }
 
+  Future<void> _fetchRequestList() async {
+    if (userId != 0) {
+      await context.read<RequestListProvider>().requestList(userId: userId);
+    }
+  }
+
   Future<void> _fetchData() async {
     await _fetchBookingList();
     await _fetchPublishedRides();
+    _fetchRequestList();
   }
 
   bool _matchItem(String from, String to) {
@@ -99,6 +106,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                 _currentTabIndex = index;
                 if (_currentTabIndex == 0) _fetchBookingList();
                 if (_currentTabIndex == 1) _fetchPublishedRides();
+                if (_currentTabIndex == 2) _fetchRequestList();
                 setState(() {});
               },
               tabs: const [
@@ -121,7 +129,11 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                 return _publishedTab(theme, publishedProv);
               },
             ),
-            Container(),
+            Consumer<RequestListProvider>(
+              builder: (context, requestProv, child) {
+                return _requestTab(theme, requestProv);
+              },
+            ),
           ],
         ),
       ),
@@ -198,8 +210,6 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   price: d.seatPrice?.toString() ?? "0",
                   startTime: removeSeconds(d.deptTime?.trim() ?? ""),
                   endTime: removeSeconds(d.arrivalTime?.trim() ?? ""),
-                  // startTime: (d.deptTime?.trim() ?? ""),
-                  // endTime: (d.arrivalTime?.trim() ?? ""),
                   from: d.originCity ?? "",
                   to: d.destinationCity ?? "",
                   name: d.createdAt ?? "",
@@ -207,6 +217,51 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   publishedId: d.tripId,
                   publishedDate: d.createdAt,
                   type: "published",
+                );
+              },
+            ),
+    );
+  }
+
+  Widget _requestTab(TextTheme theme, RequestListProvider requestProv) {
+    final data = requestProv.response?.requestList ?? [];
+    return RefreshIndicator(
+      onRefresh: _fetchRequestList,
+      child: requestProv.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : requestProv.errorMessage != null
+          ? Center(
+              child: Text(
+                requestProv.errorMessage ?? "",
+                style: theme.bodyMedium,
+              ),
+            )
+          : ListView.builder(
+              padding: 10.all,
+              itemCount: data.length,
+              itemBuilder: (_, i) {
+                final d = data[i];
+                if (!_matchItem(d.originCity ?? "", d.destinationCity ?? "")) {
+                  return const SizedBox.shrink();
+                }
+
+                return _rideCard(
+                  theme: theme,
+                  price: d.pricePerSeat?.toString() ?? "0",
+                  startTime: removeSeconds(d.deptTime?.trim() ?? ""),
+                  endTime: removeSeconds(d.arrivalTime?.trim() ?? ""),
+                  from: d.originCity ?? "",
+                  to: d.destinationCity ?? "",
+                  name: d.name ?? "",
+                  requestId: d.id,
+                  seats: d.seatsRequested.toString(),
+                  rating: d.rating.toString(),
+                  image: d.profileImage,
+                  onAccept: () {},
+                  onReject: () {},
+                  isVerified: d.isActive,
+                  paymentStatus: d.paymentMethod,
+                  type: "request",
                 );
               },
             ),
@@ -228,6 +283,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     int? bookingId,
     int? publishedId,
     int? requestId,
+    String? paymentStatus,
     String? publishedDate,
     required String type,
     int? isVerified,
@@ -305,8 +361,10 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                 name,
                 rating,
                 requestId,
+                image,
                 onAccept,
                 onReject,
+                paymentStatus,
               )
             else if (type == "published")
               _buildPublishedFooter(
@@ -407,16 +465,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           ),
           ListTile(
             contentPadding: 2.vertical,
-            leading: CircleAvatar(
-              radius: 22.r,
-              backgroundColor: Colors.grey.shade300,
-              child: image == ""
-                  ? const Icon(Icons.person)
-                  : CachedNetworkImage(
-                      imageUrl: "${apiMethods.baseUrl}/$image",
-                      fit: .contain,
-                    ),
-            ),
+            leading:defaultImage.userProvider(image, 22.r),
             title: Row(
               children: [
                 Text(name, style: theme.bodyMedium),
@@ -480,8 +529,10 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     String name,
     String? rating,
     int? requestId,
+    String? image,
     VoidCallback? onAccept,
     VoidCallback? onReject,
+    String? paymentStatus,
   ) {
     return Padding(
       padding: 10.horizontal,
@@ -494,11 +545,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           ),
           ListTile(
             contentPadding: 2.vertical,
-            leading: CircleAvatar(
-              radius: 22.r,
-              backgroundColor: Colors.grey.shade300,
-              child: const Icon(Icons.person),
-            ),
+            leading: defaultImage.userProvider(image, 22.r),
             title: Text(name, style: theme.bodyLarge),
             subtitle: rating == null
                 ? null
@@ -515,6 +562,30 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                       Text(rating, style: theme.bodySmall),
                     ],
                   ),
+            trailing: Column(
+              mainAxisSize: .min,
+              children: [
+                Text("Pay via", style: theme.labelLarge),
+                Container(
+                  padding: 4.horizontal,
+                  decoration: BoxDecoration(
+                    color: paymentStatus?.toLowerCase() == "cash"
+                        ? Colors.amber.shade100
+                        : Colors.green.shade300,
+                    borderRadius: .circular(5.r),
+                  ),
+                  child: Text(
+                    paymentStatus ?? "",
+                    style: theme.bodyMedium?.copyWith(
+                      color: paymentStatus?.toLowerCase() == "cash"
+                          ? Colors.amber.shade900
+                          : Colors.green.shade900,
+                      fontWeight: .w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           Padding(
             padding: 10.all,

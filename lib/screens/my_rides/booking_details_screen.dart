@@ -4,6 +4,7 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
   final int bookingId;
@@ -44,8 +45,8 @@ class BookingDetailsScreen extends StatelessWidget {
             _driverCard(theme),
             // 6.height,
             _vehicleDetails(theme),
+
             // 6.height,
-            _seatInfo(theme),
             _priceSummary(theme),
             _paymentDetails(theme),
             _passengerList(theme),
@@ -178,11 +179,7 @@ class BookingDetailsScreen extends StatelessWidget {
             ),
             ListTile(
               contentPadding: 5.vertical,
-              leading: CircleAvatar(
-                radius: 24.r,
-                backgroundColor: Colors.grey.shade300,
-                child: Icon(Icons.person, size: 28.sp),
-              ),
+              leading: defaultImage.userProvider("", 24.r),
               title: Text(
                 'Nihit Singh',
                 maxLines: 1,
@@ -237,13 +234,13 @@ class BookingDetailsScreen extends StatelessWidget {
             ),
             8.height,
             Row(
-              mainAxisAlignment: .spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Seats Booking"),
+                Text("Seats Booked", style: theme.bodyMedium),
                 Text(
                   "2",
-                  style: theme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
@@ -348,24 +345,6 @@ class BookingDetailsScreen extends StatelessWidget {
             style: theme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _seatInfo(TextTheme theme) {
-    return Card(
-      child: Padding(
-        padding: 10.all,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Seats Booked", style: theme.bodyMedium),
-            Text(
-              "2",
-              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -491,10 +470,7 @@ class BookingDetailsScreen extends StatelessWidget {
   Widget _passengerTile(TextTheme theme, String name, double rating) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: Colors.grey.shade300,
-        child: Icon(Icons.person),
-      ),
+      leading: defaultImage.userProvider("", 22.r),
       title: Text(name, style: theme.titleSmall),
       subtitle: RatingBarIndicator(
         rating: rating,

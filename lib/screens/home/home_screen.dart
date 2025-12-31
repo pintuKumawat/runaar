@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:provider/provider.dart';
-import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/home/home_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/l10n/app_localizations.dart';
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-   final lan=AppLocalizations.of(context)!;
+    final lan = AppLocalizations.of(context)!;
     final theme = Theme.of(context).textTheme;
     final homeProvider = context.read<HomeProvider>();
     return Scaffold(
@@ -96,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(lan.findRide, style: theme.titleMedium,),
+            Text(lan.findRide, style: theme.titleMedium),
             16.height,
 
             _inputTile(
@@ -178,19 +178,35 @@ class _HomeScreenState extends State<HomeScreen> {
     String date =
         '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
-    await homeProvider.rideSearch(
-      // deptDate: date,
-      // originCity: homeController.originCityController.text,
-      // destinationCity: homeController.destinationCityController.text,
-      deptDate: "2024-12-20",
-      originCity: "Delhi",
-      destinationCity: "Jaipur",
-    );
-
-    appNavigator.push(SearchScreen());
+    if (date.isEmpty) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Please select search date",
+      );
+    } else if (homeController.originController.text ==
+        homeController.destinationController.text) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Both location cannot be same",
+      );
+    } else if (homeController.destinationController.text.isEmpty ||
+        homeController.originController.text.isEmpty) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Locations cannot be empty",
+      );
+    } else {
+      await homeProvider.rideSearch(
+        // deptDate: date,
+        // originCity: homeController.originCityController.text,
+        // destinationCity: homeController.destinationCityController.text,
+        deptDate: "2024-12-20",
+        originCity: "Delhi",
+        destinationCity: "Jaipur",
+      );
+      return appNavigator.push(SearchScreen());
+    }
   }
-
-  
 
   Future<void> openLocationPicker(String type) async {
     final result = await showModalBottomSheet<AutocompletePrediction>(

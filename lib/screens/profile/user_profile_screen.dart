@@ -6,6 +6,7 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
@@ -136,11 +137,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
       child: ListTile(
         contentPadding: 12.all,
-        leading: CircleAvatar(
-          radius: 28.r,
-          backgroundColor: appColor.backgroundColor,
-          child: Icon(Icons.person, size: 30.sp, color: appColor.mainColor),
-        ),
+        leading: defaultImage.userProvider("", 30.r),
         title: Text(
           userName,
           style: theme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
