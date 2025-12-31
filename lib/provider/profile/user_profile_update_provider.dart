@@ -1,11 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/core/utils/controllers/profile/edit_profile_controller.dart';
 import 'package:runaar/models/profile/user_profile_update_model.dart';
-import 'package:runaar/repos/offer/trip_publish_repo.dart';
 import 'package:runaar/repos/profile/user_profile_update_repo.dart';
 
 class UserProfileUpdateProvider extends ChangeNotifier {

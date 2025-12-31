@@ -1,11 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/edit_profile_controller.dart';
@@ -26,23 +23,10 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // final nameCtrl = TextEditingController();
-  // final emailCtrl = TextEditingController();
-  // final dobCtrl = TextEditingController();
-
-
   String gender = "Male";
   File? profileImage;
 
   final ImagePicker _picker = ImagePicker();
-
-  @override
-  // void dispose() {
-  //   nameCtrl.dispose();
-  //   emailCtrl.dispose();
-  //   dobCtrl.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -203,47 +187,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget _nameField(TextTheme textTheme) {
     return Consumer<UserProfileUpdateProvider>(
-      builder: (BuildContext context, updateProvider, child) {  
-      return TextFormField(
-        controller: editProfileController.nameController,
-        onChanged: updateProvider.validateUserName,
-        
-        style: textTheme.bodyMedium,
-        inputFormatters: [FirstLetterCapitalFormatter()],
-        decoration:  InputDecoration(
-          errorText: updateProvider.userNameError,
-          // labelText: "Full Name",
-          prefixIcon: Icon(Icons.person_outline),
-        ),
-        validator: (v) => v == null || v.isEmpty ? "Name is required" : null,
-      );
-      }
+      builder: (BuildContext context, updateProvider, child) {
+        return TextFormField(
+          controller: editProfileController.nameController,
+          onChanged: updateProvider.validateUserName,
+
+          style: textTheme.bodyMedium,
+          inputFormatters: [FirstLetterCapitalFormatter()],
+          decoration: InputDecoration(
+            errorText: updateProvider.userNameError,
+            // labelText: "Full Name",
+            prefixIcon: Icon(Icons.person_outline),
+          ),
+          validator: (v) => v == null || v.isEmpty ? "Name is required" : null,
+        );
+      },
     );
   }
 
   Widget _emailField(TextTheme textTheme) {
     return Consumer<UserProfileUpdateProvider>(
-      builder: (BuildContext context, updateProvider , child) {  
-      return TextFormField(
-        
-        controller: editProfileController.emailController,
-        
-        onChanged: updateProvider.validateEmail,
-        
-        keyboardType: TextInputType.emailAddress,
-        style: textTheme.bodyMedium,
-        decoration: InputDecoration(
-           errorText:updateProvider.emailError,
-          // labelText: "Email",
-          prefixIcon: Icon(Icons.email_outlined),
-        ),
-        validator: (v) {
-          if (v == null || v.isEmpty) return "Email is required";
-          if (!v.contains("@")) return "Enter valid email";
-          return null;
-        },
-      );
-      }
+      builder: (BuildContext context, updateProvider, child) {
+        return TextFormField(
+          controller: editProfileController.emailController,
+
+          onChanged: updateProvider.validateEmail,
+
+          keyboardType: TextInputType.emailAddress,
+          style: textTheme.bodyMedium,
+          decoration: InputDecoration(
+            errorText: updateProvider.emailError,
+            // labelText: "Email",
+            prefixIcon: Icon(Icons.email_outlined),
+          ),
+          validator: (v) {
+            if (v == null || v.isEmpty) return "Email is required";
+            if (!v.contains("@")) return "Enter valid email";
+            return null;
+          },
+        );
+      },
     );
   }
 
@@ -315,11 +298,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     if (picked != null) {
-      editProfileController.dobController .text = DateFormat('dd MMM yyyy').format(picked);
+      editProfileController.dobController.text = DateFormat(
+        'dd MMM yyyy',
+      ).format(picked);
     }
   }
 
-  // -------------------- SAVE BUTTON --------------------
   Widget _saveButton(TextTheme textTheme) {
     return Consumer<UserProfileUpdateProvider>(
       builder: (BuildContext context, updateProvider, child) {
@@ -329,8 +313,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             height: 56.h,
             child: ElevatedButton(
               onPressed: () async {
-                //  if (!_formKey.currentState!.validate()) return;
-
                 await updateProvider.userProfileUpdate(
                   userId: 1,
                   dob: editProfileController.dobController.text,
@@ -353,14 +335,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 if (!mounted) return;
 
                 appNavigator.pop();
-
-                // Provider / API integration
-                appSnackbar.showSingleSnackbar(
-                  context,
-                  "Profile updated successfully",
-                );
               },
-              child: Text("Save Changes"),
+              child: updateProvider.isLoading
+                  ? const CircularProgressIndicator()
+                  : Text("Save Changes"),
             ),
           ),
         );

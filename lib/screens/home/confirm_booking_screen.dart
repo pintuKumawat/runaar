@@ -8,8 +8,6 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
-import 'package:runaar/provider/auth/validate/login_provider.dart';
-import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -54,15 +52,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   String _selectedPaymentMethod = 'Cash';
   final List<String> _paymentMethods = ['Cash', 'Online'];
   TextEditingController messageController = TextEditingController();
-  int userId = 0;
 
-  Future<void> getuserId() async {
-    var prefs = await SharedPreferences.getInstance();
-    var id = prefs.getInt(savedData.userId);
-    setState(() {
-      userId = id ?? 0;
-    });
-  }
 
   double calculateTotalPrice() {
     try {
@@ -326,7 +316,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
           ),
         ),
 
-        // Optional: Show additional info based on payment method
         10.height,
         if (_selectedPaymentMethod == 'Online')
           Container(
@@ -454,7 +443,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             child: ElevatedButton.icon(
               onPressed: () async {
                 await provider.bookingRequest(
-                  userId: userId,
+                  userId: userId ?? 0,
                   tripId: widget.tripId,
                   paymentMethod: _selectedPaymentMethod,
                   paymentStatus: "pending",
