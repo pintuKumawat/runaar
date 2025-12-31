@@ -1,12 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/screens/home/ride_details_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -137,16 +136,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               ListTile(
                 contentPadding: 2.vertical,
-                leading: CircleAvatar(
-                  radius: 24.r,
-                  backgroundColor: Colors.grey.shade300,
-                  child: personImage == null
-                      ? Icon(Icons.person, size: 28.sp)
-                      : CachedNetworkImage(
-                          imageUrl: "${apiMethods.baseUrl}/$personImage",
-                          fit: .cover,
-                        ),
-                ),
+                leading: defaultImage.userProvider(personImage, 24.r),
                 title: Text(
                   personName,
                   maxLines: 1,
@@ -238,5 +228,4 @@ class _SearchScreenState extends State<SearchScreen> {
     DateTime date = DateTime.parse(dateString);
     return DateFormat("dd MMM yy").format(date).toUpperCase();
   }
-
 }

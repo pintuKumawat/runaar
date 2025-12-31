@@ -4,6 +4,7 @@ import 'package:runaar/models/home/booking_request_model.dart';
 import 'package:runaar/repos/home/booking_request_repo.dart';
 
 class BookingRequestProvider extends ChangeNotifier {
+class BookingRequestProvider extends ChangeNotifier {
   String? _errorMessage;
   bool _isLoading = false;
   BookingRequestModel? _response;
@@ -27,13 +28,13 @@ class BookingRequestProvider extends ChangeNotifier {
 
     try {
       final result = await bookingRequestRepo.bookingRequest(
-        trip_id: tripId,
-        user_id: userId,
-        seat_request: seatRequest,
-        total_price: totalPrice,
-        payment_method: paymentMethod,
-        payment_status: paymentStatus,
-        special_message: specialMessage,
+        tripId: tripId,
+        userId: userId,
+        seatRequest: seatRequest,
+        totalPrice: totalPrice,
+        paymentMethod: paymentMethod,
+        paymentStatus: paymentStatus,
+        specialMessage: specialMessage,
       );
       _response = result;
     } on ApiException catch (e) {

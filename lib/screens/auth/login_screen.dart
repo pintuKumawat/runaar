@@ -139,22 +139,30 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginUser({required LoginProvider provider}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!provider.validateAll()) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Please enter all and correct data",
+      );
+    }
+
     await provider.login(
       number: loginController.mobileController.text,
       password: loginController.passwordController.text,
     );
     if (provider.errorMessage != null) {
-      appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
-      return;
+      return appSnackbar.showSingleSnackbar(
+        context,
+        provider.errorMessage ?? "",
+      );
     }
     appSnackbar.showSingleSnackbar(
       context,
       provider.response?.message ?? "Login Successfull!!",
     );
-    debugPrint(provider.response?.userId.toString());
     prefs.setBool(savedData.isFirstLauch, false);
     prefs.setBool(savedData.isLoggedIn, true);
-    prefs.setInt(savedData.userId, provider.response!.userId!);
+    prefs.setInt(savedData.userId, provider.response?.userId ?? 0 );
     appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
   }
 }

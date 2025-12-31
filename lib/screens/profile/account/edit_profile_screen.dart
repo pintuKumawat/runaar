@@ -12,6 +12,7 @@ import 'package:runaar/core/utils/controllers/profile/edit_profile_controller.da
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/profile/user_profile_update_provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -81,15 +82,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Center(
       child: Stack(
         children: [
-          CircleAvatar(
-            radius: 55.r,
-            backgroundImage: profileImage != null
-                ? FileImage(profileImage!)
-                : null,
-            child: profileImage == null
-                ? Icon(Icons.person, size: 40.sp)
-                : null,
-          ),
+          defaultImage.userProvider("", 55.r),
           Positioned(
             bottom: 4.h,
             right: 4.w,

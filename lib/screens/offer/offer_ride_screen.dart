@@ -5,6 +5,7 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/offer/offer_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
@@ -38,14 +39,6 @@ class _OfferRideState extends State<OfferRide> {
       });
     });
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   getuserId().then((_) {
-  //     context.read<VehicleListProvider>().vehicleList(userId: userId);
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -122,29 +115,47 @@ class _OfferRideState extends State<OfferRide> {
     final provider = context.read<OfferProvider>();
     String arrivalTime = '${arrivalDate.hour}:${arrivalDate.minute}';
     String deptTime = '${departureDate.hour}:${departureDate.minute}';
-    final data = LoadOfferData(
-      userId: userId,
-      originLat: offerController.originLatController.text,
-      originLong: offerController.originLongController.text,
-      originAddress: offerController.originController.text,
-      originCity: offerController.originCityController.text,
-      destinationLat: offerController.destinationLatController.text,
-      destinationLong: offerController.destinationLongController.text,
-      destinationAddress: offerController.destinationController.text,
-      destinationCity: offerController.destinationCityController.text,
-      deptDate:
-          '${departureDate.day}/${departureDate.month}/${departureDate.year}',
-      arrivalDate:
-          '${arrivalDate.day}/${arrivalDate.month}/${arrivalDate.year}',
-      deptTime: deptTime,
-      arrivalTime: arrivalTime,
-      vehicleId: offerController.selectedVehicleId,
-    );
+    if (arrivalTime.isEmpty || deptTime.isEmpty) {
+      return appSnackbar.showSingleSnackbar(context, "Time cannot be empty");
+    } else if (offerController.destinationController.text.isEmpty ||
+        offerController.originController.text.isEmpty) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Locations cannot be empty",
+      );
+    } else if (offerController.destinationController.text ==
+        offerController.originController.text) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Both location cannot be same",
+      );
+    } else if (offerController.selectedVehicleId == 0) {
+      return appSnackbar.showSingleSnackbar(context, "Please select your vehicle");
+    } else {
+      final data = LoadOfferData(
+        userId: userId,
+        originLat: offerController.originLatController.text,
+        originLong: offerController.originLongController.text,
+        originAddress: offerController.originController.text,
+        originCity: offerController.originCityController.text,
+        destinationLat: offerController.destinationLatController.text,
+        destinationLong: offerController.destinationLongController.text,
+        destinationAddress: offerController.destinationController.text,
+        destinationCity: offerController.destinationCityController.text,
+        deptDate:
+            '${departureDate.day}-${departureDate.month}-${departureDate.year}',
+        arrivalDate:
+            '${arrivalDate.day}-${arrivalDate.month}-${arrivalDate.year}',
+        deptTime: deptTime,
+        arrivalTime: arrivalTime,
+        vehicleId: offerController.selectedVehicleId,
+      );
 
-    provider.setDetail(data);
+      provider.setDetail(data);
 
-    if (!mounted) return;
-    appNavigator.push(OfferRideDetailsScreen());
+      if (!mounted) return;
+      return appNavigator.push(OfferRideDetailsScreen());
+    }
   }
 
   Widget _inputTile({

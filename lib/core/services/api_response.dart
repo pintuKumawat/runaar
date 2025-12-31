@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
@@ -16,8 +17,8 @@ class ApiException implements Exception {
 }
 
 class ApiMethods {
-  final String baseUrl = "https://superradical-earlean-grapier.ngrok-free.dev";
-  // final String baseUrl = "http://localhost:3000";
+  // final String baseUrl = "https://superradical-earlean-grapier.ngrok-free.dev";
+  final String baseUrl = dotenv.get("BASE_URL");
 
   Future<T> get<T>({
     required String endpoint,

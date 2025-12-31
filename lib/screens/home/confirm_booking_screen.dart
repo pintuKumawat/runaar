@@ -4,7 +4,9 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
@@ -21,6 +23,7 @@ class ConfirmBookingScreen extends StatefulWidget {
   final String destinationAddress;
   final double seatPrice;
   final int tripId;
+
   const ConfirmBookingScreen({
     super.key,
     required this.date,
@@ -47,10 +50,19 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       userId = id ?? 0;
     });
   }
-  
- 
+
   String _selectedPaymentMethod = 'Cash';
   final List<String> _paymentMethods = ['Cash', 'Online'];
+  TextEditingController messageController = TextEditingController();
+  int userId = 0;
+
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
 
   double calculateTotalPrice() {
     try {
@@ -62,7 +74,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     }
   }
 
-  // Format price to 2 decimal places
   String formatPrice(double price) {
     return price.toStringAsFixed(2);
   }
@@ -72,12 +83,12 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeProvider>().resetSeats();
+      getuserId();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -124,12 +135,10 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
 
             12.height,
 
-            /// PAYMENT METHOD
             _paymentMethodSection(theme),
 
             12.height,
 
-            /// MESSAGE SECTION
             Text(
               'Send a message to Nihit to introduce yourself',
               style: theme.titleMedium,
@@ -435,8 +444,9 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   }
 
   Widget _bottomButton() {
-    return Consumer<BookingRequestProvider>(
-      builder: (BuildContext context, provider, child) {
+    return Consumer2<BookingRequestProvider, HomeProvider>(
+      builder: (BuildContext context, provider, homeProvider, child) {
+        final totalPrice = calculateTotalPrice();
         return BottomAppBar(
           child: SizedBox(
             height: 56.h,
@@ -444,18 +454,22 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             child: ElevatedButton.icon(
               onPressed: () async {
                 await provider.bookingRequest(
-                  userId: userId!,
-                  tripId: 2,
-                  paymentMethod: "online",
+                  userId: userId,
+                  tripId: widget.tripId,
+                  paymentMethod: _selectedPaymentMethod,
                   paymentStatus: "pending",
-                  seatRequest: 2,
-                  totalPrice: 12.55,
-                  specialMessage: "hello",
+                  seatRequest: homeProvider.seats,
+                  totalPrice: totalPrice,
+                  specialMessage: messageController.text,
                 );
-                print("UserId is this ${userId}");
-                // appNavigator.push(BookingDoneScreen());
-
-                //BookingDoneScreen(paymentMethod: _selectedPaymentMethod),
+                if (provider.errorMessage != null) {
+                  appSnackbar.showSingleSnackbar(
+                    context,
+                    provider.errorMessage ?? "",
+                  );
+                  return;
+                }
+                appNavigator.push(BookingDoneScreen(paymentMethod: ''));
               },
               icon: const Icon(Icons.event_seat),
               label: const Text('Request to book'),

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,8 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
-import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/screens/home/confirm_booking_screen.dart';
@@ -313,17 +312,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
             ),
             ListTile(
               contentPadding: 5.vertical,
-              leading: CircleAvatar(
-                radius: 24.r,
-                backgroundColor: Colors.grey.shade300,
-                backgroundImage:
-                    data?.personImage != null && data!.personImage!.isNotEmpty
-                    ? NetworkImage("${apiMethods.baseUrl}/${data.personImage}")
-                    : null,
-                child: data?.personImage == null || data!.personImage!.isEmpty
-                    ? Icon(Icons.person, size: 28.sp)
-                    : null,
-              ),
+              leading: defaultImage.userProvider(data?.personImage, 24.r),
               title: Row(
                 children: [
                   Text(
@@ -529,14 +518,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
     //   ),
     // );
     return ListTile(
-      leading: CircleAvatar(
-        radius: 20.r,
-        backgroundColor: Colors.green.shade300,
-        backgroundImage: image.isNotEmpty
-            ? CachedNetworkImageProvider("${apiMethods.baseUrl}/$image")
-            : null,
-        child: image.isEmpty ? Icon(Icons.person, size: 20.sp) : null,
-      ),
+      leading: defaultImage.userProvider(image, 20.r),
       title: Text(name, style: theme.titleSmall),
       subtitle: RatingBarIndicator(
         rating: rating,

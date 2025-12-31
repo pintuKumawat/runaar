@@ -95,8 +95,6 @@ class SignupProvider extends ChangeNotifier {
     required String number,
     required String password,
   }) async {
-    if (!validateAll()) return;
-
     isLoading = true;
     errorMessage = null;
     notifyListeners();

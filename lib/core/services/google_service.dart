@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,7 +18,7 @@ class CustomPlaceResult {
 
 class GooglePlacesService {
   final _places = FlutterGooglePlacesSdk(
-    'AIzaSyBY2WMBsS7J0A-5rxJb5hGgxzYRWniC-eE',
+    dotenv.get("GOOGLE_API_KEY")
   );
 
   /// 🔹 Get autocomplete predictions

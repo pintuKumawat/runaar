@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
@@ -19,6 +20,7 @@ import 'package:runaar/provider/my_rides/booking_list_provider.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
+import 'package:runaar/provider/my_rides/request_list_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/profile/user_profile_update_provider.dart';
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
@@ -33,6 +35,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   SystemChrome.setSystemUIOverlayStyle(
@@ -58,6 +61,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PublishedListProvider()),
         ChangeNotifierProvider(create: (_) => PublishedDetailProvier()),
         ChangeNotifierProvider(create: (_) => BookingListProvider()),
+        ChangeNotifierProvider(create: (_) => RequestListProvider()),
         ChangeNotifierProvider(create: (_) => PassengerPublishedListProvider()),
         ChangeNotifierProvider(create: (_)=> BookingRequestProvider()),
         ChangeNotifierProvider(create: (_)=>UserProfileUpdateProvider())

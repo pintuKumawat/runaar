@@ -3,22 +3,22 @@ import 'package:runaar/models/home/booking_request_model.dart';
 
 class BookingRequestRepo {
   Future<BookingRequestModel> bookingRequest({
-    required int trip_id,
-    required int user_id,
-    required int seat_request,
-    required double total_price,
-    required String payment_method,
-    required String payment_status,
-    required String special_message,
+    required int tripId,
+    required int userId,
+    required int seatRequest,
+    required double totalPrice,
+    required String paymentMethod,
+    required String paymentStatus,
+    required String specialMessage,
   }) async {
     Map<String, dynamic> body = {
-      "trip_id": trip_id,
-      "user_id": user_id,
-      "seats_requested": seat_request,
-      "total_price": total_price,
-      "payment_method": payment_method,
-      "payment_status": payment_status,
-      "spical_message": special_message,
+      "trip_id": tripId,
+      "user_id": userId,
+      "seat_request": seatRequest,
+      "total_price": totalPrice,
+      "payment_method": paymentMethod,
+      "payment_status": specialMessage,
+      "spical_message": specialMessage,
     };
     return apiMethods.post(
       endpoint: "booking/request",
