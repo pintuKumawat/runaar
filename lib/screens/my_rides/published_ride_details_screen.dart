@@ -279,43 +279,74 @@ class _PublishedRideDetailsScreenState
   }
 
   Widget _passengerList(TextTheme theme) {
-    PassengerPublishedListProvider provider = context
-        .read<PassengerPublishedListProvider>();
-    return provider.isLoading
-        ? const CircularProgressIndicator()
-        : Card(
+    return Consumer<PassengerPublishedListProvider>(
+      builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.errorMessage != null) {
+          return Card(
             child: Padding(
               padding: 10.all,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Passengers (${provider.response?.passengers?.length ?? 0})",
-                    style: theme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  12.height,
-                  provider.errorMessage != null
-                      ? Center(child: Text(provider.errorMessage ?? ""))
-                      : ListView.builder(
-                          itemCount: provider.response?.passengers?.length,
-                          itemBuilder: (context, index) {
-                            final data = provider.response?.passengers?[index];
-                            return _passengerTile(
-                              theme,
-                              data?.passengerName ?? "",
-                              data?.profileImage ?? "",
-                              data?.rating ?? 0.0,
-                              data?.seatsRequested ?? 0,
-                              data?.paymentStatus,
-                            );
-                          },
-                        ),
-                ],
+              child: Center(child: Text(provider.errorMessage ?? "")),
+            ),
+          );
+        }
+
+        final passengers = provider.response?.passengers ?? [];
+        if (passengers.isEmpty) {
+          return Card(
+            child: Padding(
+              padding: 10.all,
+              child: Center(
+                child: Text("No passengers yet", style: theme.bodyMedium),
               ),
             ),
           );
+        }
+
+        return Card(
+          child: Padding(
+            padding: 10.all,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Passengers (${passengers.length})",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                12.height,
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 300.h, // Limit the height
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: passengers.length,
+                    itemBuilder: (context, index) {
+                      final data = passengers[index];
+                      return _passengerTile(
+                        theme,
+                        data.passengerName ?? "",
+                        data.profileImage ?? "",
+                        data.rating ?? 0.0,
+                        data.seatsRequested ?? 0,
+                        data.paymentStatus,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Widget _passengerTile(
@@ -459,7 +490,7 @@ class _PublishedRideDetailsScreenState
           try {
             DateFormat inputFormat = DateFormat(format);
             dateTime = inputFormat.parse(cleaned);
-            if (dateTime != null) break;
+            break;
           } catch (e) {
             continue;
           }
@@ -811,7 +842,6 @@ class _PublishedRideDetailsScreenState
   }
 
   void _updateTripStatus(String status) {
-
     // Example API call:
     // apiMethods.post(
     //   endpoint: "trip/update_status",
@@ -835,5 +865,4 @@ class _PublishedRideDetailsScreenState
     //   },
     // );
   }
-
 }

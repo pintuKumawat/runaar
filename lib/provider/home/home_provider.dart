@@ -30,6 +30,11 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
+  void resetSeats() {
+    _seats = 1;
+    notifyListeners();
+  }
+
   Future<void> rideSearch({
     required String deptDate,
     required String originCity,

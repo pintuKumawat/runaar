@@ -17,7 +17,7 @@ class ApiException implements Exception {
 
 class ApiMethods {
   final String baseUrl = "https://superradical-earlean-grapier.ngrok-free.dev";
-  // final String baseUrl = "http://192.168.1.100:3000";
+  // final String baseUrl = "http://localhost:3000";
 
   Future<T> get<T>({
     required String endpoint,

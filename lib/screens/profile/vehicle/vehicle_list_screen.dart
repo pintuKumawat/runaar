@@ -35,29 +35,33 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    VehicleListProvider provider = context.watch<VehicleListProvider>();
-    final vehicleData = provider.response?.data ?? [];
+
     return Scaffold(
       appBar: AppBar(title: Text("My Vehicles")),
       body: RefreshIndicator(
         onRefresh: _fetchData,
-        child: provider.isLoading!
-            ? Center(child: const CircularProgressIndicator())
-            : provider.errorMessage != null
-            ? Center(
-                child: Text(
-                  provider.errorMessage ?? "",
-                  style: textTheme.bodyMedium,
-                ),
-              )
-            : ListView.builder(
-                padding: 10.all,
-                itemCount: vehicleData.length,
-                itemBuilder: (context, index) {
-                  final data = vehicleData[index];
-                  return _vehicleTile(data, index, textTheme);
-                },
-              ),
+        child: Consumer<VehicleListProvider>(
+          builder: (context, vehicleProvider, child) {
+            final vehicleData = vehicleProvider.response?.data ?? [];
+            return vehicleProvider.isLoading!
+                ? Center(child: const CircularProgressIndicator())
+                : vehicleProvider.errorMessage != null
+                ? Center(
+                    child: Text(
+                      vehicleProvider.errorMessage ?? "",
+                      style: textTheme.bodyMedium,
+                    ),
+                  )
+                : ListView.builder(
+                    padding: 10.all,
+                    itemCount: vehicleData.length,
+                    itemBuilder: (context, index) {
+                      final data = vehicleData[index];
+                      return _vehicleTile(data, index, textTheme);
+                    },
+                  );
+          },
+        ),
       ),
     );
   }
@@ -68,14 +72,12 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         contentPadding: .only(left: 12.w),
         onTap: () => appNavigator.push(
           VehicleDetailsScreen(vehicleId: data.vehicleId ?? 0),
-
-          
         ),
         leading: CircleAvatar(
-          radius: 35.r,
+          radius: 28.r,
           backgroundColor: Colors.transparent,
-          backgroundImage: CachedNetworkImageProvider(
-            "${apiMethods.baseUrl}/${data.vehicleImage}",
+          child: CachedNetworkImage(
+            imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
 
             errorListener: (_) => Container(
               decoration: BoxDecoration(
@@ -112,7 +114,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
       barrierDismissible: false,
       barrierColor: appColor.mainColor.withOpacity(.7),
       builder: (_) => Consumer<DeleteVehicleProvider>(
-        builder: (BuildContext context, deleteVehicleProvider, child) {
+        builder: (context, deleteVehicleProvider, child) {
           return AlertDialog(
             backgroundColor: appColor.buttonColor,
             title: const Text("Delete Vehicle"),

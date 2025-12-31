@@ -5,13 +5,34 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmBookingScreen extends StatefulWidget {
-  const ConfirmBookingScreen({super.key});
+  final String date;
+  final String originTime;
+  final String originCity;
+  final String originAddress;
+  final String destinationTime;
+  final String destinationCity;
+  final String destinationAddress;
+  final double seatPrice;
+  final int tripId;
+  const ConfirmBookingScreen({
+    super.key,
+    required this.date,
+    required this.originTime,
+    required this.originCity,
+    required this.originAddress,
+    required this.destinationTime,
+    required this.destinationCity,
+    required this.destinationAddress,
+    required this.seatPrice,
+    required this.tripId,
+  });
 
   @override
   State<ConfirmBookingScreen> createState() => _ConfirmBookingScreenState();
@@ -28,14 +49,30 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   }
   
  
-  String _selectedPaymentMethod = 'Cash'; // Default payment method
+  String _selectedPaymentMethod = 'Cash';
   final List<String> _paymentMethods = ['Cash', 'Online'];
+
+  double calculateTotalPrice() {
+    try {
+      final homeProvider = context.read<HomeProvider>();
+      return widget.seatPrice * homeProvider.seats;
+    } catch (e) {
+      debugPrint("Error calculating total price: $e");
+      return 0.0;
+    }
+  }
+
+  // Format price to 2 decimal places
+  String formatPrice(double price) {
+    return price.toStringAsFixed(2);
+  }
 
   @override
   void initState() {
-    // TODO: implement initState super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) =>getuserId());
-    
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeProvider>().resetSeats();
+    });
   }
 
   @override
@@ -67,23 +104,30 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             20.height,
 
             /// DATE
-            Text('Mon, 22 Dec', style: theme.titleMedium),
+            Text(widget.date, style: theme.titleMedium),
             10.height,
 
             /// ROUTE
             _routeSection(theme),
 
-            24.height,
+            12.height,
+            _seatSelector(theme),
+            12.height,
 
             /// PRICE SUMMARY
-            _priceSummary(theme),
+            Consumer<HomeProvider>(
+              builder: (context, homeProvider, child) {
+                final totalPrice = calculateTotalPrice();
+                return _priceSummary(theme, homeProvider.seats, totalPrice);
+              },
+            ),
 
-            24.height,
+            12.height,
 
             /// PAYMENT METHOD
             _paymentMethodSection(theme),
 
-            24.height,
+            12.height,
 
             /// MESSAGE SECTION
             Text(
@@ -97,8 +141,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       ),
     );
   }
-
-  // ------------------- Widgets -------------------
 
   Widget _infoMessage(TextTheme theme) {
     return Container(
@@ -127,26 +169,23 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        /// TIMELINE
         Column(children: [30.height, _dot(), _line(), _dot()]),
         14.width,
-
-        /// LOCATIONS
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _locationTile(
-                time: '16:30',
-                title: 'Jaipur Junction',
-                subtitle: 'Railway Station Rd, Gopalbari, Rajasthan',
+                time: widget.originTime,
+                title: widget.originCity,
+                subtitle: widget.originAddress,
                 theme: theme,
               ),
               20.height,
               _locationTile(
-                time: '17:20',
-                title: 'Ringas Junction',
-                subtitle: 'Reengus',
+                time: widget.destinationTime,
+                title: widget.destinationCity,
+                subtitle: widget.destinationAddress,
                 theme: theme,
               ),
             ],
@@ -182,7 +221,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     );
   }
 
-  Widget _priceSummary(TextTheme theme) {
+  Widget _priceSummary(TextTheme theme, int seats, double totalPrice) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -196,7 +235,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
               children: [
                 Text("Price/Seats"),
                 Text(
-                  "190",
+                  formatPrice(widget.seatPrice),
                   style: theme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -209,7 +248,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
               children: [
                 Text("Seats Booking"),
                 Text(
-                  "2",
+                  seats.toString(),
                   style: theme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -229,7 +268,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                   ),
                 ),
                 Text(
-                  "₹380",
+                  totalPrice.toString(),
                   style: theme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: appColor.mainColor,
@@ -341,6 +380,56 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
           hintStyle: theme.bodyMedium?.copyWith(color: Colors.grey.shade600),
           border: InputBorder.none,
         ),
+      ),
+    );
+  }
+
+  Widget _seatSelector(TextTheme theme) {
+    return Consumer<HomeProvider>(
+      builder: (context, homeProvider, child) {
+        return Container(
+          padding: 14.hv(16),
+          margin: .only(bottom: 12.h),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: .circular(14.r),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Number of Seats', style: theme.bodyLarge),
+              Row(
+                children: [
+                  _seatButton(Icons.remove, () {
+                    homeProvider.decrement();
+                  }),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w),
+                    child: Text(
+                      "${homeProvider.seats}",
+                      style: theme.titleMedium,
+                    ),
+                  ),
+                  _seatButton(Icons.add, () {
+                    homeProvider.increment();
+                  }),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _seatButton(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: .circular(20.r),
+      child: CircleAvatar(
+        radius: 18.r,
+        backgroundColor: appColor.backgroundColor,
+        child: Icon(icon, color: appColor.mainColor, size: 18.sp),
       ),
     );
   }
