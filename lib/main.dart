@@ -10,6 +10,7 @@ import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/firebase_options.dart';
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/language/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
@@ -19,6 +20,7 @@ import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart'
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:runaar/provider/profile/user_profile_update_provider.dart';
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
@@ -57,6 +59,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PublishedDetailProvier()),
         ChangeNotifierProvider(create: (_) => BookingListProvider()),
         ChangeNotifierProvider(create: (_) => PassengerPublishedListProvider()),
+        ChangeNotifierProvider(create: (_)=> BookingRequestProvider()),
+        ChangeNotifierProvider(create: (_)=>UserProfileUpdateProvider())
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

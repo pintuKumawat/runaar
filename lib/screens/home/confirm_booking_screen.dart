@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
+import 'package:runaar/provider/auth/validate/login_provider.dart';
+import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmBookingScreen extends StatefulWidget {
   const ConfirmBookingScreen({super.key});
@@ -13,11 +18,29 @@ class ConfirmBookingScreen extends StatefulWidget {
 }
 
 class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
+  int? userId;
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+  
+ 
   String _selectedPaymentMethod = 'Cash'; // Default payment method
   final List<String> _paymentMethods = ['Cash', 'Online'];
 
   @override
+  void initState() {
+    // TODO: implement initState super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) =>getuserId());
+    
+  }
+
+  @override
   Widget build(BuildContext context) {
+    
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
@@ -310,7 +333,8 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
         borderRadius: .circular(12),
       ),
       child: TextField(
-        maxLines: 4,inputFormatters: [FirstLetterCapitalFormatter()],
+        maxLines: 4,
+        inputFormatters: [FirstLetterCapitalFormatter()],
         decoration: InputDecoration(
           hintText:
               "Hello, I've just booked your ride! I'd be glad to travel with you.",
@@ -322,21 +346,34 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   }
 
   Widget _bottomButton() {
-    return BottomAppBar(
-      child: SizedBox(
-        height: 56.h,
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: () {
-            appNavigator.push(
-              BookingDoneScreen(),
-              // BookingDoneScreen(paymentMethod: _selectedPaymentMethod),
-            );
-          },
-          icon: const Icon(Icons.event_seat),
-          label: const Text('Request to book'),
-        ),
-      ),
+    return Consumer<BookingRequestProvider>(
+      builder: (BuildContext context, provider, child) {
+        return BottomAppBar(
+          child: SizedBox(
+            height: 56.h,
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                await provider.bookingRequest(
+                  userId: userId!,
+                  tripId: 2,
+                  paymentMethod: "online",
+                  paymentStatus: "pending",
+                  seatRequest: 2,
+                  totalPrice: 12.55,
+                  specialMessage: "hello",
+                );
+                print("UserId is this ${userId}");
+                // appNavigator.push(BookingDoneScreen());
+
+                //BookingDoneScreen(paymentMethod: _selectedPaymentMethod),
+              },
+              icon: const Icon(Icons.event_seat),
+              label: const Text('Request to book'),
+            ),
+          ),
+        );
+      },
     );
   }
 

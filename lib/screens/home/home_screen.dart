@@ -181,12 +181,12 @@ class _HomeScreenState extends State<HomeScreen> {
         '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
     await homeProvider.rideSearch(
-      deptDate: date,
-      originCity: homeController.originCityController.text,
-      destinationCity: homeController.destinationCityController.text,
-      // deptDate: "2024-12-20",
-      // originCity: "Delhi",
-      // destinationCity: "Jaipur",
+      // deptDate: date,
+      // originCity: homeController.originCityController.text,
+      // destinationCity: homeController.destinationCityController.text,
+      deptDate: "2024-12-20",
+      originCity: "Delhi",
+      destinationCity: "Jaipur",
     );
 
     appNavigator.push(SearchScreen());

@@ -313,7 +313,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       vType: vehicleType,
       fType: fuelType,
       seats: int.parse(seatsCtrl.text),
-      color: addVehicleController.brandController.text,
+      color: addVehicleController.colorController.text,
       vImage: vehicleImage!,
       rcImage: rcImage!,
     );
