@@ -68,7 +68,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => RequestListProvider()),
         ChangeNotifierProvider(create: (_) => PassengerPublishedListProvider()),
         ChangeNotifierProvider(create: (_) => BookingRequestProvider()),
-        ChangeNotifierProvider(create: (_) => UserProfileUpdateProvider()),,
+        ChangeNotifierProvider(create: (_) => UserProfileUpdateProvider()),
         ChangeNotifierProvider(create: (_)=>UserDetailsProvider()),
         ChangeNotifierProvider(create: (_)=>ResetPasswordProvider())
       ],
