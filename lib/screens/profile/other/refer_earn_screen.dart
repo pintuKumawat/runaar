@@ -6,7 +6,8 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReferEarnScreen extends StatefulWidget {
-  const ReferEarnScreen({super.key});
+ final String? referCode;
+  const ReferEarnScreen({super.key, this.referCode});
 
   @override
   State<ReferEarnScreen> createState() => _ReferEarnScreenState();

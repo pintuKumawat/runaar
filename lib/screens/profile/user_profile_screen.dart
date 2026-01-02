@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
+import 'package:runaar/models/profile/user_details_model.dart';
+import 'package:runaar/provider/profile/user_details_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
@@ -36,9 +39,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   int userId = 0;
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getuserId().then((value) => loadData());
+    });
     super.initState();
-    getuserId();
+
     _loadVersion();
+  }
+
+  Future<void> loadData() async {
+    await context.read<UserDetailsProvider>().userDetails(userId: userId);
   }
 
   Future<void> _loadVersion() async {
@@ -59,77 +69,98 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(title: Text(userName)),
-      body: ListView(
-        padding: 10.all,
-        children: [
-          _profileHeader(theme),
-          10.height,
-
-          /// WALLET & REFER CARDS
-          Row(
-            mainAxisAlignment: .spaceBetween,
+    return Consumer<UserDetailsProvider>(
+      builder: (BuildContext context, userDetailsProvider, child) {
+        final data = userDetailsProvider.response?.userDetail;
+        return Scaffold(
+          appBar: AppBar(title: Text("${data?.name ?? "name"}")),
+          body: ListView(
+            padding: 10.all,
             children: [
-              Expanded(child: _referCard(theme)),
-              12.width,
-              Expanded(child: _walletCard(theme)),
+              _profileHeader(theme, data),
+              10.height,
+
+              /// WALLET & REFER CARDS
+              Row(
+                mainAxisAlignment: .spaceBetween,
+                children: [
+                  Expanded(child: _referCard(theme, data)),
+                  12.width,
+                  Expanded(child: _walletCard(theme)),
+                ],
+              ),
+
+              12.height,
+              _sectionTitle("Account", theme),
+              _profileTile(Icons.person_outline, "Edit Profile", data, theme),
+              _profileTile(Icons.lock_outline, "Change Password", data, theme),
+              _profileTile(Icons.language, "Language", data, theme),
+              _profileTile(
+                Icons.verified_user_outlined,
+                "Verification",
+                data,
+                theme,
+              ),
+
+              12.height,
+              _sectionTitle("Rides", theme),
+              _profileTile(Icons.directions_car, "My Rides", data, theme),
+              _profileTile(Icons.history, "Trip History", data, theme),
+
+              12.height,
+
+              _sectionTitle("Vehicle", theme),
+              _profileTile(Icons.car_rental, "My Vehicles", data, theme),
+              _profileTile(
+                Icons.add_circle_outline,
+                "Add Vehicle",
+                data,
+                theme,
+              ),
+
+              12.height,
+
+              _sectionTitle("Support & Legal", theme),
+              _profileTile(Icons.support_agent, "Contact Support", data, theme),
+              _profileTile(Icons.help_outline, "FAQs", data, theme),
+              _profileTile(
+                Icons.privacy_tip_outlined,
+                "Privacy Policy",
+                data,
+                theme,
+              ),
+              _profileTile(Icons.star_rate_outlined, "Rate App", data, theme),
+              _profileTile(Icons.share_outlined, "Share App", data, theme),
+
+              12.height,
+
+              _sectionTitle("Danger Zone", theme),
+              _profileTile(
+                Icons.delete_forever_outlined,
+                "Deactivate Account",
+                data,
+                theme,
+                danger: true,
+              ),
+              _profileTile(Icons.logout, "Logout", data, theme, danger: true),
+
+              15.height,
+
+              Center(
+                child: Text(
+                  "App Version $appVersion",
+                  style: theme.bodySmall?.copyWith(color: Colors.grey),
+                ),
+              ),
+              15.height,
             ],
           ),
-
-          12.height,
-          _sectionTitle("Account", theme),
-          _profileTile(Icons.person_outline, "Edit Profile", theme),
-          _profileTile(Icons.lock_outline, "Change Password", theme),
-          _profileTile(Icons.language, "Language", theme),
-          _profileTile(Icons.verified_user_outlined, "Verification", theme),
-
-          12.height,
-          _sectionTitle("Rides", theme),
-          _profileTile(Icons.directions_car, "My Rides", theme),
-          _profileTile(Icons.history, "Trip History", theme),
-
-          12.height,
-
-          _sectionTitle("Vehicle", theme),
-          _profileTile(Icons.car_rental, "My Vehicles", theme),
-          _profileTile(Icons.add_circle_outline, "Add Vehicle", theme),
-
-          12.height,
-
-          _sectionTitle("Support & Legal", theme),
-          _profileTile(Icons.support_agent, "Contact Support", theme),
-          _profileTile(Icons.help_outline, "FAQs", theme),
-          _profileTile(Icons.privacy_tip_outlined, "Privacy Policy", theme),
-          _profileTile(Icons.star_rate_outlined, "Rate App", theme),
-          _profileTile(Icons.share_outlined, "Share App", theme),
-
-          12.height,
-
-          _sectionTitle("Danger Zone", theme),
-          _profileTile(
-            Icons.delete_forever_outlined,
-            "Deactivate Account",
-            theme,
-            danger: true,
-          ),
-          _profileTile(Icons.logout, "Logout", theme, danger: true),
-
-          15.height,
-
-          Center(
-            child: Text(
-              "App Version $appVersion",
-              style: theme.bodySmall?.copyWith(color: Colors.grey),
-            ),
-          ),
-          15.height,
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _profileHeader(TextTheme theme) {
+  Widget _profileHeader(TextTheme theme, UserDetail? data) {
     return Container(
       decoration: BoxDecoration(
         color: appColor.themeColor.withOpacity(0.2),
@@ -139,13 +170,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         contentPadding: 12.all,
         leading: defaultImage.userProvider("", 30.r),
         title: Text(
-          userName,
+          "${data?.name ?? "user"}",
           style: theme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         subtitle: Row(
           children: [
             RatingBarIndicator(
-              rating: 4.6,
+              rating: double.parse(data?.rating.toString() ?? "0.0"),
               itemBuilder: (context, index) =>
                   Icon(Icons.star, color: Colors.amber),
               itemCount: 5,
@@ -154,7 +185,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               direction: Axis.horizontal,
             ),
             3.width,
-            Text("(4.6)", style: theme.bodySmall),
+            Text("${data?.rating ?? 0}", style: theme.bodySmall),
           ],
         ),
         onTap: () {
@@ -217,7 +248,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _referCard(TextTheme theme) {
+  Widget _referCard(TextTheme theme, UserDetail? data) {
     return Card(
       elevation: 3,
       // shadowColor: Colors.black26,
@@ -225,7 +256,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12.r),
-        onTap: () => appNavigator.push(ReferEarnScreen()),
+        onTap: () =>
+            appNavigator.push(ReferEarnScreen(referCode: data?.referBy)),
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: 14.w,
@@ -280,6 +312,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget _profileTile(
     IconData icon,
     String title,
+    UserDetail? data,
     TextTheme theme, {
     bool danger = false,
   }) {
@@ -297,15 +330,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
         ),
         trailing: Icon(Icons.arrow_forward_ios, size: 14.sp),
-        onTap: () => _handleTap(title),
+        onTap: () => _handleTap(title, data),
       ),
     );
   }
 
-  void _handleTap(String title) {
+  void _handleTap(String title, UserDetail? data) {
     switch (title) {
       case "Edit Profile":
-        appNavigator.push(EditProfileScreen(userId: userId));
+        appNavigator.push(
+          EditProfileScreen(
+            image: data?.profileImage,
+            userId: userId,
+            userName: data?.name,
+            email: data?.email,
+            dob: data?.dob,
+            gender: data?.gender,
+          ),
+        );
         break;
       case "Change Password":
         appNavigator.push(ChangePasswordScreen(userId: userId));
@@ -314,7 +356,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         appNavigator.push(LanguageChangeScreen());
         break;
       case "Verification":
-        appNavigator.push(VerificationScreen());
+        appNavigator.push(
+          VerificationScreen(
+            isLicenceVerified: data?.isLicenceVerified,
+            isDocumentVerified: data?.isDocumentVerified,
+            isNumberVerified: data?.isNumberVerified,
+            isEmailVerified: data?.isEmailVerified,
+          ),
+        );
         break;
       case "My Rides":
         appNavigator.push(MyRidesScreen(initialIndex: 0));
