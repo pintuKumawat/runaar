@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
@@ -7,7 +8,20 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 enum VerificationStatus { verified, pending, inProgress }
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+ 
+  final int? isLicenceVerified;
+  final int? isDocumentVerified;
+  final int? isNumberVerified;
+  final int? isEmailVerified;
+
+  const VerificationScreen({
+    super.key,
+   
+    required this.isLicenceVerified,
+    required this.isDocumentVerified,
+    required this. isNumberVerified,
+    required this.isEmailVerified,
+  });
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();

@@ -14,7 +14,21 @@ import 'package:runaar/provider/profile/user_profile_update_provider.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final int userId;
-  const EditProfileScreen({super.key, required this.userId});
+  final String? image;
+  final String? userName;
+  final String? email;
+  final String? dob;
+  final String? gender;
+
+  const EditProfileScreen({
+    super.key,
+    required this.userId,
+    required this.image,
+    required this.userName,
+    required this.email,
+    required this.dob,
+    required this.gender,
+  });
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -27,10 +41,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  // @override
+  // void dispose() {
+  //   editProfileController.dispose();
+  //   super.dispose();
+  // }
   @override
-  void dispose() {
-    editProfileController.dispose();
-    super.dispose();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => _initFormateData(),
+    );
+  }
+
+  void _initFormateData() {
+    editProfileController.nameController.text = widget.userName ?? "";
+    editProfileController.emailController.text = widget.email ?? "";
+    editProfileController.dobController.text = widget.dob ?? "";
+    gender = widget.gender ?? "";
   }
 
   @override
@@ -71,7 +100,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Center(
       child: Stack(
         children: [
-          defaultImage.userProvider("", 55.r),
+          defaultImage.userProvider(widget.image, 55.r),
           Positioned(
             bottom: 4.h,
             right: 4.w,
@@ -200,6 +229,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           style: textTheme.bodyMedium,
           inputFormatters: [FirstLetterCapitalFormatter()],
           decoration: InputDecoration(
+            //  hintText: widget.userName ?? "user",
             errorText: updateProvider.userNameError,
             // labelText: "Full Name",
             prefixIcon: Icon(Icons.person_outline),
@@ -222,6 +252,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           style: textTheme.bodyMedium,
           decoration: InputDecoration(
             errorText: updateProvider.emailError,
+            hintText: widget.email ?? "email",
             // labelText: "Email",
             prefixIcon: Icon(Icons.email_outlined),
           ),
@@ -270,7 +301,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       readOnly: true,
       onTap: _selectDob,
       style: textTheme.bodyMedium,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
+        hintText: widget.dob,
         // labelText: "Date of Birth",
         prefixIcon: Icon(Icons.calendar_today_outlined),
       ),

@@ -42,17 +42,8 @@ class ApiMethods {
       throw ApiException("No internet connection or server unreachable.");
     } on TimeoutException catch (_) {
       throw ApiException("Request timed out. Server may be down.");
-    } on HandshakeException catch (_) {
-      throw ApiException("Secure connection failed. Please try again later.");
-    } on HttpException catch (_) {
-      throw ApiException("Invalid response from server.");
-    } on FormatException catch (_) {
-      throw ApiException("Bad response format from server.");
-    } on http.ClientException catch (_) {
-      throw ApiException("Failed to connect to server.");
-    } catch (e, stackTrace) {
+    } catch (e) {
       debugPrint("API ERROR: $e");
-      debugPrint("STACK TRACE: $stackTrace");
 
       throw ApiException("Something went wrong. Please try again later.");
     }
@@ -78,17 +69,8 @@ class ApiMethods {
       throw ApiException("No internet connection or server unreachable.");
     } on TimeoutException catch (_) {
       throw ApiException("Request timed out. Server may be down.");
-    } on HandshakeException catch (_) {
-      throw ApiException("Secure connection failed. Please try again later.");
-    } on HttpException catch (_) {
-      throw ApiException("Invalid response from server.");
-    } on FormatException catch (_) {
-      throw ApiException("Bad response format from server.");
-    } on http.ClientException catch (_) {
-      throw ApiException("Failed to connect to server.");
-    } catch (e, stackTrace) {
+    } catch (e) {
       debugPrint("API ERROR: $e");
-      debugPrint("STACK TRACE: $stackTrace");
 
       throw ApiException("Something went wrong. Please try again later.");
     }
@@ -201,17 +183,8 @@ class ApiMethods {
       throw ApiException("No internet connection or server unreachable.");
     } on TimeoutException catch (_) {
       throw ApiException("Request timed out. Server may be down.");
-    } on HandshakeException catch (_) {
-      throw ApiException("Secure connection failed. Please try again later.");
-    } on HttpException catch (_) {
-      throw ApiException("Invalid response from server.");
-    } on FormatException catch (_) {
-      throw ApiException("Bad response format from server.");
-    } on http.ClientException catch (_) {
-      throw ApiException("Failed to connect to server.");
-    } catch (e, stackTrace) {
+    } catch (e) {
       debugPrint("API ERROR: $e");
-      debugPrint("STACK TRACE: $stackTrace");
 
       throw ApiException("Something went wrong. Please try again later.");
     }
@@ -237,7 +210,7 @@ class ApiMethods {
         final Map<String, dynamic> errorData = json.decode(response.body);
         debugPrint(errorData.toString());
         errorMessage =
-            errorData['meesage'] ??
+            errorData['message'] ??
             errorData['error'] ??
             "An unknown error occurred.";
       } else {

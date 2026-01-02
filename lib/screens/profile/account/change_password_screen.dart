@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/models/profile/reset_password/reset_password_model.dart';
+import 'package:runaar/provider/profile/reserPassword/reset_password_provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final int userId;
@@ -167,22 +170,37 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Widget _saveButton(TextTheme textTheme) {
-    return BottomAppBar(
-      child: SizedBox(
-        width: double.infinity,
-        height: 56.h,
-        child: ElevatedButton(
-          onPressed: _changePassword,
-          child: Text("Update Password"),
-        ),
-      ),
+    return Consumer<ResetPasswordProvider>(
+      builder: (BuildContext context, resetPasswordProvider, child) {
+        return BottomAppBar(
+          child: SizedBox(
+            width: double.infinity,
+            height: 56.h,
+            child: ElevatedButton(
+              onPressed: () async {
+                await resetPasswordProvider.resetPassword(
+                  userId: widget.userId,
+                  password: changePasswordController.currentController.text,
+                  newPassword: changePasswordController.passwordController.text,
+                );
+
+                if (resetPasswordProvider.errorMessage != null) {
+                  appSnackbar.showSingleSnackbar(
+                    context,
+                    "password error ${resetPasswordProvider.errorMessage ?? ""}",
+                  );
+                  return;
+                }
+                appSnackbar.showSingleSnackbar(
+                  context,
+                  resetPasswordProvider.response?.message ?? "",
+                );
+              },
+              child: Text("Update Password"),
+            ),
+          ),
+        );
+      },
     );
-  }
-
-  void _changePassword() {
-    if (!_formKey.currentState!.validate()) return;
-
-    appSnackbar.showSingleSnackbar(context, "Password updated successfully");
-    changePasswordController.clear();
   }
 }
