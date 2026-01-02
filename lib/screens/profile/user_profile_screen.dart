@@ -73,7 +73,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       builder: (BuildContext context, userDetailsProvider, child) {
         final data = userDetailsProvider.response?.userDetail;
         return Scaffold(
-          appBar: AppBar(title: Text("${data?.name ?? "name"}")),
+          appBar: AppBar(title: Text(data?.name ?? "name")),
           body: ListView(
             padding: 10.all,
             children: [
