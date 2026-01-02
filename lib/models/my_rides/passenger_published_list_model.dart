@@ -31,7 +31,7 @@ class Passengers {
   String? passengerName;
   String? profileImage;
   String? phoneNumber;
-  double? rating;
+  int? rating;
 
   Passengers(
       {this.seatsRequested,

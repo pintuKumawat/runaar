@@ -15,8 +15,9 @@ class LoginProvider extends ChangeNotifier {
 
   LoginModel? get response => _response;
   String? get errorMessage => _errorMessage;
-// for fatch userId
+  // for fatch userId
   int? get userId => _response?.userId;
+
 
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
@@ -77,4 +78,4 @@ class LoginProvider extends ChangeNotifier {
   }
 }
 
-// 
+//

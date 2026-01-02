@@ -24,12 +24,7 @@ class AddVehicleScreen extends StatefulWidget {
 class _AddVehicleScreenState extends State<AddVehicleScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final brandCtrl = addVehicleController.brandController;
-  final modelCtrl = addVehicleController.modelController;
-  final numberCtrl = addVehicleController.numberController;
-  final seatsCtrl = addVehicleController.seatsController;
-  final colorCtrl = addVehicleController.colorController;
-
+  AddVehicleController addVehicleController = AddVehicleController();
   String vehicleType = "Sedan";
   String fuelType = "Petrol";
 
@@ -38,12 +33,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  @override
-  void dispose() {
-    addVehicleController.dispose();
-    super.dispose();
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -59,17 +49,17 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _label("Brand Name", textTheme),
-              _textField(brandCtrl),
+              _textField(addVehicleController.brandController),
 
               14.height,
 
               _label("Model Name", textTheme),
-              _textField(modelCtrl),
+              _textField(addVehicleController.modelController),
 
               10.height,
 
               _label("Vehicle Number", textTheme),
-              _textField(numberCtrl),
+              _textField(addVehicleController.numberController),
 
               14.height,
 
@@ -94,12 +84,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
               14.height,
 
               _label("Number of Seats", textTheme),
-              _textField(seatsCtrl, keyboardType: TextInputType.number),
+              _textField(
+                addVehicleController.seatsController,
+                keyboardType: TextInputType.number,
+              ),
 
               14.height,
 
               _label("Color", textTheme),
-              _textField(colorCtrl),
+              _textField(addVehicleController.colorController),
 
               24.height,
 
@@ -148,13 +141,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
   }) {
     return TextFormField(
       controller: ctrl,
-      inputFormatters: ctrl == numberCtrl
+      inputFormatters: ctrl == addVehicleController.numberController
           ? [UpperCaseTextFormatter()]
           : [FirstLetterCapitalFormatter()],
       keyboardType: keyboardType,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
-        if (ctrl == numberCtrl) {
+        if (ctrl == addVehicleController.numberController) {
           if (value == null || value.isEmpty) {
             return "Please enter vehicle number";
           }
@@ -177,7 +170,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           return null;
         }
 
-        if (ctrl == seatsCtrl) {
+        if (ctrl == addVehicleController.seatsController) {
           if (value == null || value.isEmpty) {
             return "Please enter number of seats";
           }
@@ -194,7 +187,9 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
           return null;
         }
 
-        if (ctrl == brandCtrl || ctrl == modelCtrl || ctrl == colorCtrl) {
+        if (ctrl == addVehicleController.brandController ||
+            ctrl == addVehicleController.modelController ||
+            ctrl == addVehicleController.colorController) {
           if (value == null || value.isEmpty) {
             return "Required field";
           }
@@ -266,6 +261,8 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       imageQuality: 80,
     );
 
+    if (!mounted) return; // ✅ IMPORTANT
+
     if (picked != null) {
       onPicked(File(picked.path));
     }
@@ -301,6 +298,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     if (vehicleImage == null || rcImage == null) {
+      if (!mounted) return;
       appSnackbar.showSingleSnackbar(context, "Please upload all images");
       return;
     }
@@ -312,11 +310,13 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       vNumber: addVehicleController.numberController.text,
       vType: vehicleType,
       fType: fuelType,
-      seats: int.parse(seatsCtrl.text),
+      seats: int.parse(addVehicleController.seatsController.text),
       color: addVehicleController.colorController.text,
       vImage: vehicleImage!,
       rcImage: rcImage!,
     );
+
+    if (!mounted) return; // ✅ CRITICAL
 
     if (vehicleProvider.errorMessage != null) {
       appSnackbar.showSingleSnackbar(
@@ -325,10 +325,15 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
       );
       return;
     }
+
     appSnackbar.showSingleSnackbar(
       context,
       vehicleProvider.reponse?.message ?? "",
     );
+
+    addVehicleController.clear();
+    vehicleImage = null;
+    rcImage = null;
 
     appNavigator.pushReplacement(VehicleListScreen(userId: widget.userId));
   }

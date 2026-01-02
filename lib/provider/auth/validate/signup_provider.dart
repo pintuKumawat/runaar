@@ -5,11 +5,7 @@ import 'package:runaar/models/auth/sign_up_model.dart';
 import 'package:runaar/repos/auth/sign_up_repo.dart';
 
 class SignupProvider extends ChangeNotifier {
-  // final TextEditingController signUserController = TextEditingController();
-  // final TextEditingController signPhoneController = TextEditingController();
-  // final TextEditingController signEmailController = TextEditingController();
-  // final TextEditingController signPasswordController = TextEditingController();
-
+  
   String? userNameError;
   String? emailError;
   String? phoneNumberError;
@@ -20,6 +16,7 @@ class SignupProvider extends ChangeNotifier {
 
   SignUpModel? response;
   String? errorMessage;
+
 
   // Toggle password visibility
   void togglePasswordVisibility() {

@@ -1,58 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
+import 'package:runaar/models/my_rides/booking_detail_model.dart';
+import 'package:runaar/provider/my_rides/booking_detail_provider.dart';
+import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class BookingDetailsScreen extends StatelessWidget {
+class BookingDetailsScreen extends StatefulWidget {
   final int bookingId;
 
   const BookingDetailsScreen({super.key, required this.bookingId});
 
   @override
+  State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+}
+
+class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
+  Future<void> _fetchData() async {
+    await context.read<BookingDetailProvider>().bookingDetail(
+      tripId: widget.bookingId,
+    );
+  }
+
+  Future<void> _fetchPassenger() async {
+    final data = context.read<BookingDetailProvider>().response?.detail;
+    await context.read<PassengerPublishedListProvider>().passengerList(
+      tripId: data?.tripId ?? 0,
+    );
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _fetchData().then((value) => _fetchPassenger()),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    BookingStatus currentStatus = BookingStatus.cancelled;
-
-    DateTime departureTime = DateTime(
-      2026,
-      9,
-      22,
-      15,
-      30,
-    ); // Mon, 22 Sep 2025 05:30 PM
+    DateTime departureTime = DateTime(2026, 9, 22, 15, 30);
     DateTime now = DateTime.now();
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Booking Details")),
-      bottomNavigationBar: _statusButton(
-        theme,
-        currentStatus,
-        departureTime,
-        now,
-        context,
-      ),
-      body: SingleChildScrollView(
-        padding: 10.all,
-        child: Column(
-          children: [
-            statusContainer(theme, currentStatus),
-            // 6.height,
-            _tripHeader(theme),
-            // 6.height,
-            _driverCard(theme),
-            // 6.height,
-            _vehicleDetails(theme),
+    BookingStatus getCurrentStatus(String? status) {
+      switch (status?.toLowerCase()) {
+        case "cancelled":
+          return BookingStatus.cancelled;
+        case "confirmed":
+          return BookingStatus.confirmed;
+        case "completed":
+          return BookingStatus.completed;
+        case "started":
+          return BookingStatus.started;
+        case "rejected":
+          return BookingStatus.rejected;
+        default:
+          return BookingStatus.pending;
+      }
+    }
 
-            // 6.height,
-            _priceSummary(theme),
-            _paymentDetails(theme),
-            _passengerList(theme),
-          ],
-        ),
-      ),
+    return Consumer<BookingDetailProvider>(
+      builder: (context, provider, child) {
+        final data = provider.response?.detail;
+        return Scaffold(
+          appBar: AppBar(title: Text("Booking Details")),
+          bottomNavigationBar: _statusButton(
+            theme,
+            getCurrentStatus(data?.tripStatus),
+            departureTime,
+            now,
+            context,
+          ),
+          body: provider.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : provider.errorMessage != null
+              ? Center(child: Text(provider.errorMessage ?? ""))
+              : SingleChildScrollView(
+                  padding: 10.all,
+                  child: Column(
+                    children: [
+                      statusContainer(
+                        theme,
+                        getCurrentStatus(data?.bookingStatus),
+                      ),
+                      _tripHeader(theme, data),
+                      _driverCard(theme, data),
+                      _vehicleDetails(theme, data),
+                      _priceSummary(theme, data),
+                      _paymentDetails(theme, data),
+                      _passengerList(theme),
+                    ],
+                  ),
+                ),
+        );
+      },
     );
   }
 
@@ -75,22 +122,22 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _tripHeader(TextTheme theme) {
+  Widget _tripHeader(TextTheme theme, Detail? data) {
     return Card(
       child: Padding(
         padding: 10.all,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Mon, 22 Sep 2025", style: theme.titleSmall),
+            Text(data?.tripDate ?? "", style: theme.titleSmall),
             14.height,
 
             /// FROM
             _locationRow(
               icon: Icons.radio_button_checked,
-              city: "New Delhi",
-              address: "New Delhi Railway Station Main Gate Area Central Delhi",
-              time: "08:30 AM",
+              city: data?.originCity ?? "",
+              address: data?.originAddress ?? "",
+              time: formatToAmPmSimple(data?.deptTime),
               theme: theme,
             ),
 
@@ -99,7 +146,12 @@ class BookingDetailsScreen extends StatelessWidget {
             /// DURATION
             Center(
               child: Text(
-                "5h 00m",
+                formatDuration(
+                  calculateTimeDifference(
+                    data?.deptTime ?? "",
+                    data?.arrivalTime ?? "",
+                  ),
+                ),
                 style: theme.bodyMedium?.copyWith(color: Colors.grey),
               ),
             ),
@@ -109,9 +161,9 @@ class BookingDetailsScreen extends StatelessWidget {
             /// TO
             _locationRow(
               icon: Icons.location_on,
-              city: "Jaipur",
-              address: "Jaipur Pink City Bus Stand Road Rajasthan Area",
-              time: "01:30 PM",
+              city: data?.destinationCity ?? "",
+              address: data?.destinationAddress ?? "",
+              time: formatToAmPmSimple(data?.arrivalTime),
               theme: theme,
             ),
           ],
@@ -166,7 +218,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _driverCard(TextTheme theme) {
+  Widget _driverCard(TextTheme theme, Detail? data) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -179,17 +231,31 @@ class BookingDetailsScreen extends StatelessWidget {
             ),
             ListTile(
               contentPadding: 5.vertical,
-              leading: defaultImage.userProvider("", 24.r),
-              title: Text(
-                'Nihit Singh',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              leading: defaultImage.userProvider(data?.driverImage, 24.r),
+              title: Row(
+                children: [
+                  Text(
+                    data?.driverName ?? "",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  5.width,
+                  Icon(
+                    Icons.verified,
+                    color: data?.driverIsVerified == 1
+                        ? Colors.green
+                        : Colors.grey,
+                    size: 18.sp,
+                  ),
+                ],
               ),
               subtitle: Padding(
-                padding: EdgeInsets.only(top: 4.h),
+                padding: .only(top: 4.h),
                 child: RatingBarIndicator(
-                  rating: 4.6,
+                  rating: parseRating(data?.driverRating),
                   itemBuilder: (_, _) =>
                       const Icon(Icons.star, color: Colors.amber),
                   itemCount: 5,
@@ -197,11 +263,17 @@ class BookingDetailsScreen extends StatelessWidget {
                   unratedColor: Colors.grey.shade300,
                 ),
               ),
-              trailing: Text(
-                "Call",
-                style: theme.bodyMedium?.copyWith(
-                  fontWeight: .w600,
-                  color: appColor.secondColor,
+              trailing: InkWell(
+                onTap: () {
+                  var num = "+91${data?.driverPhone}";
+                  launch("tel:$num");
+                },
+                child: Text(
+                  "Call",
+                  style: theme.bodyMedium?.copyWith(
+                    fontWeight: .w600,
+                    color: appColor.secondColor,
+                  ),
                 ),
               ),
             ),
@@ -211,7 +283,10 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _priceSummary(TextTheme theme) {
+  Widget _priceSummary(TextTheme theme, Detail? data) {
+    double totalPrice =
+        double.parse(data?.pricePerSeat ?? "0") *
+        double.parse(data?.seatsBooked.toString() ?? "0");
     return Card(
       child: Padding(
         padding: 10.all,
@@ -225,7 +300,7 @@ class BookingDetailsScreen extends StatelessWidget {
               children: [
                 Text("Price/Seats"),
                 Text(
-                  "190",
+                  data?.pricePerSeat ?? "",
                   style: theme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -238,7 +313,7 @@ class BookingDetailsScreen extends StatelessWidget {
               children: [
                 Text("Seats Booked", style: theme.bodyMedium),
                 Text(
-                  "2",
+                  data?.seatsBooked.toString() ?? "",
                   style: theme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -258,7 +333,7 @@ class BookingDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  "₹380",
+                  "₹ $totalPrice",
                   style: theme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: appColor.mainColor,
@@ -272,7 +347,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _paymentDetails(TextTheme theme) {
+  Widget _paymentDetails(TextTheme theme, Detail? data) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -286,7 +361,7 @@ class BookingDetailsScreen extends StatelessWidget {
               children: [
                 Text("Payment Method"),
                 Text(
-                  "Cash/Online",
+                  data?.paymentMethod ?? "",
                   style: theme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -299,7 +374,7 @@ class BookingDetailsScreen extends StatelessWidget {
               children: [
                 Text("Payment Status"),
                 Text(
-                  "Pending",
+                  data?.paymentStatus ?? "",
                   style: theme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -312,7 +387,7 @@ class BookingDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _vehicleDetails(TextTheme theme) {
+  Widget _vehicleDetails(TextTheme theme, Detail? data) {
     return Card(
       child: Padding(
         padding: 10.all,
@@ -324,9 +399,9 @@ class BookingDetailsScreen extends StatelessWidget {
               style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             12.height,
-            _infoRow(theme, "Car Model", "Swift Dzire"),
-            _infoRow(theme, "Color", "White"),
-            _infoRow(theme, "Number", "DL 3C AB 1234"),
+            _infoRow(theme, "Car Model", data?.vehicleModel ?? ""),
+            _infoRow(theme, "Color", data?.vehicleColor ?? ""),
+            _infoRow(theme, "Number", data?.carNumber ?? ""),
           ],
         ),
       ),
@@ -359,7 +434,6 @@ class BookingDetailsScreen extends StatelessWidget {
     String buttonText = "Ride Completed";
     bool isEnabled = false;
 
-    // Calculate if departure time is within 1 hour
     bool isWithinOneHourOfDeparture =
         currentTime.isAfter(departureTime.subtract(Duration(hours: 1))) &&
         !currentTime.isAfter(departureTime);
@@ -414,7 +488,7 @@ class BookingDetailsScreen extends StatelessWidget {
                 }
               : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isEnabled ? Colors.red : Colors.grey.shade50,
+            backgroundColor: isEnabled ? Colors.red : Colors.grey,
             foregroundColor: Colors.white,
           ),
           child: Text(buttonText),
@@ -448,37 +522,159 @@ class BookingDetailsScreen extends StatelessWidget {
   }
 
   Widget _passengerList(TextTheme theme) {
-    return Card(
-      child: Padding(
-        padding: 10.all,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Passengers (2)",
-              style: theme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+    return Consumer<PassengerPublishedListProvider>(
+      builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (provider.errorMessage != null) {
+          return Card(
+            child: Padding(
+              padding: 10.all,
+              child: Center(child: Text(provider.errorMessage ?? "")),
             ),
-            12.height,
-            _passengerTile(theme, "Rahul Patel", 4.3),
-            _passengerTile(theme, "Neha Verma", 4.1),
-          ],
-        ),
-      ),
+          );
+        }
+
+        final passengers = provider.response?.passengers ?? [];
+        if (passengers.isEmpty) {
+          return Card(
+            child: Padding(
+              padding: 10.all,
+              child: Center(
+                child: Text("No passengers yet", style: theme.bodyMedium),
+              ),
+            ),
+          );
+        }
+
+        return Card(
+          child: Padding(
+            padding: 10.all,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Passengers (${passengers.length})",
+                  style: theme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                12.height,
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: 300.h),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: passengers.length,
+                    itemBuilder: (context, index) {
+                      final data = passengers[index];
+                      return _passengerTile(
+                        theme,
+                        data.passengerName ?? "",
+                        data.profileImage ?? "",
+                        data.rating,
+                        data.seatsRequested ?? 0,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _passengerTile(TextTheme theme, String name, double rating) {
+  Widget _passengerTile(
+    TextTheme theme,
+    String name,
+    String image,
+    dynamic rating,
+    int seats,
+  ) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: defaultImage.userProvider("", 22.r),
+      leading: defaultImage.userProvider(image, 22.r),
       title: Text(name, style: theme.titleSmall),
       subtitle: RatingBarIndicator(
-        rating: rating,
+        rating: parseRating(rating),
         itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
         itemCount: 5,
         itemSize: 16.sp,
       ),
-      trailing: Text("1 Seat", style: theme.titleSmall),
+      trailing: Text("$seats Seat", style: theme.titleSmall),
     );
+  }
+
+  double parseRating(dynamic value) {
+    if (value == null) return 0.0;
+
+    if (value is num) return value.toDouble();
+
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value.trim()) ?? 0.0;
+    }
+
+    return 0.0;
+  }
+
+  String formatToAmPmSimple(String? time) {
+    if (time == null || time.trim().isEmpty) return "--";
+
+    try {
+      final parts = time.trim().split(":");
+      int hour = int.parse(parts[0]);
+      int minute = int.parse(parts[1]);
+
+      final suffix = hour >= 12 ? "PM" : "AM";
+      hour = hour % 12;
+      if (hour == 0) hour = 12;
+
+      return "$hour:${minute.toString().padLeft(2, '0')} $suffix";
+    } catch (_) {
+      return "--";
+    }
+  }
+
+  String formatDuration(Duration duration) {
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+
+    return "${hours}h ${minutes}m";
+  }
+
+  Duration calculateTimeDifference(String? startTime, String? endTime) {
+    List<int>? toParts(String? time) {
+      if (time == null || time.trim().isEmpty) return null;
+
+      final parts = time.trim().split(":");
+      if (parts.length < 2) return null;
+
+      final h = int.tryParse(parts[0]);
+      final m = int.tryParse(parts[1]);
+      final s = parts.length > 2 ? int.tryParse(parts[2]) : 0;
+
+      if (h == null || m == null || s == null) return null;
+      return [h, m, s];
+    }
+
+    final start = toParts(startTime);
+    final end = toParts(endTime);
+
+    if (start == null || end == null) {
+      return Duration.zero;
+    }
+
+    final diff = Duration(
+      hours: end[0] - start[0],
+      minutes: end[1] - start[1],
+      seconds: end[2] - start[2],
+    );
+
+    return diff.isNegative ? Duration.zero : diff;
   }
 }

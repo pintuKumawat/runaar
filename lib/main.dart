@@ -16,6 +16,7 @@ import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/language/language_provider.dart';
 import 'package:runaar/provider/auth/validate/login_provider.dart';
 import 'package:runaar/provider/auth/validate/signup_provider.dart';
+import 'package:runaar/provider/my_rides/booking_detail_provider.dart';
 import 'package:runaar/provider/my_rides/booking_list_provider.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
@@ -61,10 +62,11 @@ void main() async {
         ChangeNotifierProvider(create: (_) => PublishedListProvider()),
         ChangeNotifierProvider(create: (_) => PublishedDetailProvier()),
         ChangeNotifierProvider(create: (_) => BookingListProvider()),
+        ChangeNotifierProvider(create: (_) => BookingDetailProvider()),
         ChangeNotifierProvider(create: (_) => RequestListProvider()),
         ChangeNotifierProvider(create: (_) => PassengerPublishedListProvider()),
-        ChangeNotifierProvider(create: (_)=> BookingRequestProvider()),
-        ChangeNotifierProvider(create: (_)=>UserProfileUpdateProvider())
+        ChangeNotifierProvider(create: (_) => BookingRequestProvider()),
+        ChangeNotifierProvider(create: (_) => UserProfileUpdateProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

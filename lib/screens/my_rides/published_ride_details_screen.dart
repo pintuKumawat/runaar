@@ -307,9 +307,7 @@ class _PublishedRideDetailsScreenState
                 ),
                 12.height,
                 ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: 300.h, // Limit the height
-                  ),
+                  constraints: BoxConstraints(maxHeight: 300.h),
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -320,7 +318,7 @@ class _PublishedRideDetailsScreenState
                         theme,
                         data.passengerName ?? "",
                         data.profileImage ?? "",
-                        data.rating ?? 0.0,
+                        data.rating ?? 0,
                         data.seatsRequested ?? 0,
                         data.paymentStatus,
                       );
@@ -339,49 +337,15 @@ class _PublishedRideDetailsScreenState
     TextTheme theme,
     String name,
     String image,
-    double rating,
+    dynamic rating,
     int seats,
     String? status,
   ) {
-    // return Padding(
-    //   padding: EdgeInsets.symmetric(vertical: 8.h),
-    //   child: Row(
-    //     children: [
-    //       Container(
-    //         width: 40.w,
-    //         height: 40.h,
-    //         decoration: BoxDecoration(
-    //           color: Colors.grey.shade300,
-    //           shape: BoxShape.circle,
-    //         ),
-    //         child: Icon(Icons.person, size: 22.sp),
-    //       ),
-    //       12.width,
-    //       Expanded(
-    //         child: Column(
-    //           crossAxisAlignment: .start,
-    //           children: [
-    //             Text(name, style: theme.titleSmall),
-    //             4.height,
-    //   RatingBarIndicator(
-    //     rating: rating,
-    //     itemBuilder: (_, _) =>
-    //         const Icon(Icons.star, color: Colors.amber),
-    //     itemCount: 5,
-    //     itemSize: 14.sp,
-    //   ),
-    // ],
-    //         ),
-    //       ),
-    //       Text("$seats Seat", style: theme.titleSmall),
-    //     ],
-    //   ),
-    // );
     return ListTile(
       leading: defaultImage.userProvider(image, 22.r),
       title: Text(name, style: theme.titleSmall),
       subtitle: RatingBarIndicator(
-        rating: rating,
+        rating: parseRating(rating),
         itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
         itemCount: 5,
         itemSize: 14.sp,
@@ -685,6 +649,18 @@ class _PublishedRideDetailsScreenState
         ),
       ),
     );
+  }
+
+  double parseRating(dynamic value) {
+    if (value == null) return 0.0;
+
+    if (value is num) return value.toDouble();
+
+    if (value is String && value.trim().isNotEmpty) {
+      return double.tryParse(value.trim()) ?? 0.0;
+    }
+
+    return 0.0;
   }
 
   void _handleButtonAction(

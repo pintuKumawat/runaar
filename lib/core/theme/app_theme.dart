@@ -88,7 +88,9 @@ class AppTheme {
         style: ButtonStyle(
           alignment: Alignment.center,
 
-          //shape: WidgetStateOutlinedBorder.fromMap(),
+          shape: WidgetStateOutlinedBorder.resolveWith((states) {
+            return RoundedRectangleBorder(borderRadius: .circular(10.r));
+          }),
           textStyle: WidgetStateTextStyle.resolveWith(
             (states) => customTextTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,

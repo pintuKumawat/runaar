@@ -18,11 +18,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   bool showPassword = false;
   bool agree = false;
 
-  @override
-  void dispose() {
-    passwordCtrl.dispose();
-    super.dispose();
-  }
+  
 
   @override
   Widget build(BuildContext context) {

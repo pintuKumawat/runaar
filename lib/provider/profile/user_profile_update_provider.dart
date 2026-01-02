@@ -20,14 +20,11 @@ class UserProfileUpdateProvider extends ChangeNotifier {
   UserProfileUpdateModel? get response => _response;
 
 
-//User Validation
-
-
-void validateUserName(String value) {
+  void validateUserName(String value) {
     if (value.isEmpty) {
       userNameError = "User name is required";
     } else if (value.length < 2) {
-     userNameError = "User name must have at least 2 characters";
+      userNameError = "User name must have at least 2 characters";
     } else {
       userNameError = null;
     }
@@ -47,11 +44,11 @@ void validateUserName(String value) {
     notifyListeners();
   }
 
-  bool validateAll(){
+  bool validateAll() {
     validateUserName(editProfileController.nameController.text);
     validateEmail(editProfileController.emailController.text);
 
-    return userNameError==null&&emailError==null;
+    return userNameError == null && emailError == null;
   }
 
   Future<void> userProfileUpdate({

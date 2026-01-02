@@ -23,11 +23,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool hasNumber = false;
   bool hasSpecial = false;
 
-  @override
-  void dispose() {
-    changePasswordController.dispose();
-    super.dispose();
-  }
+  
 
   void _validatePassword(String value) {
     setState(() {
