@@ -219,7 +219,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (result != null) {
-      // Update text fields when user selects location
       if (type == 'pickup') {
         homeController.originController.text = result.fullText;
       } else {

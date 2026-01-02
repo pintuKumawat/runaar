@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/profile/user_profile_update_model.dart';
 
@@ -14,11 +12,11 @@ class UserProfileUpdateRepo {
     required String email,
   }) async {
     Map<String, dynamic> body = {
-      "user_id": 1,
-      "dob": "21/01/2026",
-      "gender": "male",
-      "name": "pintu",
-      "email": "pintu@gmail.com",
+      "user_id": userId,
+      "dob": dob,
+      "gender": gender,
+      "name": name,
+      "email": email,
     };
 
     if (profileImage != null) {

@@ -38,11 +38,11 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
-  // @override
-  // void dispose() {
-  //   addVehicleController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    addVehicleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

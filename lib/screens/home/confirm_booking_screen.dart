@@ -53,7 +53,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   final List<String> _paymentMethods = ['Cash', 'Online'];
   TextEditingController messageController = TextEditingController();
 
-
   double calculateTotalPrice() {
     try {
       final homeProvider = context.read<HomeProvider>();
@@ -96,6 +95,13 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             Text(
               'Check your booking request details',
               style: theme.titleMedium,
+              overflow: .ellipsis,
+            ),
+            5.height,
+            Text(
+              'Driver can cancel trip till one hour before departure time',
+              style: theme.bodySmall,
+              maxLines: 2,
               overflow: .ellipsis,
             ),
             12.height,
@@ -442,23 +448,28 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () async {
-                await provider.bookingRequest(
-                  userId: userId ?? 0,
-                  tripId: widget.tripId,
-                  paymentMethod: _selectedPaymentMethod,
-                  paymentStatus: "pending",
-                  seatRequest: homeProvider.seats,
-                  totalPrice: totalPrice,
-                  specialMessage: messageController.text,
-                );
-                if (provider.errorMessage != null) {
-                  appSnackbar.showSingleSnackbar(
-                    context,
-                    provider.errorMessage ?? "",
+                if (_selectedPaymentMethod.toString() == "cash") {
+                  await provider.bookingRequest(
+                    userId: userId ?? 0,
+                    tripId: widget.tripId,
+                    paymentMethod: _selectedPaymentMethod,
+                    paymentStatus: "pending",
+                    seatRequest: homeProvider.seats,
+                    totalPrice: totalPrice,
+                    specialMessage: messageController.text,
                   );
-                  return;
+                  if (provider.errorMessage != null) {
+                    appSnackbar.showSingleSnackbar(
+                      context,
+                      provider.errorMessage ?? "",
+                    );
+                    return;
+                  }
+                  appNavigator.push(BookingDoneScreen());
+                  messageController.clear();
+                } else {
+                  // RazorPay
                 }
-                appNavigator.push(BookingDoneScreen(paymentMethod: ''));
               },
               icon: const Icon(Icons.event_seat),
               label: const Text('Request to book'),

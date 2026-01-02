@@ -27,9 +27,6 @@ class _OfferRideState extends State<OfferRide> {
 
   int userId = 0;
 
-  String selectedVehicle = 'Van';
-  final List<String> vehicles = ['Ertiga', 'Creta', 'Scorpio', 'Van'];
-
   @override
   void initState() {
     super.initState();
@@ -130,7 +127,10 @@ class _OfferRideState extends State<OfferRide> {
         "Both location cannot be same",
       );
     } else if (offerController.selectedVehicleId == 0) {
-      return appSnackbar.showSingleSnackbar(context, "Please select your vehicle");
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Please select your vehicle",
+      );
     } else {
       final data = LoadOfferData(
         userId: userId,

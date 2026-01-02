@@ -22,11 +22,16 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-
   String gender = "Male";
   File? profileImage;
 
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void dispose() {
+    editProfileController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -314,7 +319,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 await updateProvider.userProfileUpdate(
-                  userId: 1,
+                  userId: widget.userId,
                   dob: editProfileController.dobController.text,
                   gender: gender,
                   profileImage: profileImage,
@@ -335,6 +340,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 if (!mounted) return;
 
                 appNavigator.pop();
+                editProfileController.clear();
               },
               child: updateProvider.isLoading
                   ? const CircularProgressIndicator()

@@ -38,16 +38,27 @@ class ApiMethods {
           .timeout(const Duration(seconds: 10));
 
       return _handleResponse(response, onSuccess);
-    } on SocketException {
-      throw ApiException("No Internet Connection");
-    } on TimeoutException {
-      throw ApiException("Request timed out. Please try again.");
-    } catch (e) {
-      throw ApiException(e.toString());
+    } on SocketException catch (_) {
+      throw ApiException("No internet connection or server unreachable.");
+    } on TimeoutException catch (_) {
+      throw ApiException("Request timed out. Server may be down.");
+    } on HandshakeException catch (_) {
+      throw ApiException("Secure connection failed. Please try again later.");
+    } on HttpException catch (_) {
+      throw ApiException("Invalid response from server.");
+    } on FormatException catch (_) {
+      throw ApiException("Bad response format from server.");
+    } on http.ClientException catch (_) {
+      throw ApiException("Failed to connect to server.");
+    } catch (e, stackTrace) {
+      debugPrint("API ERROR: $e");
+      debugPrint("STACK TRACE: $stackTrace");
+
+      throw ApiException("Something went wrong. Please try again later.");
     }
   }
 
-   Future<T> post<T>({
+  Future<T> post<T>({
     required String endpoint,
     required Map<String, dynamic> body,
     required T Function(dynamic responseData) onSuccess,
@@ -63,16 +74,27 @@ class ApiMethods {
           )
           .timeout(const Duration(seconds: 15));
       return _handleResponse(response, onSuccess);
-    } on SocketException {
-      throw ApiException("No Internet Connection");
-    } on TimeoutException {
-      throw ApiException("Request timed out. Please try again.");
-    } catch (e) {
-      throw ApiException(e.toString());
+    } on SocketException catch (_) {
+      throw ApiException("No internet connection or server unreachable.");
+    } on TimeoutException catch (_) {
+      throw ApiException("Request timed out. Server may be down.");
+    } on HandshakeException catch (_) {
+      throw ApiException("Secure connection failed. Please try again later.");
+    } on HttpException catch (_) {
+      throw ApiException("Invalid response from server.");
+    } on FormatException catch (_) {
+      throw ApiException("Bad response format from server.");
+    } on http.ClientException catch (_) {
+      throw ApiException("Failed to connect to server.");
+    } catch (e, stackTrace) {
+      debugPrint("API ERROR: $e");
+      debugPrint("STACK TRACE: $stackTrace");
+
+      throw ApiException("Something went wrong. Please try again later.");
     }
   }
 
-   Future<T> postMultipart<T>({
+  Future<T> postMultipart<T>({
     required String endpoint,
     Map<String, dynamic>? fields,
     Map<String, dynamic>? files,
@@ -175,12 +197,23 @@ class ApiMethods {
       );
       final response = await http.Response.fromStream(streamed);
       return _handleResponse(response, onSuccess);
-    } on SocketException {
-      throw ApiException("No Internet Connection");
-    } on TimeoutException {
-      throw ApiException("Request timed out. Please try again.");
-    } catch (e) {
-      throw ApiException(e.toString());
+    } on SocketException catch (_) {
+      throw ApiException("No internet connection or server unreachable.");
+    } on TimeoutException catch (_) {
+      throw ApiException("Request timed out. Server may be down.");
+    } on HandshakeException catch (_) {
+      throw ApiException("Secure connection failed. Please try again later.");
+    } on HttpException catch (_) {
+      throw ApiException("Invalid response from server.");
+    } on FormatException catch (_) {
+      throw ApiException("Bad response format from server.");
+    } on http.ClientException catch (_) {
+      throw ApiException("Failed to connect to server.");
+    } catch (e, stackTrace) {
+      debugPrint("API ERROR: $e");
+      debugPrint("STACK TRACE: $stackTrace");
+
+      throw ApiException("Something went wrong. Please try again later.");
     }
   }
 

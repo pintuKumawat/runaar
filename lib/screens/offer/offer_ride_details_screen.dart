@@ -69,7 +69,13 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
               width: double.infinity,
               height: 56.h,
               child: ElevatedButton(
-                onPressed: () => _publish(provider),
+                onPressed: () async {
+                  final agree = await _showPublishInfoDialog();
+                  if (agree == true) {
+                    _publish(provider);
+                  }
+                },
+
                 child: provider.isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Row(
@@ -265,15 +271,11 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           TextField(
             controller: offerController.priceController,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              prefixIcon: Icon(
-                Icons.currency_rupee,
-                color: appColor.mainColor,
-              ),
+              prefixIcon: Icon(Icons.currency_rupee, color: appColor.mainColor),
               hintText: 'Enter Price/seat',
               hintStyle: theme.bodyMedium?.copyWith(color: Colors.grey),
               border: OutlineInputBorder(
@@ -436,8 +438,6 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
     if (provider.reponse?.message != null) {
       appSnackbar.showSingleSnackbar(context, provider.reponse!.message!);
 
-      // Clear the form
-      offerController.priceController.clear();
       setState(() {
         luggageAllowed = true;
         petsAllowed = false;
@@ -446,6 +446,63 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
 
       if (!mounted) return;
       appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 1, rideIndex: 1));
+      
+      provider.clearDetail();
+      offerController.clear();
     }
+  }
+
+  Future<bool?> _showPublishInfoDialog() {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        final theme = Theme.of(context).textTheme;
+
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: .circular(12.r)),
+          title: Text(
+            "Please Read Before Publishing",
+            style: theme.titleMedium,
+          ),
+          content: Column(
+            mainAxisSize: .min,
+            crossAxisAlignment: .start,
+            children: [
+              Text(
+                "• You can cancel your ride until 1 hour before the departure time.",
+                style: theme.bodySmall,
+              ),
+              8.height,
+              Text(
+                "• After the last 1 hour window, cancellation is not allowed.",
+                style: theme.bodySmall,
+              ),
+              8.height,
+              Text(
+                "• If you cancel during the allowed period, we will deduct some reward/cash points as a penalty.",
+                style: theme.bodySmall,
+              ),
+              12.height,
+              Text(
+                "Do you still want to publish the ride?",
+                style: theme.bodyMedium?.copyWith(fontWeight: .w600),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => appNavigator.pop(false),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => appNavigator.pop(true),
+              child: const Text("Agree & Publish"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

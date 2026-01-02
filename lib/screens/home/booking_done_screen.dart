@@ -4,8 +4,7 @@ import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 
 class BookingDoneScreen extends StatefulWidget {
-  final String paymentMethod;
-  const BookingDoneScreen({super.key, required this.paymentMethod});
+  const BookingDoneScreen({super.key});
 
   @override
   State<BookingDoneScreen> createState() => _BookingDoneScreenState();

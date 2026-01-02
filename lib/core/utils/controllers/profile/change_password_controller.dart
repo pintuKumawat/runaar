@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 class ChangePasswordController {
   TextEditingController passwordController = TextEditingController();
-  TextEditingController rePasswordController = TextEditingController();
+  TextEditingController currentController = TextEditingController();
 
   void clear() {
     passwordController.clear();
-    rePasswordController.clear();
+    currentController.clear();
   }
 
   void dispose() {
     passwordController.dispose();
-    rePasswordController.dispose();
+    currentController.dispose();
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -13,13 +14,9 @@ class ChangePasswordScreen extends StatefulWidget {
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final passwordCtrl = TextEditingController();
-  final confirmPasswordCtrl = TextEditingController();
-
   bool showPassword = false;
   bool showConfirmPassword = false;
 
-  // Password rules
   bool has8Chars = false;
   bool hasUpper = false;
   bool hasLower = false;
@@ -28,8 +25,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   void dispose() {
-    passwordCtrl.dispose();
-    confirmPasswordCtrl.dispose();
+    changePasswordController.dispose();
     super.dispose();
   }
 
@@ -58,14 +54,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               16.height,
-              _labelText(label: "New Password", textTheme: textTheme),
+              _labelText(label: "Current Password", textTheme: textTheme),
               _passwordField(textTheme),
               16.height,
-              _labelText(label: "Confirm Password", textTheme: textTheme),
+              _labelText(label: "New Password", textTheme: textTheme),
               _confirmPasswordField(textTheme),
               20.height,
-
-              // PASSWORD RULES
               _passwordRule("At least 8 characters", has8Chars),
               _passwordRule("Contains uppercase letter (A-Z)", hasUpper),
               _passwordRule("Contains lowercase letter (a-z)", hasLower),
@@ -74,8 +68,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 "Contains special character (!@#\$%^&*)",
                 hasSpecial,
               ),
-
-              20.height,
             ],
           ),
         ),
@@ -97,9 +89,8 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   // -------------------- PASSWORD --------------------
   Widget _passwordField(TextTheme textTheme) {
     return TextFormField(
-      controller: passwordCtrl,
+      controller: changePasswordController.currentController,
       obscureText: !showPassword,
-      onChanged: _validatePassword,
       style: textTheme.bodyMedium,
       decoration: InputDecoration(
         // labelText: ,
@@ -111,11 +102,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       ),
       validator: (v) {
         if (v == null || v.isEmpty) {
-          return "Password is required";
+          return "Current Password is required";
         }
-        if (!(has8Chars && hasUpper && hasLower && hasNumber && hasSpecial)) {
-          return "Password does not meet requirements";
-        }
+
         return null;
       },
     );
@@ -124,11 +113,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   // -------------------- CONFIRM PASSWORD --------------------
   Widget _confirmPasswordField(TextTheme textTheme) {
     return TextFormField(
-      controller: confirmPasswordCtrl,
+      controller: changePasswordController.passwordController,
       obscureText: !showConfirmPassword,
+      onChanged: _validatePassword,
       style: textTheme.bodyMedium,
       decoration: InputDecoration(
-        // labelText: "Confirm Password",
         prefixIcon: const Icon(Icons.lock_outline),
         suffixIcon: IconButton(
           icon: Icon(
@@ -140,17 +129,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       ),
       validator: (v) {
         if (v == null || v.isEmpty) {
-          return "Confirm your password";
+          return "New your password";
         }
-        if (v != passwordCtrl.text) {
-          return "Passwords do not match";
+        if (v == changePasswordController.currentController.text) {
+          return "Cannot same as current password";
         }
         return null;
       },
     );
   }
 
-  // -------------------- PASSWORD RULE ROW --------------------
   Widget _passwordRule(String text, bool condition) {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.h),
@@ -178,7 +166,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  // -------------------- SAVE BUTTON --------------------
   Widget _saveButton(TextTheme textTheme) {
     return BottomAppBar(
       child: SizedBox(
@@ -196,5 +183,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     appSnackbar.showSingleSnackbar(context, "Password updated successfully");
+    changePasswordController.clear();
   }
 }

@@ -18,7 +18,14 @@ class DefaultImage {
     return CircleAvatar(
       radius: radius,
       backgroundColor: Colors.transparent,
-      backgroundImage: CachedNetworkImageProvider("${apiMethods.baseUrl}/$url"),
+      backgroundImage: CachedNetworkImageProvider(
+        "${apiMethods.baseUrl}/$url",
+        errorListener: (image) => CircleAvatar(
+          radius: radius,
+          backgroundColor: Colors.transparent,
+          backgroundImage: AssetImage(_defaultUser),
+        ),
+      ),
     );
   }
 }
