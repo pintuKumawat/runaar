@@ -11,6 +11,7 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/profile/user_profile_update_provider.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final int userId;
@@ -48,7 +49,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) => _initFormateData(),
@@ -371,7 +372,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 );
                 if (!mounted) return;
 
-                appNavigator.pop();
+                appNavigator.pushReplacement(BottomNav(initialIndex: 4));
                 editProfileController.clear();
               },
               child: updateProvider.isLoading

@@ -5,7 +5,10 @@ import 'package:runaar/repos/home/ride_search_repo.dart';
 
 class HomeProvider extends ChangeNotifier {
   int _seats = 1;
+  int _maxSeats = 7;
+
   int get seats => _seats;
+  int get maxSeats => _maxSeats;
 
   bool _isLoading = false;
   String? _errorMessage;
@@ -15,8 +18,22 @@ class HomeProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   RideSearchModel? get response => _response;
 
+  void setMaxSeats(int value) {
+    if (value < 1) {
+      _maxSeats = 1;
+    } else {
+      _maxSeats = value;
+    }
+
+    if (_seats > _maxSeats) {
+      _seats = _maxSeats;
+    }
+
+    notifyListeners();
+  }
+
   void increment() {
-    if (_seats < 7) {
+    if (_seats < _maxSeats) {
       _seats++;
 
       notifyListeners();

@@ -6,7 +6,7 @@ import 'package:runaar/core/utils/controllers/auth/login_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
-import 'package:runaar/provider/auth/validate/login_provider.dart';
+import 'package:runaar/provider/auth/login_provider.dart';
 import 'package:runaar/screens/auth/forgot_mobile_screen.dart';
 import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
@@ -89,7 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     appNavigator.push(ForgotMobileScreen());
                   },
-                  child: Text("Forgot Password?",style: TextStyle(color: appColor.secondColor),),
+                  child: Text(
+                    "Forgot Password?",
+                    style: TextStyle(color: appColor.secondColor),
+                  ),
                 ),
               ),
 
@@ -165,7 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     prefs.setBool(savedData.isFirstLauch, false);
     prefs.setBool(savedData.isLoggedIn, true);
-    prefs.setInt(savedData.userId, provider.response?.userId ?? 0 );
+    prefs.setInt(savedData.userId, provider.response?.userId ?? 0);
     appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
+
+    loginController.clear();
   }
 }

@@ -231,7 +231,6 @@ class ApiMethods {
       String errorMessage;
       if (isJsonResponse) {
         final Map<String, dynamic> errorData = json.decode(response.body);
-        debugPrint(errorData.toString());
         errorMessage =
             errorData['message'] ??
             errorData['error'] ??
@@ -240,6 +239,7 @@ class ApiMethods {
         errorMessage = "An unknown error occurred.";
       }
       debugPrint("⚠ RAW RESPONSE:");
+
       debugPrint(response.statusCode.toString());
       debugPrint(response.body);
       debugPrint(response.headers.toString());

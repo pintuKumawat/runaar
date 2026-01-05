@@ -136,6 +136,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
                       data?.destinationAddress ?? "Address not available",
                   seatPrice: double.parse(data?.seatPrice ?? "0"),
                   tripId: widget.tripId,
+                  seats: provider.response?.trip?.availableSeats.toString() ?? "0",
                 ),
               ),
               child: Row(
@@ -261,6 +262,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
 
   Widget _priceCard(TextTheme theme, PublishedDetailProvier prov) {
     final data = prov.response?.trip;
+    debugPrint(data?.availableSeats.toString());
     return Card(
       child: Padding(
         padding: 10.all,
@@ -271,7 +273,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
               children: [
                 Text("Seats left", style: theme.bodyMedium),
                 Text(
-                  data?.availableSeats ?? "0",
+                  data?.availableSeats.toString() ?? "0",
                   style: theme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),

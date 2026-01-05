@@ -4,11 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/booking_status/booking_status_ext.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/models/my_rides/booking_detail_model.dart';
 import 'package:runaar/provider/my_rides/booking_detail_provider.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
+import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingDetailsScreen extends StatefulWidget {
@@ -76,9 +78,10 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           appBar: AppBar(title: Text("Booking Details")),
           bottomNavigationBar: _statusButton(
             theme,
-            getCurrentStatus(data?.tripStatus),
+            getCurrentStatus(data?.bookingStatus),
             departureTime,
             now,
+            data?.bookingId ?? 0,
             context,
           ),
           body: provider.isLoading
@@ -436,6 +439,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     BookingStatus status,
     DateTime departureTime,
     DateTime currentTime,
+    int bookingId,
     BuildContext context,
   ) {
     String buttonText = "Ride Completed";
@@ -490,13 +494,16 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
         child: ElevatedButton(
           onPressed: isEnabled
               ? () {
-                  // Handle cancel ride action
-                  _showCancelConfirmationDialog(context);
+                  _showCancelConfirmationDialog(context, bookingId);
                 }
               : null,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: isEnabled ? Colors.red : Colors.grey,
-            foregroundColor: Colors.white,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+              if (states.contains(MaterialState.disabled)) {
+                return Colors.grey;
+              }
+              return Colors.red;
+            }),
           ),
           child: Text(buttonText),
         ),
@@ -504,22 +511,35 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     );
   }
 
-  void _showCancelConfirmationDialog(BuildContext context) {
+  void _showCancelConfirmationDialog(BuildContext context, int bookingId) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Cancel Ride"),
         content: Text("Are you sure you want to cancel this ride?"),
+        backgroundColor: Colors.white,
         actions: [
+          TextButton(onPressed: () => appNavigator.pop(), child: Text("No")),
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("No"),
-          ),
-          TextButton(
-            onPressed: () {
-              // Handle cancellation logic
-              appNavigator.pop();
-              // You might want to update the booking status here
+            onPressed: () async {
+              final requestResponse = context.read<RequestResponseProvider>();
+              await requestResponse.requestResponse(
+                bookingId: bookingId,
+                status: "Cancelled",
+              );
+              if (requestResponse.errorMessage != null) {
+                appSnackbar.showSingleSnackbar(
+                  context,
+                  requestResponse.errorMessage ?? "",
+                );
+                return;
+              }
+              appSnackbar.showSingleSnackbar(
+                context,
+                "Ride has been cancelled",
+              );
+              appNavigator.pop(true);
+              await _fetchAllData();
             },
             child: Text("Yes", style: TextStyle(color: Colors.red)),
           ),

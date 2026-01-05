@@ -1,10 +1,10 @@
-class BookingRequestModel {
+class TripStatusUpdateModel {
   String? status;
   String? message;
 
-  BookingRequestModel({this.status, this.message});
+  TripStatusUpdateModel({this.status, this.message});
 
-  BookingRequestModel.fromJson(Map<String, dynamic> json) {
+  TripStatusUpdateModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
   }

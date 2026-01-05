@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
@@ -43,7 +42,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: .min,
               children: [
                 _title(theme),
                 10.height,
@@ -62,7 +61,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // -------------------- TITLE --------------------
   Widget _title(ThemeData theme) {
     return Text(
       "Create New Password",
@@ -72,7 +70,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // -------------------- SUBTITLE --------------------
   Widget _subtitle(ThemeData theme) {
     return Text(
       "Your new password must be different from the previous one",
@@ -81,7 +78,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // -------------------- PASSWORD FIELD --------------------
   Widget _passwordField(ThemeData theme) {
     return TextFormField(
       controller: passwordController,
@@ -108,7 +104,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // -------------------- CONFIRM PASSWORD FIELD --------------------
   Widget _confirmPasswordField(ThemeData theme) {
     return TextFormField(
       controller: confirmPasswordController,
@@ -152,7 +147,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  // -------------------- RESET PASSWORD ACTION --------------------
   void _resetPassword() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -168,7 +162,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       "Password reset successfully",
     );
 
-    // 👉 Redirect to Login
     appNavigator.pushAndRemoveUntil(LoginScreen());
   }
 }

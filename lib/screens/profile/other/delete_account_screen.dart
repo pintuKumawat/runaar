@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/provider/profile/account/user_deactivate_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   final int userId;
@@ -64,8 +66,11 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       ),
       child: Row(
         children: [
-          Icon(Icons.warning_amber_rounded,
-              color: Colors.red.shade600, size: 26.sp),
+          Icon(
+            Icons.warning_amber_rounded,
+            color: Colors.red.shade600,
+            size: 26.sp,
+          ),
           12.width,
           Expanded(
             child: Text(
@@ -98,7 +103,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           _divider(),
           _infoPoint("Any active bookings will be paused", theme),
           _divider(),
-          _infoPoint("Your personal data will remain safe and unchanged", theme),
+          _infoPoint(
+            "Your personal data will remain safe and unchanged",
+            theme,
+          ),
           _divider(),
           _infoPoint("You can request account restoration anytime", theme),
         ],
@@ -164,68 +172,63 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
   // -------------------- DEACTIVATE BUTTON --------------------
   Widget _deactivateButton(TextTheme theme) {
-  return Consumer<UserDeactivateProvider>(
-    builder: (context, provider, child) {
-      return BottomAppBar(
-        child: SizedBox(
-          height: 56.h,
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
+    return Consumer<UserDeactivateProvider>(
+      builder: (context, provider, child) {
+        return BottomAppBar(
+          child: SizedBox(
+            height: 56.h,
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
               ),
-            ),
-            onPressed: () async {
-              //  CHECKBOX VALIDATION
-              if (!agree) {
+              onPressed: () async {
+                //  CHECKBOX VALIDATION
+                if (!agree) {
+                  appSnackbar.showSingleSnackbar(
+                    context,
+                    "Please confirm before deactivating your account",
+                  );
+                  return;
+                }
+
+                // CALL API
+                await provider.UsreDeactivate(UserId: widget.userId);
+
+                if (provider.errorMessage != null) {
+                  appSnackbar.showSingleSnackbar(
+                    context,
+                    provider.errorMessage ?? "",
+                  );
+                  return;
+                }
+
                 appSnackbar.showSingleSnackbar(
                   context,
-                  "Please confirm before deactivating your account",
+                  provider.response?.message ??
+                      "Account deactivated successfully",
                 );
-                return;
-              }
 
-              // CALL API
-              await provider.UsreDeactivate(
-                UserId: widget.userId,
-              );
+                await Future.delayed(const Duration(seconds: 1));
 
-              // ERROR CASE
-              if (provider.errorMessage != null) {
-                appSnackbar.showSingleSnackbar(
-                  context,
-                  provider.errorMessage!,
-                );
-                return;
-              }
-
-              // SUCCESS MESSAGE
-              appSnackbar.showSingleSnackbar(
-                context,
-                provider.response?.message ??
-                    "Account deactivated successfully",
-              );
-
-              //  SMALL DELAY FOR UX
-              await Future.delayed(const Duration(seconds: 1));
-
-              //  REDIRECT TO LOGIN & CLEAR STACK
-              appNavigator.pushAndRemoveUntil(LoginScreen());
-            },
-            child: Text(
-              "Deactivate Account",
-              style: theme.titleSmall?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
+                await _logout();
+              },
+              child: Text("Deactivate Account"),
             ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
+  Future<void> _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(savedData.userId, 0);
+    prefs.setBool(savedData.isLoggedIn, false);
+    await Future.delayed(Duration(milliseconds: 300));
+    appNavigator.pushAndRemoveUntil(LoginScreen());
+  }
 }

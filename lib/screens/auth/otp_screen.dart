@@ -82,7 +82,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // -------------------- SUBTITLE --------------------
   Widget _subtitle(TextTheme theme) {
     return Text(
       "Enter the OTP sent to +91 ${widget.mobile}",
@@ -91,7 +90,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // -------------------- OTP BOXES --------------------
   Widget _otpBoxes() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

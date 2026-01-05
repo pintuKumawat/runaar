@@ -6,11 +6,13 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/my_rides/booking_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/provider/my_rides/request_list_provider.dart';
+import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/screens/my_rides/booking_details_screen.dart';
 import 'package:runaar/screens/my_rides/published_ride_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -257,8 +259,46 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   seats: d.seatsRequested.toString(),
                   rating: d.rating.toString(),
                   image: d.profileImage,
-                  onAccept: () {},
-                  onReject: () {},
+                  onAccept: () async {
+                    final requestResponse = context
+                        .read<RequestResponseProvider>();
+                    await requestResponse.requestResponse(
+                      bookingId: d.id ?? 0,
+                      status: "Confirmed",
+                    );
+                    if (requestResponse.errorMessage != null) {
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        requestResponse.errorMessage ?? "",
+                      );
+                      return;
+                    }
+                    appSnackbar.showSingleSnackbar(
+                      context,
+                      requestResponse.response?.message ?? "",
+                    );
+                    await _fetchRequestList();
+                  },
+                  onReject: () async {
+                    final requestResponse = context
+                        .read<RequestResponseProvider>();
+                    await requestResponse.requestResponse(
+                      bookingId: d.id ?? 0,
+                      status: "Rejected",
+                    );
+                    if (requestResponse.errorMessage != null) {
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        requestResponse.errorMessage ?? "",
+                      );
+                      return;
+                    }
+                    appSnackbar.showSingleSnackbar(
+                      context,
+                      requestResponse.response?.message ?? "",
+                    );
+                    await _fetchRequestList();
+                  },
                   isVerified: d.isActive,
                   paymentStatus: d.paymentMethod,
                   type: "request",
@@ -292,15 +332,23 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
     VoidCallback? onReject,
   }) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         if (publishedId != null && type.toLowerCase() == "published") {
-          appNavigator.push(
+          final bool? result = await appNavigator.push(
             PublishedRideDetailsScreen(publishedId: publishedId),
           );
+          if (result ?? true) {
+            _fetchPublishedRides();
+          }
           return;
         }
         if (bookingId != null && type.toLowerCase() == "booked") {
-          appNavigator.push(BookingDetailsScreen(bookingId: bookingId));
+          final bool? result = await appNavigator.push(
+            BookingDetailsScreen(bookingId: bookingId),
+          );
+          if (result ?? true) {
+            _fetchBookingList();
+          }
           return;
         }
       },
@@ -465,7 +513,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           ),
           ListTile(
             contentPadding: 2.vertical,
-            leading:defaultImage.userProvider(image, 22.r),
+            leading: defaultImage.userProvider(image, 22.r),
             title: Row(
               children: [
                 Text(name, style: theme.bodyMedium),
@@ -596,7 +644,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                     onPressed: onReject,
                     child: Text(
                       "Reject",
-                      style: theme.titleLarge?.copyWith(
+                      style: theme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.red,
                       ),

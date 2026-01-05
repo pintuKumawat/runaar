@@ -72,88 +72,91 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Consumer<UserDetailsProvider>(
       builder: (BuildContext context, userDetailsProvider, child) {
         final data = userDetailsProvider.response?.userDetail;
-        return Scaffold(
-          appBar: AppBar(title: Text(data?.name ?? "name")),
-          body: ListView(
-            padding: 10.all,
-            children: [
-              _profileHeader(theme, data),
-              10.height,
-
-              /// WALLET & REFER CARDS
-              Row(
-                mainAxisAlignment: .spaceBetween,
-                children: [
-                  Expanded(child: _referCard(theme, data)),
-                  12.width,
-                  Expanded(child: _walletCard(theme)),
-                ],
-              ),
-
-              12.height,
-              _sectionTitle("Account", theme),
-              _profileTile(Icons.person_outline, "Edit Profile", data, theme),
-              _profileTile(Icons.lock_outline, "Change Password", data, theme),
-              _profileTile(Icons.language, "Language", data, theme),
-              _profileTile(
-                Icons.verified_user_outlined,
-                "Verification",
-                data,
-                theme,
-              ),
-
-              12.height,
-              _sectionTitle("Rides", theme),
-              _profileTile(Icons.directions_car, "My Rides", data, theme),
-              _profileTile(Icons.history, "Trip History", data, theme),
-
-              12.height,
-
-              _sectionTitle("Vehicle", theme),
-              _profileTile(Icons.car_rental, "My Vehicles", data, theme),
-              _profileTile(
-                Icons.add_circle_outline,
-                "Add Vehicle",
-                data,
-                theme,
-              ),
-
-              12.height,
-
-              _sectionTitle("Support & Legal", theme),
-              _profileTile(Icons.support_agent, "Contact Support", data, theme),
-              _profileTile(Icons.help_outline, "FAQs", data, theme),
-              _profileTile(
-                Icons.privacy_tip_outlined,
-                "Privacy Policy",
-                data,
-                theme,
-              ),
-              _profileTile(Icons.star_rate_outlined, "Rate App", data, theme),
-              _profileTile(Icons.share_outlined, "Share App", data, theme),
-
-              12.height,
-
-              _sectionTitle("Danger Zone", theme),
-              _profileTile(
-                Icons.delete_forever_outlined,
-                "Deactivate Account",
-                data,
-                theme,
-                danger: true,
-              ),
-              _profileTile(Icons.logout, "Logout", data, theme, danger: true),
-
-              15.height,
-
-              Center(
-                child: Text(
-                  "App Version $appVersion",
-                  style: theme.bodySmall?.copyWith(color: Colors.grey),
+        return RefreshIndicator(
+          onRefresh: loadData,
+          child: Scaffold(
+            appBar: AppBar(title: Text(data?.name ?? "name")),
+            body: ListView(
+              padding: 10.all,
+              children: [
+                _profileHeader(theme, data),
+                10.height,
+          
+                /// WALLET & REFER CARDS
+                Row(
+                  mainAxisAlignment: .spaceBetween,
+                  children: [
+                    Expanded(child: _referCard(theme, data)),
+                    12.width,
+                    Expanded(child: _walletCard(theme)),
+                  ],
                 ),
-              ),
-              15.height,
-            ],
+          
+                12.height,
+                _sectionTitle("Account", theme),
+                _profileTile(Icons.person_outline, "Edit Profile", data, theme),
+                _profileTile(Icons.lock_outline, "Change Password", data, theme),
+                _profileTile(Icons.language, "Language", data, theme),
+                _profileTile(
+                  Icons.verified_user_outlined,
+                  "Verification",
+                  data,
+                  theme,
+                ),
+          
+                12.height,
+                _sectionTitle("Rides", theme),
+                _profileTile(Icons.directions_car, "My Rides", data, theme),
+                _profileTile(Icons.history, "Trip History", data, theme),
+          
+                12.height,
+          
+                _sectionTitle("Vehicle", theme),
+                _profileTile(Icons.car_rental, "My Vehicles", data, theme),
+                _profileTile(
+                  Icons.add_circle_outline,
+                  "Add Vehicle",
+                  data,
+                  theme,
+                ),
+          
+                12.height,
+          
+                _sectionTitle("Support & Legal", theme),
+                _profileTile(Icons.support_agent, "Contact Support", data, theme),
+                _profileTile(Icons.help_outline, "FAQs", data, theme),
+                _profileTile(
+                  Icons.privacy_tip_outlined,
+                  "Privacy Policy",
+                  data,
+                  theme,
+                ),
+                _profileTile(Icons.star_rate_outlined, "Rate App", data, theme),
+                _profileTile(Icons.share_outlined, "Share App", data, theme),
+          
+                12.height,
+          
+                _sectionTitle("Danger Zone", theme),
+                _profileTile(
+                  Icons.delete_forever_outlined,
+                  "Deactivate Account",
+                  data,
+                  theme,
+                  danger: true,
+                ),
+                _profileTile(Icons.logout, "Logout", data, theme, danger: true),
+          
+                15.height,
+          
+                Center(
+                  child: Text(
+                    "App Version $appVersion",
+                    style: theme.bodySmall?.copyWith(color: Colors.grey),
+                  ),
+                ),
+                15.height,
+              ],
+            ),
           ),
         );
       },
@@ -170,27 +173,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         contentPadding: 12.all,
         leading: defaultImage.userProvider("", 30.r),
         title: Text(
-          "${data?.name ?? "user"}",
+          data?.name ?? "user",
           style: theme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
-        subtitle: Row(
-          children: [
-            RatingBarIndicator(
-              rating: double.parse(data?.rating.toString() ?? "0.0"),
-              itemBuilder: (context, index) =>
-                  Icon(Icons.star, color: Colors.amber),
-              itemCount: 5,
-              itemSize: 16.sp,
-              unratedColor: Colors.grey.shade300,
-              direction: Axis.horizontal,
-            ),
-            3.width,
-            Text("${data?.rating ?? 0}", style: theme.bodySmall),
-          ],
+        subtitle: RatingBarIndicator(
+          rating: double.parse(data?.rating.toString() ?? "0.0"),
+          itemBuilder: (context, index) =>
+              Icon(Icons.star, color: Colors.amber),
+          itemCount: 5,
+          itemSize: 16.sp,
+          unratedColor: Colors.grey.shade300,
+          direction: Axis.horizontal,
         ),
-        onTap: () {
-          // Navigate to profile details
-        },
       ),
     );
   }
@@ -207,12 +201,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: 14.w,
-            vertical: 10.h, // :arrow_left: reduced height
+            vertical: 10.h, 
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              /// Row: Icon + Balance
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -34,7 +34,7 @@ class Trip {
   String? distanceFromSearch;
   String? deptDate;
   String? seatPrice;
-  String? availableSeats;
+  int? availableSeats;
   String? tripStatus;
   String? personName;
   String? personImage;

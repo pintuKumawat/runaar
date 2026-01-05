@@ -4,7 +4,6 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
-import 'package:runaar/models/profile/account/reset_password_model.dart';
 import 'package:runaar/provider/profile/account/reset_password_provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {

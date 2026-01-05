@@ -4,9 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
+import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PublishedRideDetailsScreen extends StatefulWidget {
@@ -371,7 +374,6 @@ class _PublishedRideDetailsScreenState
 
   Widget _seatInfo(TextTheme theme, PublishedDetailProvier prov) {
     final data = prov.response?.trip;
-    debugPrint(data?.availableSeats);
     return Card(
       child: Padding(
         padding: 10.all,
@@ -382,7 +384,7 @@ class _PublishedRideDetailsScreenState
               children: [
                 Text("Seats left", style: theme.bodyMedium),
                 Text(
-                  data?.availableSeats ?? "",
+                  data?.availableSeats.toString() ?? "",
                   style: theme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -552,11 +554,11 @@ class _PublishedRideDetailsScreenState
           trip.originTime != null &&
           trip.originTime!.isNotEmpty) {
         // Combine date and time
-        String datePart = trip.tripDate!.split('T').first;
-        String timePart = trip.originTime!.length >= 5
-            ? trip.originTime!.substring(0, 5)
-            : "00:00";
-        departureTime = DateTime.parse("${datePart}T$timePart:00");
+
+        departureTime = parseTripDateTime(
+          trip.tripDate ?? "",
+          trip.originTime ?? "",
+        );
       }
     } catch (e) {
       debugPrint("Error parsing departure time: $e");
@@ -676,11 +678,10 @@ class _PublishedRideDetailsScreenState
           trip.tripDate!.isNotEmpty &&
           trip.originTime != null &&
           trip.originTime!.isNotEmpty) {
-        String datePart = trip.tripDate!.split('T').first;
-        String timePart = trip.originTime!.length >= 5
-            ? trip.originTime!.substring(0, 5)
-            : "00:00";
-        departureTime = DateTime.parse("${datePart}T$timePart:00");
+        departureTime = parseTripDateTime(
+          trip.tripDate ?? "",
+          trip.originTime ?? "",
+        );
       }
     } catch (e) {
       debugPrint("Error parsing departure time: $e");
@@ -698,11 +699,9 @@ class _PublishedRideDetailsScreenState
     switch (tripStatus.toLowerCase()) {
       case "open":
         if (isLessThanOneHourBefore) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Cannot cancel trip within 1 hour of departure"),
-              backgroundColor: Colors.orange,
-            ),
+          appSnackbar.showSingleSnackbar(
+            context,
+            "Cannot cancel trip within 1 hour of departure",
           );
           return;
         } else if (departureTime != null && now.isAfter(departureTime)) {
@@ -725,22 +724,23 @@ class _PublishedRideDetailsScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         title: Text("Start Trip"),
         content: Text("Are you ready to start this trip?"),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("No"),
-          ),
+          TextButton(onPressed: () => appNavigator.pop(), child: Text("No")),
           TextButton(
             onPressed: () {
-              // Call API to update trip status to "started"
-              _updateTripStatus("started");
-              Navigator.pop(context);
+              _updateTripStatus("Started");
+              appNavigator.pop();
             },
             child: Text(
               "Yes, Start Trip",
-              style: TextStyle(color: Colors.green),
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: 15.sp,
+                fontWeight: .w600,
+              ),
             ),
           ),
         ],
@@ -752,20 +752,24 @@ class _PublishedRideDetailsScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         title: Text("Cancel Trip"),
         content: Text("Are you sure you want to cancel this trip?"),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("No"),
-          ),
+          TextButton(onPressed: () => appNavigator.pop(), child: Text("No")),
           TextButton(
             onPressed: () {
-              // Call API to update trip status to "cancelled"
-              _updateTripStatus("cancelled");
-              Navigator.pop(context);
+              _updateTripStatus("Cancelled");
+              appNavigator.pop();
             },
-            child: Text("Yes, Cancel", style: TextStyle(color: Colors.red)),
+            child: Text(
+              "Yes, Cancel",
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 15.sp,
+                fontWeight: .w600,
+              ),
+            ),
           ),
         ],
       ),
@@ -775,49 +779,72 @@ class _PublishedRideDetailsScreenState
   void _showCompleteTripConfirmation(BuildContext context) {
     showDialog(
       context: context,
+
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
         title: Text("Complete Trip"),
         content: Text("Mark this trip as completed?"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => appNavigator.pop(),
             child: Text("Not Yet"),
           ),
           TextButton(
             onPressed: () {
-              // Call API to update trip status to "completed"
-              _updateTripStatus("completed");
-              Navigator.pop(context);
+              _updateTripStatus("Completed");
+              appNavigator.pop();
             },
-            child: Text("Complete Trip", style: TextStyle(color: Colors.blue)),
+            child: Text(
+              "Complete Trip",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 15.sp,
+                fontWeight: .w600,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  void _updateTripStatus(String status) {
-    // Example API call:
-    // apiMethods.post(
-    //   endpoint: "trip/update_status",
-    //   body: {
-    //     "trip_id": widget.publishedId,
-    //     "status": status,
-    //   },
-    //   onSuccess: (response) {
-    //     // Show success message
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text("Trip status updated successfully")),
-    //     );
-    //     // Refresh data
-    //     _fetchData();
-    //   },
-    //   onError: (error) {
-    //     // Show error message
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       SnackBar(content: Text("Failed to update trip status: $error")),
-    //     );
-    //   },
-    // );
+  void _updateTripStatus(String status) async {
+    final statusUpdate = context.read<TripStatusUpdateProvider>();
+    await statusUpdate.tripStatus(tripId: widget.publishedId, status: status);
+    if (statusUpdate.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(context, statusUpdate.errorMessage ?? "");
+      return;
+    }
+    appSnackbar.showSingleSnackbar(
+      context,
+      statusUpdate.response?.message ?? "",
+    );
+    await _fetchData();
+    appNavigator.pop(true);
+    return;
+  }
+
+  DateTime? parseTripDateTime(String date, String time) {
+    try {
+      if (date.isEmpty || time.isEmpty) return null;
+
+      // Clean date
+      String datePart = date.trim().split('T').first;
+
+      // Clean time
+      List<String> parts = time.trim().split(':');
+      if (parts.length < 2) return null;
+
+      String hour = parts[0].padLeft(2, '0');
+      String minute = parts[1].padLeft(2, '0');
+      String second = parts.length > 2 ? parts[2].padLeft(2, '0') : '00';
+
+      String cleaned = "$datePart $hour:$minute:$second";
+
+      return DateTime.parse(cleaned);
+    } catch (e) {
+      debugPrint("parseTripDateTime error → $e");
+      return null;
+    }
   }
 }

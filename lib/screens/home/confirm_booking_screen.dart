@@ -20,6 +20,7 @@ class ConfirmBookingScreen extends StatefulWidget {
   final String destinationCity;
   final String destinationAddress;
   final double seatPrice;
+  final String seats;
   final int tripId;
 
   const ConfirmBookingScreen({
@@ -33,6 +34,7 @@ class ConfirmBookingScreen extends StatefulWidget {
     required this.destinationAddress,
     required this.seatPrice,
     required this.tripId,
+    required this.seats,
   });
 
   @override
@@ -72,6 +74,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeProvider>().resetSeats();
+      context.read<HomeProvider>().setMaxSeats(int.parse(widget.seats));
       getuserId();
     });
   }
@@ -448,11 +451,11 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () async {
-                if (_selectedPaymentMethod.toString() == "cash") {
+                if (_selectedPaymentMethod.toString().toLowerCase() == "cash") {
                   await provider.bookingRequest(
                     userId: userId ?? 0,
                     tripId: widget.tripId,
-                    paymentMethod: _selectedPaymentMethod,
+                    paymentMethod: _selectedPaymentMethod.toLowerCase(),
                     paymentStatus: "pending",
                     seatRequest: homeProvider.seats,
                     totalPrice: totalPrice,
@@ -465,6 +468,10 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                     );
                     return;
                   }
+                  appSnackbar.showSingleSnackbar(
+                    context,
+                    provider.response?.message ?? "",
+                  );
                   appNavigator.push(BookingDoneScreen());
                   messageController.clear();
                 } else {

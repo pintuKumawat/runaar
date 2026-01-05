@@ -14,11 +14,11 @@ class BookingRequestRepo {
     Map<String, dynamic> body = {
       "trip_id": tripId,
       "user_id": userId,
-      "seat_request": seatRequest,
+      "seats_requested": seatRequest,
       "total_price": totalPrice,
       "payment_method": paymentMethod,
-      "payment_status": specialMessage,
-      "spical_message": specialMessage,
+      "payment_status": paymentStatus,
+      "special_message": specialMessage,
     };
     return apiMethods.post(
       endpoint: "booking/request",
