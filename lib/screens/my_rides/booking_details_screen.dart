@@ -36,10 +36,14 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
 
   @override
   void initState() {
+    _fetchAllData();
+    super.initState();
+  }
+
+  Future<void> _fetchAllData() async {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _fetchData().then((value) => _fetchPassenger()),
     );
-    super.initState();
   }
 
   @override
@@ -81,21 +85,24 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
               ? Center(child: CircularProgressIndicator())
               : provider.errorMessage != null
               ? Center(child: Text(provider.errorMessage ?? ""))
-              : SingleChildScrollView(
-                  padding: 10.all,
-                  child: Column(
-                    children: [
-                      statusContainer(
-                        theme,
-                        getCurrentStatus(data?.bookingStatus),
-                      ),
-                      _tripHeader(theme, data),
-                      _driverCard(theme, data),
-                      _vehicleDetails(theme, data),
-                      _priceSummary(theme, data),
-                      _paymentDetails(theme, data),
-                      _passengerList(theme),
-                    ],
+              : RefreshIndicator(
+                  onRefresh: _fetchAllData,
+                  child: SingleChildScrollView(
+                    padding: 10.all,
+                    child: Column(
+                      children: [
+                        statusContainer(
+                          theme,
+                          getCurrentStatus(data?.bookingStatus),
+                        ),
+                        _tripHeader(theme, data),
+                        _driverCard(theme, data),
+                        _vehicleDetails(theme, data),
+                        _priceSummary(theme, data),
+                        _paymentDetails(theme, data),
+                        _passengerList(theme),
+                      ],
+                    ),
                   ),
                 ),
         );

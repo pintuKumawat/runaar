@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/models/profile/account/reset_password_model.dart';
 import 'package:runaar/provider/profile/account/reset_password_provider.dart';
@@ -25,8 +26,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool hasLower = false;
   bool hasNumber = false;
   bool hasSpecial = false;
-
-  
 
   void _validatePassword(String value) {
     setState(() {
@@ -183,7 +182,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 if (resetPasswordProvider.errorMessage != null) {
                   appSnackbar.showSingleSnackbar(
                     context,
-                    "password error ${resetPasswordProvider.errorMessage ?? ""}",
+                    resetPasswordProvider.errorMessage ?? "",
                   );
                   return;
                 }
@@ -191,6 +190,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context,
                   resetPasswordProvider.response?.message ?? "",
                 );
+                return appNavigator.pop();
               },
               child: Text("Update Password"),
             ),
