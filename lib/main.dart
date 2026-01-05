@@ -11,11 +11,13 @@ import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/firebase_options.dart';
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:runaar/provider/auth/forgot_password_provider.dart';
+import 'package:runaar/provider/auth/otp_verify_provider.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/language/language_provider.dart';
-import 'package:runaar/provider/auth/validate/login_provider.dart';
-import 'package:runaar/provider/auth/validate/signup_provider.dart';
+import 'package:runaar/provider/auth/login_provider.dart';
+import 'package:runaar/provider/auth/signup_provider.dart';
 import 'package:runaar/provider/my_rides/booking_detail_provider.dart';
 import 'package:runaar/provider/my_rides/booking_list_provider.dart';
 import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart';
@@ -72,7 +74,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserProfileUpdateProvider()),
         ChangeNotifierProvider(create: (_)=>UserDetailsProvider()),
         ChangeNotifierProvider(create: (_)=>ResetPasswordProvider()),
-        ChangeNotifierProvider(create: (_)=>UserDeactivateProvider())
+        ChangeNotifierProvider(create: (_)=>UserDeactivateProvider()),
+        ChangeNotifierProvider(create: (_)=>ForgotPasswordProvider()),
+        ChangeNotifierProvider(create: (_)=>OtpVerifyProvider())
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
