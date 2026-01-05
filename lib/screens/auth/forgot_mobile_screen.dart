@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/controllers/Auth/forgot_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/models/auth/forgot_password_model.dart';
+import 'package:runaar/provider/auth/forgot_password_provider.dart';
 import 'package:runaar/screens/auth/otp_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotMobileScreen extends StatefulWidget {
+  // final int userId;
   const ForgotMobileScreen({super.key});
 
   @override
@@ -13,10 +20,30 @@ class ForgotMobileScreen extends StatefulWidget {
 }
 
 class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
-  final TextEditingController mobileController = TextEditingController();
+  int userId = 0;
+
+
   final _formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
+  @override
+  void initState() {
+    getUserId();
+    super.initState();
+  }
+
+  Future<void> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getInt(savedData.userId);
+
+    debugPrint("Fetched userId: $id");
+
+    if (!mounted) return;
+
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +96,7 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
   // -------------------- MOBILE FIELD --------------------
   Widget _mobileField() {
     return TextFormField(
-      controller: mobileController,
+      controller: forgotPasswordController.forgotMobileController,
       keyboardType: TextInputType.phone,
       maxLength: 10,
       decoration: const InputDecoration(
@@ -91,15 +118,59 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
 
   // -------------------- SUBMIT BUTTON --------------------
   Widget _submitButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56.h,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : _submitMobile,
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text("Get OTP"),
-      ),
+    return Consumer<ForgotPasswordProvider>(
+      builder: (context, provider, child) {
+        return SizedBox(
+          width: double.infinity,
+          height: 56.h,
+          child: ElevatedButton(
+            onPressed: provider.isLoading
+                ? null
+                : () async {
+                    if (!_formKey.currentState!.validate()) return;
+                    print(userId);
+
+                    try {
+                      await provider.forgotPassword(
+                        user_id: 3,
+                        mobile: forgotPasswordController.forgotMobileController.text,
+                      );
+
+                      if (!context.mounted) return;
+
+                      // ERROR
+                      if (provider.errorMessage != null) {
+                        appSnackbar.showSingleSnackbar(
+                          context,
+                          provider.errorMessage!,
+                        );
+                        return;
+                      }
+
+                      // SUCCESS
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        provider.response?.message ?? "OTP sent successfully",
+                      );
+
+                      appNavigator.push(
+                        OtpScreen(mobile:forgotPasswordController.forgotMobileController.text),
+                      );
+                    } catch (e) {
+                      if (!context.mounted) return;
+
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        "Something went wrong",
+                      );
+                    }
+                  },
+            child: provider.isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : const Text("Get OTP"),
+          ),
+        );
+      },
     );
   }
 
@@ -113,21 +184,34 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
       ),
     );
   }
-
-  // -------------------- SUBMIT ACTION --------------------
-  void _submitMobile() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => isLoading = true);
-
-    // 🔄 API CALL WILL COME HERE
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => isLoading = false);
-
-    appSnackbar.showSingleSnackbar(context, "OTP sent to your mobile number");
-
-    // 👉 Navigate to OTP screen later
-     appNavigator.push(OtpScreen(mobile: mobileController.text,));
-  }
 }
+  // -------------------- SUBMIT ACTION --------------------
+//   void _submitMobile() async {
+//   if (!_formKey.currentState!.validate()) return;
+
+//   final provider = context.read<ForgotPasswordProvider>();
+
+//   try {
+//     await provider.forgotPassword(
+//       user_id: 3,
+//       mobile: mobileController.text,
+//     );
+
+//      if (provider.errorMessage != null) {
+//                 appSnackbar.showSingleSnackbar(
+//                   context,
+//                   provider.errorMessage!,
+//                 );
+//                 return;
+//               }
+
+//               // SUCCESS MESSAGE
+//               appSnackbar.showSingleSnackbar(
+//                 context,
+//                 provider.response?.message ??
+//                     "OTP sent successfully",
+//               );
+  
+//   }
+// }
+// }

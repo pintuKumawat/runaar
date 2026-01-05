@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/provider/auth/otp_verify_provider.dart';
 import 'package:runaar/screens/auth/reset_password_screen.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -127,7 +129,7 @@ class _OtpScreenState extends State<OtpScreen> {
     return _secondsRemaining > 0
         ? Text(
             "Resend OTP in $_secondsRemaining sec",
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.redAccent),
           )
         : TextButton(
             onPressed: _resendOtpAction,
@@ -140,20 +142,25 @@ class _OtpScreenState extends State<OtpScreen> {
 
   // -------------------- VERIFY BUTTON --------------------
   Widget _verifyButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56.h,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : _verifyOtp,
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text("Verify OTP"),
-      ),
+    return Consumer<OtpVerifyProvider>(
+      builder: (BuildContext context, otpVerifyProvider,child) {  
+      return SizedBox(
+        width: double.infinity,
+        height: 56.h,
+        child: ElevatedButton(
+          onPressed: isLoading ? null : _verifyOtp,
+          child: isLoading
+              ? const CircularProgressIndicator(color: Colors.white)
+              : const Text("Verify OTP"),
+        ),
+      );
+      }
     );
   }
 
   // -------------------- VERIFY OTP ACTION --------------------
   void _verifyOtp() async {
+    final provider = context.read<OtpVerifyProvider>();
     if (!_formKey.currentState!.validate()) {
       appSnackbar.showSingleSnackbar(context, "Enter complete OTP");
       return;
