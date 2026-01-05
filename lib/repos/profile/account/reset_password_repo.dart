@@ -1,5 +1,5 @@
 import 'package:runaar/core/services/api_response.dart';
-import 'package:runaar/models/profile/reset_password/reset_password_model.dart';
+import 'package:runaar/models/profile/account/reset_password_model.dart';
 
 class ResetPasswordRepo {
   Future<ResetPasswordModel> resetPassword({

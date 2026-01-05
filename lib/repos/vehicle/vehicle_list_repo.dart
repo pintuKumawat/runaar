@@ -4,6 +4,8 @@ import 'package:runaar/models/vehicle/vehicle_list_model.dart';
 class VehicleListRepo {
   Future<VehicleListModel> vehicleList({required int userId}) async {
     Map<String, dynamic> body = {"user_id": userId};
+print("my user id is this ${userId}");
+    
     return apiMethods.post(
       endpoint: "vehicle/list",
       body: body,

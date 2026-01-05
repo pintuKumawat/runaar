@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/services/api_response.dart';
-import 'package:runaar/models/profile/reset_password/reset_password_model.dart';
-import 'package:runaar/repos/profile/resetPassword/reset_password_repo.dart';
+import 'package:runaar/models/profile/account/reset_password_model.dart';
+import 'package:runaar/repos/profile/account/reset_password_repo.dart';
 
 class ResetPasswordProvider extends ChangeNotifier {
 

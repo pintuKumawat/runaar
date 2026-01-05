@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/constants/app_color.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/provider/profile/account/user_deactivate_provider.dart';
+import 'package:runaar/screens/auth/login_screen.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
   final int userId;
@@ -13,19 +17,18 @@ class DeleteAccountScreen extends StatefulWidget {
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   final _formKey = GlobalKey<FormState>();
-  final passwordCtrl = TextEditingController();
 
-  bool showPassword = false;
   bool agree = false;
-
-  
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Deactivate Account")),
+      appBar: AppBar(
+        title: const Text("Deactivate Account"),
+        centerTitle: true,
+      ),
       bottomNavigationBar: _deactivateButton(textTheme),
       body: SingleChildScrollView(
         padding: 16.all,
@@ -38,27 +41,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
               20.height,
 
-              _infoPoint(
-                "Your account will be deactivated, not permanently deleted.",
-                textTheme,
-              ),
-              _infoPoint(
-                "You can reactivate your account by logging in again.",
-                textTheme,
-              ),
-              _infoPoint(
-                "Your profile and ride history will be kept safe.",
-                textTheme,
-              ),
-              _infoPoint(
-                "You will not be visible to other users while deactivated.",
-                textTheme,
-              ),
-
-              30.height,
-
-              _label("Confirm Password", textTheme),
-              _passwordField(textTheme),
+              _infoCard(textTheme),
 
               20.height,
 
@@ -73,20 +56,22 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   // -------------------- WARNING HEADER --------------------
   Widget _warningHeader(TextTheme theme) {
     return Container(
-      padding: 14.all,
+      padding: 16.all,
       decoration: BoxDecoration(
-        color: Colors.red.withOpacity(.08),
+        color: Colors.red.withOpacity(.06),
         borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.red.withOpacity(.2)),
       ),
       child: Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: Colors.red, size: 26.sp),
+          Icon(Icons.warning_amber_rounded,
+              color: Colors.red.shade600, size: 26.sp),
           12.width,
           Expanded(
             child: Text(
-              "This action will deactivate your account",
+              "This action will deactivate your account access",
               style: theme.titleMedium?.copyWith(
-                color: Colors.red,
+                color: Colors.red.shade600,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -96,20 +81,50 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     );
   }
 
+  // -------------------- INFO CARD --------------------
+  Widget _infoCard(TextTheme theme) {
+    return Container(
+      padding: 14.all,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        children: [
+          _infoPoint("Your account will be temporarily deactivated", theme),
+          _divider(),
+          _infoPoint("Your profile will not be visible to other users", theme),
+          _divider(),
+          _infoPoint("Any active bookings will be paused", theme),
+          _divider(),
+          _infoPoint("Your personal data will remain safe and unchanged", theme),
+          _divider(),
+          _infoPoint("You can request account restoration anytime", theme),
+        ],
+      ),
+    );
+  }
+
   // -------------------- INFO POINT --------------------
   Widget _infoPoint(String text, TextTheme theme) {
     return Padding(
-      padding: 5.vertical,
+      padding: 6.vertical,
       child: Row(
-        crossAxisAlignment: .center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.circle, size: 8.sp, color: Colors.grey),
+          Icon(
+            Icons.check_circle_outline,
+            size: 18.sp,
+            color: Colors.grey.shade600,
+          ),
           10.width,
           Expanded(
             child: Text(
               text,
               style: theme.bodyMedium?.copyWith(
-                color: appColor.textColor.withOpacity(.85),
+                color: appColor.textColor.withOpacity(.9),
+                height: 1.4,
               ),
             ),
           ),
@@ -118,35 +133,15 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     );
   }
 
-  // -------------------- LABEL --------------------
-  Widget _label(String text, TextTheme theme) {
-    return Text(
-      text,
-      style: theme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+  // -------------------- DIVIDER --------------------
+  Widget _divider() {
+    return Padding(
+      padding: 6.vertical,
+      child: Divider(height: 1, color: Colors.grey.shade300),
     );
   }
 
-  // -------------------- PASSWORD FIELD --------------------
-  Widget _passwordField(TextTheme theme) {
-    return TextFormField(
-      controller: passwordCtrl,
-      obscureText: !showPassword,
-      style: theme.bodyMedium,
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.lock_outline),
-        suffixIcon: IconButton(
-          icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
-          onPressed: () => setState(() => showPassword = !showPassword),
-        ),
-      ),
-      validator: (v) {
-        if (v == null || v.isEmpty) return "Password is required";
-        if (v.length < 6) return "Invalid password";
-        return null;
-      },
-    );
-  }
-
+  // -------------------- CONFIRMATION CHECK --------------------
   Widget _confirmationCheck(TextTheme theme) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,14 +149,13 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
         Checkbox(
           value: agree,
           checkColor: Colors.white,
-          onChanged: (v) => setState(() => agree = v!),
+          onChanged: (v) => setState(() => agree = v ?? false),
         ),
         6.width,
         Expanded(
           child: Text(
-            "I understand that my account will be deactivated and I can "
-            "reactivate it later by logging in again.",
-            style: theme.bodySmall,
+            "I understand that deactivating my account will restrict access and visibility.",
+            style: theme.bodySmall?.copyWith(height: 1.4),
           ),
         ),
       ],
@@ -170,30 +164,68 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
   // -------------------- DEACTIVATE BUTTON --------------------
   Widget _deactivateButton(TextTheme theme) {
-    return BottomAppBar(
-      child: SizedBox(
-        height: 56.h,
-        width: double.infinity,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          onPressed: _deactivateAccount,
-          child: Text("Deactivate Account"),
+  return Consumer<UserDeactivateProvider>(
+    builder: (context, provider, child) {
+      return BottomAppBar(
+        child: SizedBox(
+          height: 56.h,
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+            onPressed: () async {
+              //  CHECKBOX VALIDATION
+              if (!agree) {
+                appSnackbar.showSingleSnackbar(
+                  context,
+                  "Please confirm before deactivating your account",
+                );
+                return;
+              }
+
+              // CALL API
+              await provider.UsreDeactivate(
+                UserId: widget.userId,
+              );
+
+              // ERROR CASE
+              if (provider.errorMessage != null) {
+                appSnackbar.showSingleSnackbar(
+                  context,
+                  provider.errorMessage!,
+                );
+                return;
+              }
+
+              // SUCCESS MESSAGE
+              appSnackbar.showSingleSnackbar(
+                context,
+                provider.response?.message ??
+                    "Account deactivated successfully",
+              );
+
+              //  SMALL DELAY FOR UX
+              await Future.delayed(const Duration(seconds: 1));
+
+              //  REDIRECT TO LOGIN & CLEAR STACK
+              appNavigator.pushAndRemoveUntil(LoginScreen());
+            },
+            child: Text(
+              "Deactivate Account",
+              style: theme.titleSmall?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ),
-      ),
-    );
-  }
-
-  // -------------------- ACTION --------------------
-  void _deactivateAccount() {
-    if (!_formKey.currentState!.validate()) return;
-
-    if (!agree) {
-      appSnackbar.showSingleSnackbar(
-        context,
-        "Please confirm before proceeding",
       );
-      return;
-    }
-    appSnackbar.showSingleSnackbar(context, "Account deactivated successfully");
-  }
+    },
+  );
+}
+
 }

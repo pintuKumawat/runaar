@@ -184,6 +184,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
   }
 
   // -------------------- IMAGE PREVIEW --------------------
+  //-----> some  error 
   void _showImageDialog(dynamic image) {
     showDialog(
       context: context,
