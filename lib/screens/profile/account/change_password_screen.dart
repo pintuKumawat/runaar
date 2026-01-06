@@ -4,7 +4,7 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/profile/change_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
-import 'package:runaar/provider/profile/account/reset_password_provider.dart';
+import 'package:runaar/provider/profile/account/change_password_provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final int userId;
@@ -164,30 +164,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Widget _saveButton(TextTheme textTheme) {
-    return Consumer<ResetPasswordProvider>(
-      builder: (BuildContext context, resetPasswordProvider, child) {
+    return Consumer<ChangePasswordProvider>(
+      builder: (BuildContext context, changePasswordProvider, child) {
         return BottomAppBar(
           child: SizedBox(
             width: double.infinity,
             height: 56.h,
             child: ElevatedButton(
               onPressed: () async {
-                await resetPasswordProvider.resetPassword(
+                await changePasswordProvider.resetPassword(
                   userId: widget.userId,
                   password: changePasswordController.currentController.text,
                   newPassword: changePasswordController.passwordController.text,
                 );
 
-                if (resetPasswordProvider.errorMessage != null) {
+                if (changePasswordProvider.errorMessage != null) {
                   appSnackbar.showSingleSnackbar(
                     context,
-                    resetPasswordProvider.errorMessage ?? "",
+                    changePasswordProvider.errorMessage ?? "",
                   );
                   return;
                 }
                 appSnackbar.showSingleSnackbar(
                   context,
-                  resetPasswordProvider.response?.message ?? "",
+                  changePasswordProvider.response?.message ?? "",
                 );
                 return appNavigator.pop();
               },

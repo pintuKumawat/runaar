@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/profile/account/reset_password_model.dart';
-import 'package:runaar/repos/profile/account/reset_password_repo.dart';
+import 'package:runaar/repos/profile/account/change_password_repo.dart';
 
-class ResetPasswordProvider extends ChangeNotifier {
+class ChangePasswordProvider extends ChangeNotifier {
 
   String? _errorMessage;
   bool _isLoading=false;
@@ -25,7 +25,7 @@ class ResetPasswordProvider extends ChangeNotifier {
     notifyListeners();
 
     try{
-      final result=await resetPasswordRepo.resetPassword(userId: userId, password: password, newPassword: newPassword);
+      final result=await changePasswordRepo.resetPassword(userId: userId, password: password, newPassword: newPassword);
       _response =result;
 
     }on ApiException catch (e){

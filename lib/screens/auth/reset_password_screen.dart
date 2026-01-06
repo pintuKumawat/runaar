@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/provider/auth/reset_password_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String mobile;
 
-  const ResetPasswordScreen({
-    super.key,
-    required this.mobile,
-  });
+  const ResetPasswordScreen({super.key, required this.mobile});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -23,7 +22,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  bool isLoading = false;
   bool showPassword = false;
   bool showConfirmPassword = false;
 
@@ -32,10 +30,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Reset Password"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Reset Password"), centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
           padding: 16.all,
@@ -86,9 +81,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         hintText: "New Password",
         prefixIcon: const Icon(Icons.lock),
         suffixIcon: IconButton(
-          icon: Icon(
-            showPassword ? Icons.visibility_off : Icons.visibility,
-          ),
+          icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
           onPressed: () => setState(() => showPassword = !showPassword),
         ),
       ),
@@ -113,9 +106,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         prefixIcon: const Icon(Icons.lock_outline),
         suffixIcon: IconButton(
           icon: Icon(
-            showConfirmPassword
-                ? Icons.visibility_off
-                : Icons.visibility,
+            showConfirmPassword ? Icons.visibility_off : Icons.visibility,
           ),
           onPressed: () =>
               setState(() => showConfirmPassword = !showConfirmPassword),
@@ -135,32 +126,38 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   // -------------------- RESET BUTTON --------------------
   Widget _resetButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56.h,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : _resetPassword,
-        child: isLoading
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text("Reset Password"),
+    return Consumer<ResetPasswordProvider>(
+      builder: (context, resetPasswordProvider, child) => SizedBox(
+        width: double.infinity,
+        height: 56.h,
+        child: ElevatedButton(
+          onPressed: () =>
+              resetPasswordProvider.isLoading ? null : _resetPassword,
+          child: resetPasswordProvider.isLoading
+              ? const CircularProgressIndicator()
+              : const Text("Reset Password"),
+        ),
       ),
     );
   }
 
-  void _resetPassword() async {
+  void _resetPassword(ResetPasswordProvider resetPasswordProvider) async {
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() => isLoading = true);
-
-  
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => isLoading = false);
-
-    appSnackbar.showSingleSnackbar(
-      context,
-      "Password reset successfully",
+    await resetPasswordProvider.resetPassword(
+      mobNumber: widget.mobile,
+      password: passwordController.text,
     );
+
+    if (resetPasswordProvider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(
+        context,
+        resetPasswordProvider.errorMessage ?? "",
+      );
+      return;
+    }
+
+    appSnackbar.showSingleSnackbar(context, "Password reset successfully");
 
     appNavigator.pushAndRemoveUntil(LoginScreen());
   }

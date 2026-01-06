@@ -20,8 +20,10 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
   bool isLoading = false;
   int _secondsRemaining = 30;
@@ -47,10 +49,7 @@ class _OtpScreenState extends State<OtpScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Verify OTP"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Verify OTP"), centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
           padding: 16.all,
@@ -140,27 +139,24 @@ class _OtpScreenState extends State<OtpScreen> {
           );
   }
 
-  // -------------------- VERIFY BUTTON --------------------
   Widget _verifyButton() {
     return Consumer<OtpVerifyProvider>(
-      builder: (BuildContext context, otpVerifyProvider,child) {  
-      return SizedBox(
-        width: double.infinity,
-        height: 56.h,
-        child: ElevatedButton(
-          onPressed: isLoading ? null : _verifyOtp,
-          child: isLoading
-              ? const CircularProgressIndicator(color: Colors.white)
-              : const Text("Verify OTP"),
-        ),
-      );
-      }
+      builder: (BuildContext context, otpVerifyProvider, child) {
+        return SizedBox(
+          width: double.infinity,
+          height: 56.h,
+          child: ElevatedButton(
+            onPressed: () => isLoading ? null : _verifyOtp(otpVerifyProvider),
+            child: isLoading
+                ? const CircularProgressIndicator()
+                : const Text("Verify OTP"),
+          ),
+        );
+      },
     );
   }
 
-  // -------------------- VERIFY OTP ACTION --------------------
-  void _verifyOtp() async {
-    final provider = context.read<OtpVerifyProvider>();
+  void _verifyOtp(OtpVerifyProvider otpVerifyProvider) async {
     if (!_formKey.currentState!.validate()) {
       appSnackbar.showSingleSnackbar(context, "Enter complete OTP");
       return;
@@ -169,24 +165,26 @@ class _OtpScreenState extends State<OtpScreen> {
     final otp = _otpControllers.map((e) => e.text).join();
 
     if (otp.length != 6) {
-      appSnackbar.showSingleSnackbar(context, "Invalid OTP");
+      appSnackbar.showSingleSnackbar(context, "Enter 6 digit OTP");
       return;
     }
+    await otpVerifyProvider.otpVerify(mobNumber: widget.mobile, otp: otp);
 
-    setState(() => isLoading = true);
+    if (otpVerifyProvider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(
+        context,
+        otpVerifyProvider.errorMessage ?? "",
+      );
+      return;
+    }
+    appSnackbar.showSingleSnackbar(
+      context,
+      otpVerifyProvider.response?.message ?? "",
+    );
 
-    // 🔄 API CALL HERE
-    await Future.delayed(const Duration(seconds: 1));
-
-    setState(() => isLoading = false);
-
-    appSnackbar.showSingleSnackbar(context, "OTP verified successfully");
-
-    // 👉 Navigate to Reset Password
-     appNavigator.push(ResetPasswordScreen(mobile: widget.mobile));
+    appNavigator.push(ResetPasswordScreen(mobile: widget.mobile));
   }
 
-  // -------------------- TIMER --------------------
   void _startTimer() {
     _secondsRemaining = 30;
     _timer?.cancel();

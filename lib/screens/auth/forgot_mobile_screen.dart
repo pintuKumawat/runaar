@@ -6,7 +6,6 @@ import 'package:runaar/core/utils/controllers/Auth/forgot_password_controller.da
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
-import 'package:runaar/models/auth/forgot_password_model.dart';
 import 'package:runaar/provider/auth/forgot_password_provider.dart';
 import 'package:runaar/screens/auth/otp_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,7 +20,6 @@ class ForgotMobileScreen extends StatefulWidget {
 
 class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
   int userId = 0;
-
 
   final _formKey = GlobalKey<FormState>();
 
@@ -116,7 +114,6 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
     );
   }
 
-  // -------------------- SUBMIT BUTTON --------------------
   Widget _submitButton() {
     return Consumer<ForgotPasswordProvider>(
       builder: (context, provider, child) {
@@ -128,12 +125,12 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
                 ? null
                 : () async {
                     if (!_formKey.currentState!.validate()) return;
-                    print(userId);
 
                     try {
                       await provider.forgotPassword(
-                        user_id: 3,
-                        mobile: forgotPasswordController.forgotMobileController.text,
+                        mobile: forgotPasswordController
+                            .forgotMobileController
+                            .text,
                       );
 
                       if (!context.mounted) return;
@@ -147,14 +144,17 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
                         return;
                       }
 
-                      // SUCCESS
                       appSnackbar.showSingleSnackbar(
                         context,
                         provider.response?.message ?? "OTP sent successfully",
                       );
 
                       appNavigator.push(
-                        OtpScreen(mobile:forgotPasswordController.forgotMobileController.text),
+                        OtpScreen(
+                          mobile: forgotPasswordController
+                              .forgotMobileController
+                              .text,
+                        ),
                       );
                     } catch (e) {
                       if (!context.mounted) return;

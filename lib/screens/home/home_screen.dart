@@ -183,17 +183,17 @@ class _HomeScreenState extends State<HomeScreen> {
         context,
         "Please select search date",
       );
-    } else if (homeController.originController.text ==
-        homeController.destinationController.text) {
-      return appSnackbar.showSingleSnackbar(
-        context,
-        "Both location cannot be same",
-      );
     } else if (homeController.destinationController.text.isEmpty ||
         homeController.originController.text.isEmpty) {
       return appSnackbar.showSingleSnackbar(
         context,
         "Locations cannot be empty",
+      );
+    } else if (homeController.originController.text ==
+        homeController.destinationController.text) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Both location cannot be same",
       );
     } else {
       await homeProvider.rideSearch(

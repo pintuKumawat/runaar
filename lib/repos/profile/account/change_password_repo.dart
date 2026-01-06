@@ -1,7 +1,7 @@
 import 'package:runaar/core/services/api_response.dart';
 import 'package:runaar/models/profile/account/reset_password_model.dart';
 
-class ResetPasswordRepo {
+class ChangePasswordRepo {
   Future<ResetPasswordModel> resetPassword({
     required int userId,
     required String password,
@@ -26,4 +26,4 @@ class ResetPasswordRepo {
   }
 }
 
-ResetPasswordRepo resetPasswordRepo = ResetPasswordRepo();
+final ChangePasswordRepo changePasswordRepo = ChangePasswordRepo();

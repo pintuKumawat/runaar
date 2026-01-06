@@ -731,7 +731,7 @@ class _PublishedRideDetailsScreenState
           TextButton(onPressed: () => appNavigator.pop(), child: Text("No")),
           TextButton(
             onPressed: () {
-              _updateTripStatus("Started");
+              _updateTripStatus("Cancelled");
               appNavigator.pop();
             },
             child: Text(
