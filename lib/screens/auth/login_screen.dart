@@ -52,17 +52,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: loginController.mobileController,
                 keyboardType: TextInputType.phone,
                 onChanged: provider.validatePhone,
-
+                maxLength: 10,
                 decoration: InputDecoration(
                   hintText: "Enter mobile number",
                   prefixIcon: const Icon(Icons.phone),
                   errorText: provider.phoneError,
+                  counterText: "",
                 ),
               ),
 
               15.height,
-
-              ///  PASSWORD (LIVE VALIDATION)
               TextFormField(
                 controller: loginController.passwordController,
                 obscureText: !provider.isPasswordVisible,
@@ -82,7 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
 
-              /// FORGOT PASSWORD
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -98,7 +96,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
               20.height,
 
-              /// 🚀 LOGIN BUTTON (Provider login)
               SizedBox(
                 width: double.infinity,
                 height: 56.h,

@@ -25,7 +25,6 @@ class _OtpScreenState extends State<OtpScreen> {
     (_) => TextEditingController(),
   );
 
-  bool isLoading = false;
   int _secondsRemaining = 30;
   Timer? _timer;
 
@@ -146,8 +145,8 @@ class _OtpScreenState extends State<OtpScreen> {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () => isLoading ? null : _verifyOtp(otpVerifyProvider),
-            child: isLoading
+            onPressed: () => otpVerifyProvider.isLoading ? null : _verifyOtp(otpVerifyProvider),
+            child: otpVerifyProvider.isLoading
                 ? const CircularProgressIndicator()
                 : const Text("Verify OTP"),
           ),

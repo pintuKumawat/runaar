@@ -23,7 +23,6 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  bool isLoading = false;
   @override
   void initState() {
     getUserId();
@@ -185,33 +184,3 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
     );
   }
 }
-  // -------------------- SUBMIT ACTION --------------------
-//   void _submitMobile() async {
-//   if (!_formKey.currentState!.validate()) return;
-
-//   final provider = context.read<ForgotPasswordProvider>();
-
-//   try {
-//     await provider.forgotPassword(
-//       user_id: 3,
-//       mobile: mobileController.text,
-//     );
-
-//      if (provider.errorMessage != null) {
-//                 appSnackbar.showSingleSnackbar(
-//                   context,
-//                   provider.errorMessage!,
-//                 );
-//                 return;
-//               }
-
-//               // SUCCESS MESSAGE
-//               appSnackbar.showSingleSnackbar(
-//                 context,
-//                 provider.response?.message ??
-//                     "OTP sent successfully",
-//               );
-  
-//   }
-// }
-// }

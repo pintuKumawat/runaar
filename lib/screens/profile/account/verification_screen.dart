@@ -7,7 +7,6 @@ import 'package:runaar/core/responsive/responsive_extension.dart';
 enum VerificationStatus { verified, pending, inProgress }
 
 class VerificationScreen extends StatefulWidget {
- 
   final int? isLicenceVerified;
   final int? isDocumentVerified;
   final int? isNumberVerified;
@@ -15,10 +14,9 @@ class VerificationScreen extends StatefulWidget {
 
   const VerificationScreen({
     super.key,
-   
     required this.isLicenceVerified,
     required this.isDocumentVerified,
-    required this. isNumberVerified,
+    required this.isNumberVerified,
     required this.isEmailVerified,
   });
 
@@ -29,15 +27,44 @@ class VerificationScreen extends StatefulWidget {
 class _VerificationScreenState extends State<VerificationScreen> {
   final ImagePicker _picker = ImagePicker();
 
-  VerificationStatus drivingLicenseStatus = VerificationStatus.pending;
-  VerificationStatus identityStatus = VerificationStatus.inProgress;
-  VerificationStatus emailStatus = VerificationStatus.verified;
-  VerificationStatus phoneStatus = VerificationStatus.pending;
+  late VerificationStatus drivingLicenseStatus;
+  late VerificationStatus identityStatus;
+  late VerificationStatus emailStatus;
+  late VerificationStatus phoneStatus;
 
   String selectedIdentity = "Aadhaar";
 
   File? drivingLicenseFile;
   File? identityFile;
+
+  @override
+  void initState() {
+    super.initState();
+
+    drivingLicenseStatus = widget.isLicenceVerified == 1
+        ? VerificationStatus.verified
+        : widget.isLicenceVerified == null
+        ? VerificationStatus.pending
+        : VerificationStatus.inProgress;
+
+    identityStatus = widget.isDocumentVerified == 1
+        ? VerificationStatus.verified
+        : widget.isDocumentVerified == null
+        ? VerificationStatus.pending
+        : VerificationStatus.inProgress;
+
+    emailStatus = widget.isEmailVerified == 1
+        ? VerificationStatus.verified
+        : widget.isEmailVerified == null
+        ? VerificationStatus.pending
+        : VerificationStatus.inProgress;
+
+    phoneStatus = widget.isNumberVerified == 1
+        ? VerificationStatus.verified
+        : widget.isNumberVerified == null
+        ? VerificationStatus.pending
+        : VerificationStatus.inProgress;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +243,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
     );
   }
 
-  // -------------------- HELPERS --------------------
   String _statusText(VerificationStatus status) {
     switch (status) {
       case VerificationStatus.verified:

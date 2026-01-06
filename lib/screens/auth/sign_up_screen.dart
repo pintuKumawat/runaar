@@ -22,6 +22,12 @@ class _SignupScreenState extends State<SignupScreen> {
   bool isPasswordVisible = false;
 
   @override
+  void initState() {
+    signUpController.clear();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final provider = context.watch<SignupProvider>();
     final theme = Theme.of(context);
@@ -74,7 +80,9 @@ class _SignupScreenState extends State<SignupScreen> {
               controller: signUpController.mobileController,
               onChanged: provider.validateMobileNumber,
               keyboardType: TextInputType.phone,
+              maxLength: 10,
               decoration: InputDecoration(
+                counterText: "",
                 errorText: provider.phoneNumberError,
                 hintText: "Enter mobile number",
                 prefixIcon: Icon(Icons.phone),

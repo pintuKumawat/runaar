@@ -37,6 +37,7 @@ class BookingList {
   int? driverRating;
   String? phoneNumber;
   String? profileImage;
+  int? driverVerified;
 
   BookingList({
     this.originTime,
@@ -51,6 +52,7 @@ class BookingList {
     this.driverRating,
     this.phoneNumber,
     this.profileImage,
+    this.driverVerified,
   });
 
   BookingList.fromJson(Map<String, dynamic> json) {
@@ -66,6 +68,7 @@ class BookingList {
     driverRating = json['driver_rating'];
     phoneNumber = json['phone_number'];
     profileImage = json['profile_image'];
+    driverVerified = json['driver_verified'];
   }
 
   Map<String, dynamic> toJson() {
@@ -82,6 +85,7 @@ class BookingList {
     data['driver_rating'] = this.driverRating;
     data['phone_number'] = this.phoneNumber;
     data['profile_image'] = this.profileImage;
+    data['driver_verified'] = this.driverVerified;
     return data;
   }
 }

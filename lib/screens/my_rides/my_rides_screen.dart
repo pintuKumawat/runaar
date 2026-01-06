@@ -177,7 +177,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
                   bookingId: d.bookingId,
                   rating: d.driverRating.toString(),
                   type: "booked",
-                  // isVerified: d.
+                  isVerified: d.driverVerified,
                 );
               },
             ),
@@ -463,6 +463,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
       case "pending":
         return Colors.orange;
       case "completed":
+      case "started":
         return Colors.blue;
       case "rejected":
       case "cancelled":

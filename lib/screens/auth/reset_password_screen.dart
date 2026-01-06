@@ -112,6 +112,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               setState(() => showConfirmPassword = !showConfirmPassword),
         ),
       ),
+      autovalidateMode: .onUserInteraction,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Confirm password is required";
@@ -132,7 +133,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         height: 56.h,
         child: ElevatedButton(
           onPressed: () =>
-              resetPasswordProvider.isLoading ? null : _resetPassword,
+              resetPasswordProvider.isLoading ? null : _resetPassword(resetPasswordProvider),
           child: resetPasswordProvider.isLoading
               ? const CircularProgressIndicator()
               : const Text("Reset Password"),

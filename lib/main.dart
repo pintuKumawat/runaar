@@ -25,6 +25,7 @@ import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart'
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/provider/my_rides/request_list_provider.dart';
+import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
@@ -80,6 +81,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => UserDeactivateProvider()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordProvider()),
         ChangeNotifierProvider(create: (_) => OtpVerifyProvider()),
+        ChangeNotifierProvider(create: (_) => TripStatusUpdateProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

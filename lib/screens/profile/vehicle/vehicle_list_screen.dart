@@ -132,6 +132,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                     vehicleId: vehicleId,
                   );
                   if (deleteVehicleProvider.errorMessage != null) {
+                    appNavigator.pop();
                     appSnackbar.showSingleSnackbar(
                       context,
                       deleteVehicleProvider.errorMessage ?? "",
@@ -144,8 +145,8 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                     deleteVehicleProvider.response?.message ?? "",
                   );
 
-                  await _fetchData();
                   appNavigator.pop();
+                  await _fetchData();
                 },
                 child: const Text("Delete"),
               ),

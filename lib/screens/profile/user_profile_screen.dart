@@ -81,7 +81,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               children: [
                 _profileHeader(theme, data),
                 10.height,
-          
+
                 /// WALLET & REFER CARDS
                 Row(
                   mainAxisAlignment: .spaceBetween,
@@ -91,11 +91,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Expanded(child: _walletCard(theme)),
                   ],
                 ),
-          
+
                 12.height,
                 _sectionTitle("Account", theme),
                 _profileTile(Icons.person_outline, "Edit Profile", data, theme),
-                _profileTile(Icons.lock_outline, "Change Password", data, theme),
+                _profileTile(
+                  Icons.lock_outline,
+                  "Change Password",
+                  data,
+                  theme,
+                ),
                 _profileTile(Icons.language, "Language", data, theme),
                 _profileTile(
                   Icons.verified_user_outlined,
@@ -103,14 +108,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   data,
                   theme,
                 ),
-          
+
                 12.height,
                 _sectionTitle("Rides", theme),
                 _profileTile(Icons.directions_car, "My Rides", data, theme),
                 _profileTile(Icons.history, "Trip History", data, theme),
-          
+
                 12.height,
-          
+
                 _sectionTitle("Vehicle", theme),
                 _profileTile(Icons.car_rental, "My Vehicles", data, theme),
                 _profileTile(
@@ -119,11 +124,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   data,
                   theme,
                 ),
-          
+
                 12.height,
-          
+
                 _sectionTitle("Support & Legal", theme),
-                _profileTile(Icons.support_agent, "Contact Support", data, theme),
+                _profileTile(
+                  Icons.support_agent,
+                  "Contact Support",
+                  data,
+                  theme,
+                ),
                 _profileTile(Icons.help_outline, "FAQs", data, theme),
                 _profileTile(
                   Icons.privacy_tip_outlined,
@@ -133,9 +143,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 _profileTile(Icons.star_rate_outlined, "Rate App", data, theme),
                 _profileTile(Icons.share_outlined, "Share App", data, theme),
-          
+
                 12.height,
-          
+
                 _sectionTitle("Danger Zone", theme),
                 _profileTile(
                   Icons.delete_forever_outlined,
@@ -145,9 +155,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   danger: true,
                 ),
                 _profileTile(Icons.logout, "Logout", data, theme, danger: true),
-          
+
                 15.height,
-          
+
                 Center(
                   child: Text(
                     "App Version $appVersion",
@@ -199,10 +209,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         borderRadius: BorderRadius.circular(12.r),
         onTap: () => appNavigator.push(WalletScreen()),
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 14.w,
-            vertical: 10.h, 
-          ),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

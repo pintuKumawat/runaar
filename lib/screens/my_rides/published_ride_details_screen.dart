@@ -731,8 +731,8 @@ class _PublishedRideDetailsScreenState
           TextButton(onPressed: () => appNavigator.pop(), child: Text("No")),
           TextButton(
             onPressed: () {
-              _updateTripStatus("Cancelled");
-              appNavigator.pop();
+              _updateTripStatus("Started");
+              
             },
             child: Text(
               "Yes, Start Trip",
@@ -760,7 +760,7 @@ class _PublishedRideDetailsScreenState
           TextButton(
             onPressed: () {
               _updateTripStatus("Cancelled");
-              appNavigator.pop();
+              
             },
             child: Text(
               "Yes, Cancel",
@@ -792,7 +792,6 @@ class _PublishedRideDetailsScreenState
           TextButton(
             onPressed: () {
               _updateTripStatus("Completed");
-              appNavigator.pop();
             },
             child: Text(
               "Complete Trip",
@@ -812,6 +811,7 @@ class _PublishedRideDetailsScreenState
     final statusUpdate = context.read<TripStatusUpdateProvider>();
     await statusUpdate.tripStatus(tripId: widget.publishedId, status: status);
     if (statusUpdate.errorMessage != null) {
+      appNavigator.pop();
       appSnackbar.showSingleSnackbar(context, statusUpdate.errorMessage ?? "");
       return;
     }
@@ -820,6 +820,7 @@ class _PublishedRideDetailsScreenState
       statusUpdate.response?.message ?? "",
     );
     await _fetchData();
+    appNavigator.pop();
     appNavigator.pop(true);
     return;
   }
@@ -828,10 +829,8 @@ class _PublishedRideDetailsScreenState
     try {
       if (date.isEmpty || time.isEmpty) return null;
 
-      // Clean date
       String datePart = date.trim().split('T').first;
 
-      // Clean time
       List<String> parts = time.trim().split(':');
       if (parts.length < 2) return null;
 

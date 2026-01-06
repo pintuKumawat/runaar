@@ -227,9 +227,12 @@ class _OfferRideState extends State<OfferRide> {
                 children: [
                   Icon(Icons.directions_car, size: 18.sp),
                   10.width,
-                  Text(
-                    "${v.vehicleBrand} ${v.model} (${v.vehicleNumber})",
-                    style: theme.bodyLarge,
+                  Expanded(
+                    child: Text(
+                      "${v.vehicleBrand} ${v.model} (${v.vehicleNumber})",
+                      overflow: .ellipsis,
+                      style: theme.bodyLarge,
+                    ),
                   ),
                 ],
               ),
