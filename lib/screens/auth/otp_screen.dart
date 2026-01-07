@@ -5,6 +5,7 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
+import 'package:runaar/provider/auth/forgot_password_provider.dart';
 import 'package:runaar/provider/auth/otp_verify_provider.dart';
 import 'package:runaar/screens/auth/reset_password_screen.dart';
 
@@ -25,7 +26,7 @@ class _OtpScreenState extends State<OtpScreen> {
     (_) => TextEditingController(),
   );
 
-  int _secondsRemaining = 30;
+  int _secondsRemaining = 60;
   Timer? _timer;
 
   @override
@@ -129,11 +130,15 @@ class _OtpScreenState extends State<OtpScreen> {
             "Resend OTP in $_secondsRemaining sec",
             style: TextStyle(color: Colors.redAccent),
           )
-        : TextButton(
-            onPressed: _resendOtpAction,
-            child: Text(
-              "Resend OTP",
-              style: TextStyle(color: appColor.secondColor),
+        : Consumer<ForgotPasswordProvider>(
+            builder: (context, value, child) => TextButton(
+              onPressed: () => _resendOtpAction(value),
+              child: value.isLoading
+                  ? const CircularProgressIndicator()
+                  : Text(
+                      "Resend OTP",
+                      style: TextStyle(color: appColor.secondColor),
+                    ),
             ),
           );
   }
@@ -145,7 +150,9 @@ class _OtpScreenState extends State<OtpScreen> {
           width: double.infinity,
           height: 56.h,
           child: ElevatedButton(
-            onPressed: () => otpVerifyProvider.isLoading ? null : _verifyOtp(otpVerifyProvider),
+            onPressed: () => otpVerifyProvider.isLoading
+                ? null
+                : _verifyOtp(otpVerifyProvider),
             child: otpVerifyProvider.isLoading
                 ? const CircularProgressIndicator()
                 : const Text("Verify OTP"),
@@ -182,10 +189,13 @@ class _OtpScreenState extends State<OtpScreen> {
     );
 
     appNavigator.push(ResetPasswordScreen(mobile: widget.mobile));
+    for (final controller in _otpControllers) {
+      controller.clear();
+    }
   }
 
   void _startTimer() {
-    _secondsRemaining = 30;
+    _secondsRemaining = 60;
     _timer?.cancel();
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -197,11 +207,21 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
-  // -------------------- RESEND OTP ACTION --------------------
-  void _resendOtpAction() {
-    appSnackbar.showSingleSnackbar(context, "OTP resent successfully");
-    _startTimer();
+  void _resendOtpAction(ForgotPasswordProvider provider) async {
+    for (final controller in _otpControllers) {
+      controller.clear();
+    }
+    await provider.forgotPassword(mobile: widget.mobile);
 
-    // 🔄 Resend OTP API CALL HERE
+    if (provider.errorMessage != null) {
+      appSnackbar.showSingleSnackbar(context, provider.errorMessage!);
+      return;
+    }
+
+    appSnackbar.showSingleSnackbar(
+      context,
+      provider.response?.message ?? "OTP sent successfully",
+    );
+    _startTimer();
   }
 }

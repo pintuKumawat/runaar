@@ -41,7 +41,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
       appBar: AppBar(title: const Text('Ride Details')),
       bottomNavigationBar: Consumer<PublishedDetailProvier>(
         builder: (context, provider, child) {
-          return provider.response?.trip?.availableSeats == "0"
+          return provider.response?.trip?.availableSeats == 0
               ? BottomAppBar(
                   child: SizedBox(
                     width: double.infinity,
@@ -82,7 +82,25 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
                         _priceCard(theme, provider),
                         _driverCard(theme, provider),
                         _vehicleDetails(theme, provider),
-                        _passengerList(theme),
+                        Consumer<PassengerPublishedListProvider>(
+                          builder: (context, passengerProvider, child) {
+                            if (passengerProvider.isLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+
+                            if (passengerProvider.errorMessage != null) {
+                              return const SizedBox.shrink();
+                            }
+                            final passengers =
+                                passengerProvider.response?.passengers ?? [];
+                            if (passengers.isEmpty) {
+                              return const SizedBox.shrink();
+                            }
+                            return _passengerList(theme);
+                          },
+                        ),
                         _infoTile(
                           icon: FontAwesomeIcons.whatsapp,
                           title: 'Chat with driver',
@@ -136,7 +154,8 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
                       data?.destinationAddress ?? "Address not available",
                   seatPrice: double.parse(data?.seatPrice ?? "0"),
                   tripId: widget.tripId,
-                  seats: provider.response?.trip?.availableSeats.toString() ?? "0",
+                  seats:
+                      provider.response?.trip?.availableSeats.toString() ?? "0",
                 ),
               ),
               child: Row(
@@ -262,7 +281,6 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
 
   Widget _priceCard(TextTheme theme, PublishedDetailProvier prov) {
     final data = prov.response?.trip;
-    debugPrint(data?.availableSeats.toString());
     return Card(
       child: Padding(
         padding: 10.all,
@@ -409,30 +427,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
   Widget _passengerList(TextTheme theme) {
     return Consumer<PassengerPublishedListProvider>(
       builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (provider.errorMessage != null) {
-          return Card(
-            child: Padding(
-              padding: 10.all,
-              child: Center(child: Text(provider.errorMessage ?? "")),
-            ),
-          );
-        }
-
         final passengers = provider.response?.passengers ?? [];
-        if (passengers.isEmpty) {
-          return Card(
-            child: Padding(
-              padding: 10.all,
-              child: Center(
-                child: Text("No passengers yet", style: theme.bodyMedium),
-              ),
-            ),
-          );
-        }
 
         return Card(
           child: Padding(

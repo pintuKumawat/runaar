@@ -449,37 +449,49 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
           child: SizedBox(
             height: 56.h,
             width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () async {
-                if (_selectedPaymentMethod.toString().toLowerCase() == "cash") {
-                  await provider.bookingRequest(
-                    userId: userId ?? 0,
-                    tripId: widget.tripId,
-                    paymentMethod: _selectedPaymentMethod.toLowerCase(),
-                    paymentStatus: "pending",
-                    seatRequest: homeProvider.seats,
-                    totalPrice: totalPrice,
-                    specialMessage: messageController.text,
-                  );
-                  if (provider.errorMessage != null) {
-                    appSnackbar.showSingleSnackbar(
-                      context,
-                      provider.errorMessage ?? "",
-                    );
-                    return;
-                  }
-                  appSnackbar.showSingleSnackbar(
-                    context,
-                    provider.response?.message ?? "",
-                  );
-                  appNavigator.push(BookingDoneScreen());
-                  messageController.clear();
-                } else {
-                  // RazorPay
-                }
-              },
-              icon: const Icon(Icons.event_seat),
-              label: const Text('Request to book'),
+            child: ElevatedButton(
+              onPressed: provider.isLoading
+                  ? null
+                  : () async {
+                      if (_selectedPaymentMethod.toString().toLowerCase() ==
+                          "cash") {
+                        await provider.bookingRequest(
+                          userId: userId ?? 0,
+                          tripId: widget.tripId,
+                          paymentMethod: _selectedPaymentMethod.toLowerCase(),
+                          paymentStatus: "pending",
+                          seatRequest: homeProvider.seats,
+                          totalPrice: totalPrice,
+                          specialMessage: messageController.text,
+                        );
+                        if (provider.errorMessage != null) {
+                          appSnackbar.showSingleSnackbar(
+                            context,
+                            provider.errorMessage ?? "",
+                          );
+                          return;
+                        }
+                        appSnackbar.showSingleSnackbar(
+                          context,
+                          provider.response?.message ?? "",
+                        );
+                        appNavigator.push(BookingDoneScreen());
+                        messageController.clear();
+                      } else {
+                        // RazorPay
+                      }
+                    },
+
+              child: provider.isLoading
+                  ? const CircularProgressIndicator()
+                  : Row(
+                    mainAxisAlignment: .center,
+                      children: [
+                        Icon(Icons.event_seat, size: 18.sp,),
+                        4.width,
+                        const Text('Request to book'),
+                      ],
+                    ),
             ),
           ),
         );

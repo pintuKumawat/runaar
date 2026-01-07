@@ -4,11 +4,9 @@ import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/controllers/Auth/forgot_password_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/provider/auth/forgot_password_provider.dart';
 import 'package:runaar/screens/auth/otp_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ForgotMobileScreen extends StatefulWidget {
   // final int userId;
@@ -19,29 +17,7 @@ class ForgotMobileScreen extends StatefulWidget {
 }
 
 class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
-  int userId = 0;
-
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    getUserId();
-    super.initState();
-  }
-
-  Future<void> getUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getInt(savedData.userId);
-
-    debugPrint("Fetched userId: $id");
-
-    if (!mounted) return;
-
-    setState(() {
-      userId = id ?? 0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
@@ -125,44 +101,31 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
                 : () async {
                     if (!_formKey.currentState!.validate()) return;
 
-                    try {
-                      await provider.forgotPassword(
+                    await provider.forgotPassword(
+                      mobile:
+                          forgotPasswordController.forgotMobileController.text,
+                    );
+
+                    if (provider.errorMessage != null) {
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        provider.errorMessage!,
+                      );
+                      return;
+                    }
+
+                    appSnackbar.showSingleSnackbar(
+                      context,
+                      provider.response?.message ?? "OTP sent successfully",
+                    );
+
+                    appNavigator.push(
+                      OtpScreen(
                         mobile: forgotPasswordController
                             .forgotMobileController
                             .text,
-                      );
-
-                      if (!context.mounted) return;
-
-                      // ERROR
-                      if (provider.errorMessage != null) {
-                        appSnackbar.showSingleSnackbar(
-                          context,
-                          provider.errorMessage!,
-                        );
-                        return;
-                      }
-
-                      appSnackbar.showSingleSnackbar(
-                        context,
-                        provider.response?.message ?? "OTP sent successfully",
-                      );
-
-                      appNavigator.push(
-                        OtpScreen(
-                          mobile: forgotPasswordController
-                              .forgotMobileController
-                              .text,
-                        ),
-                      );
-                    } catch (e) {
-                      if (!context.mounted) return;
-
-                      appSnackbar.showSingleSnackbar(
-                        context,
-                        "Something went wrong",
-                      );
-                    }
+                      ),
+                    );
                   },
             child: provider.isLoading
                 ? const CircularProgressIndicator(color: Colors.white)

@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/screen_util_setup.dart';
+import 'package:runaar/core/services/notification_service.dart';
 import 'package:runaar/core/theme/app_theme.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
@@ -25,6 +27,7 @@ import 'package:runaar/provider/my_rides/passenger_published_list_provider.dart'
 import 'package:runaar/provider/my_rides/published_detail_model.dart';
 import 'package:runaar/provider/my_rides/published_list_provider.dart';
 import 'package:runaar/provider/my_rides/request_list_provider.dart';
+import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 
 import 'package:runaar/provider/notification/notification_provider.dart';
@@ -42,10 +45,17 @@ import 'package:runaar/screens/auth/sign_up_screen.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  debugPrint("📨 Background Notification: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -82,10 +92,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ForgotPasswordProvider()),
         ChangeNotifierProvider(create: (_) => OtpVerifyProvider()),
         ChangeNotifierProvider(create: (_) => TripStatusUpdateProvider()),
+        ChangeNotifierProvider(create: (_) => RequestResponseProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
   );
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }
 
 class MyApp extends StatefulWidget {
@@ -116,6 +128,42 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadAppState();
+    _initNotifications();
+  }
+
+  Future<void> _initNotifications() async {
+    await NotificationService.instance.initialize();
+
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // // Get FCM token
+    // final token = await FirebaseMessaging.instance.getToken();
+    // prefs.setString(savedData.fcmToken, token ?? "");
+    // debugPrint("🔑 FCM Token: $token");
+
+    // // Subscribe user to topic
+    // final topic = dotenv.env['FCM_TOPIC'];
+    // if (topic != null && topic.isNotEmpty) {
+    //   FirebaseMessaging.instance.subscribeToTopic(topic);
+    // }
+    // debugPrint("✅ Subscribed to topic: $topic");
+    // // Send to backend
+    // int? userId = prefs.getInt(savedData.userId);
+    // debugPrint("👤 User ID: $userId");
+    // if (userId != null && token != null && userId != 0) {
+    //   // sendFcmRepo.updateToken(userId.toString(), token);
+    // }
+
+    // // Auto update token
+    // FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
+    //   debugPrint("🔄 FCM Token Refreshed: $newToken");
+    //   prefs.setString(savedData.fcmToken, newToken);
+
+    //   final userId = prefs.getInt(savedData.userId);
+    //   if (userId != null || userId != 0) {
+    //     // sendFcmRepo.updateToken(userId.toString(), newToken);
+    //   }
+    // });
   }
 
   @override

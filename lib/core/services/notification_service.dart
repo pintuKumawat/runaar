@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class NotificationService {
   static final NotificationService instance = NotificationService._internal();
@@ -33,7 +33,6 @@ class NotificationService {
 
     debugPrint("🔔 Initializing Notification Service...");
 
-    // Ask permission
     await _fcm.requestPermission(alert: true, badge: true, sound: true);
 
     const androidInit = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -59,18 +58,37 @@ class NotificationService {
     final initial = await _fcm.getInitialMessage();
     if (initial != null) _onMessageOpenedApp(initial);
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Get FCM token
+    final token = await FirebaseMessaging.instance.getToken();
+    prefs.setString(savedData.fcmToken, token ?? "");
+    debugPrint("🔑 FCM Token: $token");
+
+    final topic = dotenv.env['FCM_TOPIC'];
+    if (topic != null && topic.isNotEmpty) {
+      FirebaseMessaging.instance.subscribeToTopic(topic);
+    }
+    debugPrint("✅ Subscribed to topic: $topic");
+
+    int? userId = prefs.getInt(savedData.userId);
+    debugPrint("👤 User ID: $userId");
+    if (userId != null && token != null && userId != 0) {
+      // sendFcmRepo.updateToken(userId.toString(), token);
+    }
+
+    // Auto Update Token
     FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
       debugPrint("🔄 FCM Token Refreshed: $newToken");
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(savedData.fcmToken, newToken);
 
-      // final userId = prefs.getInt(savedData.userId);
+      final userId = prefs.getInt(savedData.userId);
 
-      // if (userId != null) {
-      //   debugPrint("📡 Sending updated token to backend...");
-      //   sendFcmRepo.updateToken(userId.toString(), newToken);
-      // }
+      if (userId != null) {
+        //   sendFcmRepo.updateToken(userId.toString(), newToken);
+      }
     });
 
     debugPrint("✅ Notification Service Ready");

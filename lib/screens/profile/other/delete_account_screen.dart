@@ -196,7 +196,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 }
 
                 // CALL API
-                await provider.UsreDeactivate(UserId: widget.userId);
+                await provider.userDeactivate(userId: widget.userId);
 
                 if (provider.errorMessage != null) {
                   appSnackbar.showSingleSnackbar(
