@@ -130,10 +130,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Consumer<ResetPasswordProvider>(
       builder: (context, resetPasswordProvider, child) => SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: ElevatedButton(
-          onPressed: () =>
-              resetPasswordProvider.isLoading ? null : _resetPassword(resetPasswordProvider),
+          onPressed: () => resetPasswordProvider.isLoading
+              ? null
+              : _resetPassword(resetPasswordProvider),
           child: resetPasswordProvider.isLoading
               ? const CircularProgressIndicator()
               : const Text("Reset Password"),

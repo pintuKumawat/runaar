@@ -33,7 +33,6 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
- 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -281,7 +280,7 @@ class _AddVehicleScreenState extends State<AddVehicleScreen> {
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: Consumer<AddVehicleProvider>(
           builder: (context, vehicleProvider, child) => ElevatedButton(
             onPressed: () => _saveVehicle(vehicleProvider),

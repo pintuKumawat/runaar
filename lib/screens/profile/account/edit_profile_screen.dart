@@ -49,7 +49,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
   @override
   void initState() {
-   
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) => _initFormateData(),
@@ -348,7 +347,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return BottomAppBar(
           child: SizedBox(
             width: double.infinity,
-            height: 56.h,
+            height: 40.h,
             child: ElevatedButton(
               onPressed: () async {
                 await updateProvider.userProfileUpdate(

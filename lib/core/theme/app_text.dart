@@ -7,37 +7,37 @@ class AppTextSize {
 
   static TextTheme getTextTheme(BuildContext context) {
     return TextTheme(
-      headlineLarge: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.bold),
+      headlineLarge: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.bold),
 
       headlineSmall: TextStyle(
-        fontSize: 24.sp,
-        fontWeight: FontWeight.normal,
-        color: appColor.textColor,
-      ),
-
-      titleLarge: TextStyle(
         fontSize: 22.sp,
         fontWeight: FontWeight.normal,
         color: appColor.textColor,
       ),
 
+      titleLarge: TextStyle(
+        fontSize: 20.sp,
+        fontWeight: FontWeight.normal,
+        color: appColor.textColor,
+      ),
+
       titleMedium: TextStyle(
-        fontSize: 18.sp,
+        fontSize: 16.sp,
         fontWeight: FontWeight.w600,
         color: appColor.textColor,
       ),
       titleSmall: TextStyle(
-        fontSize: 16.sp,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w400,
         color: appColor.textColor,
       ),
 
-      bodyLarge: TextStyle(fontSize: 18.sp, color: appColor.textColor),
+      bodyLarge: TextStyle(fontSize: 16.sp, color: appColor.textColor),
 
-      bodyMedium: TextStyle(fontSize: 16.sp, color: appColor.textColor),
+      bodyMedium: TextStyle(fontSize: 14.sp, color: appColor.textColor),
 
       bodySmall: TextStyle(
-        fontSize: 14.sp,
+        fontSize: 12.sp,
         color: appColor.textColor.withOpacity(0.8),
       ),
     );

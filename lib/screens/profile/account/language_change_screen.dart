@@ -114,7 +114,7 @@ class _LanguageChangeScreenState extends State<LanguageChangeScreen> {
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: ElevatedButton(
           onPressed: () {
             _applyLanguageChange();

@@ -638,7 +638,7 @@ class _PublishedRideDetailsScreenState
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: ElevatedButton(
           onPressed: isEnabled
               ? () => _handleButtonAction(tripStatus, context, prov)
@@ -732,7 +732,6 @@ class _PublishedRideDetailsScreenState
           TextButton(
             onPressed: () {
               _updateTripStatus("Started");
-              
             },
             child: Text(
               "Yes, Start Trip",
@@ -760,7 +759,6 @@ class _PublishedRideDetailsScreenState
           TextButton(
             onPressed: () {
               _updateTripStatus("Cancelled");
-              
             },
             child: Text(
               "Yes, Cancel",

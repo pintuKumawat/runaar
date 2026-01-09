@@ -148,7 +148,7 @@ class _OtpScreenState extends State<OtpScreen> {
       builder: (BuildContext context, otpVerifyProvider, child) {
         return SizedBox(
           width: double.infinity,
-          height: 56.h,
+          height: 40.h,
           child: ElevatedButton(
             onPressed: () => otpVerifyProvider.isLoading
                 ? null

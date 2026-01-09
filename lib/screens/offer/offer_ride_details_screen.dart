@@ -67,7 +67,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
           return BottomAppBar(
             child: SizedBox(
               width: double.infinity,
-              height: 56.h,
+              height: 40.h,
               child: ElevatedButton(
                 onPressed: () async {
                   final agree = await _showPublishInfoDialog();
@@ -446,7 +446,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
 
       if (!mounted) return;
       appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 1, rideIndex: 1));
-      
+
       provider.clearDetail();
       offerController.clear();
     }

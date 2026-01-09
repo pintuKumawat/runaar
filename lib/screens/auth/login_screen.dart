@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               SizedBox(
                 width: double.infinity,
-                height: 56.h,
+                height: 40.h,
                 child: ElevatedButton(
                   onPressed: provider.isLoading
                       ? null
@@ -165,9 +165,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
     prefs.setBool(savedData.isFirstLauch, false);
     prefs.setBool(savedData.isLoggedIn, true);
+    prefs.setString(savedData.email, provider.response?.userEmail ?? "");
+    prefs.setString(savedData.mob, provider.response?.userPhoneNo ?? "");
     prefs.setInt(savedData.userId, provider.response?.userId ?? 0);
-    appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
 
+    appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 2));
     loginController.clear();
   }
 }

@@ -176,7 +176,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
       builder: (context, provider, child) {
         return BottomAppBar(
           child: SizedBox(
-            height: 56.h,
+            height: 40.h,
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(

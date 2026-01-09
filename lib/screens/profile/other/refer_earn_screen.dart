@@ -6,7 +6,7 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ReferEarnScreen extends StatefulWidget {
- final String? referCode;
+  final String? referCode;
   const ReferEarnScreen({super.key, this.referCode});
 
   @override
@@ -140,7 +140,7 @@ class _ReferEarnScreenState extends State<ReferEarnScreen> {
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: ElevatedButton(
           onPressed: _shareReferralCode,
           child: const Text("Refer a friend"),

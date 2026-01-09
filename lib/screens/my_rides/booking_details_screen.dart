@@ -490,7 +490,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
     return BottomAppBar(
       child: SizedBox(
         width: double.infinity,
-        height: 56.h,
+        height: 40.h,
         child: ElevatedButton(
           onPressed: isEnabled
               ? () {
