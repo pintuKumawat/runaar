@@ -11,6 +11,10 @@ class AppColor {
   Color buttonColor = const Color(0XFFFFFFFF);
 
   Color iconColors = const Color(0XFF07869C);
+  Color ic = const Color(0XFF07869C);
+  Color subscriptionCardColor1 = const Color(0xFF1F2430);
+  Color subscriptionCardColor2 = const Color(0xFF141821);
+
 }
 
 final AppColor appColor = AppColor();

@@ -15,6 +15,7 @@ import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
+import 'package:runaar/screens/profile/account/subscription_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
 import 'package:runaar/screens/profile/other/delete_account_screen.dart';
 import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
@@ -95,6 +96,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 12.height,
                 _sectionTitle("Account", theme),
                 _profileTile(Icons.person_outline, "Edit Profile", data, theme),
+                _profileTile(Icons.subscriptions, "Subscription", data, theme),
                 _profileTile(
                   Icons.lock_outline,
                   "Change Password",
@@ -351,6 +353,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         break;
       case "Change Password":
         appNavigator.push(ChangePasswordScreen(userId: userId));
+        break;
+        case "Subscription":
+        // Navigate to Subscription Screen,
+        appNavigator.push(SubscriptionScreen(userId: userId));
         break;
       case "Language":
         appNavigator.push(LanguageChangeScreen());
