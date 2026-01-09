@@ -45,7 +45,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
               ? BottomAppBar(
                   child: SizedBox(
                     width: double.infinity,
-                    height: 56.h,
+                    height: 40.h,
                     child: ElevatedButton(
                       onPressed: null,
                       child: Text('No Seats Available'),
@@ -138,7 +138,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
           final data = provider.response?.trip;
           return SizedBox(
             width: double.infinity,
-            height: 56.h,
+            height: 40.h,
             child: ElevatedButton(
               onPressed: () => appNavigator.push(
                 ConfirmBookingScreen(

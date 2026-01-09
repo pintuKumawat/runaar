@@ -95,7 +95,7 @@ class AppTheme {
             (states) => customTextTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.bold,
               fontSize: context.isMobile
-                  ? 20.sp
+                  ? 16.sp
                   : context.isTablet
                   ? 13.sp
                   : 9.sp,

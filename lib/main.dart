@@ -31,6 +31,9 @@ import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 
 import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:runaar/provider/payment/create_payment_provider.dart';
+import 'package:runaar/provider/payment/payment_status_provider.dart';
+import 'package:runaar/provider/payment/verify_payment_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
 import 'package:runaar/provider/profile/account/user_deactivate_provider.dart';
 import 'package:runaar/provider/profile/user_details_provider.dart';
@@ -93,6 +96,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => OtpVerifyProvider()),
         ChangeNotifierProvider(create: (_) => TripStatusUpdateProvider()),
         ChangeNotifierProvider(create: (_) => RequestResponseProvider()),
+        ChangeNotifierProvider(create: (_) => CreatePaymentProvider()),
+        ChangeNotifierProvider(create: (_) => VerifyPaymentProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentStatusProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
@@ -221,37 +227,6 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _initNotifications() async {
     await NotificationService.instance.initialize();
-
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // // Get FCM token
-    // final token = await FirebaseMessaging.instance.getToken();
-    // prefs.setString(savedData.fcmToken, token ?? "");
-    // debugPrint("🔑 FCM Token: $token");
-
-    // // Subscribe user to topic
-    // final topic = dotenv.env['FCM_TOPIC'];
-    // if (topic != null && topic.isNotEmpty) {
-    //   FirebaseMessaging.instance.subscribeToTopic(topic);
-    // }
-    // debugPrint("✅ Subscribed to topic: $topic");
-    // // Send to backend
-    // int? userId = prefs.getInt(savedData.userId);
-    // debugPrint("👤 User ID: $userId");
-    // if (userId != null && token != null && userId != 0) {
-    //   // sendFcmRepo.updateToken(userId.toString(), token);
-    // }
-
-    // // Auto update token
-    // FirebaseMessaging.instance.onTokenRefresh.listen((newToken) async {
-    //   debugPrint("🔄 FCM Token Refreshed: $newToken");
-    //   prefs.setString(savedData.fcmToken, newToken);
-
-    //   final userId = prefs.getInt(savedData.userId);
-    //   if (userId != null || userId != 0) {
-    //     // sendFcmRepo.updateToken(userId.toString(), newToken);
-    //   }
-    // });
   }
 
   @override

@@ -36,7 +36,7 @@ class _BookingDoneScreenState extends State<BookingDoneScreen> {
   Widget _bottomButton() {
     return BottomAppBar(
       child: SizedBox(
-        height: 56.h,
+        height: 40.h,
         width: .infinity,
         child: ElevatedButton(
           onPressed: () => appNavigator.pushAndRemoveUntil(

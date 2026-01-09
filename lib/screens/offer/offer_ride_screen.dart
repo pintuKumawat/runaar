@@ -89,7 +89,7 @@ class _OfferRideState extends State<OfferRide> {
 
             SizedBox(
               width: double.infinity,
-              height: 56.h,
+              height: 40.h,
               child: ElevatedButton(
                 onPressed: _loadData,
                 child: Row(
