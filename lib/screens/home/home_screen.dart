@@ -178,34 +178,34 @@ class _HomeScreenState extends State<HomeScreen> {
     String date =
         '${departureDate.year}-${departureDate.month}-${departureDate.day}';
 
-    // if (date.isEmpty) {
-    //   return appSnackbar.showSingleSnackbar(
-    //     context,
-    //     "Please select search date",
-    //   );
-    // } else if (homeController.destinationController.text.isEmpty ||
-    //     homeController.originController.text.isEmpty) {
-    //   return appSnackbar.showSingleSnackbar(
-    //     context,
-    //     "Locations cannot be empty",
-    //   );
-    // } else if (homeController.originController.text ==
-    //     homeController.destinationController.text) {
-    //   return appSnackbar.showSingleSnackbar(
-    //     context,
-    //     "Both location cannot be same",
-    //   );
-    // } else {
-    await homeProvider.rideSearch(
-      // deptDate: date,
-      // originCity: homeController.originCityController.text,
-      // destinationCity: homeController.destinationCityController.text,
-      deptDate: "2024-12-20",
-      originCity: "Delhi",
-      destinationCity: "Jaipur",
-    );
-    return appNavigator.push(SearchScreen());
-    // }
+    if (date.isEmpty) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Please select search date",
+      );
+    } else if (homeController.destinationController.text.isEmpty ||
+        homeController.originController.text.isEmpty) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Locations cannot be empty",
+      );
+    } else if (homeController.originController.text ==
+        homeController.destinationController.text) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Both location cannot be same",
+      );
+    } else {
+      await homeProvider.rideSearch(
+        // deptDate: date,
+        // originCity: homeController.originCityController.text,
+        // destinationCity: homeController.destinationCityController.text,
+        deptDate: "2024-12-20",
+        originCity: "Delhi",
+        destinationCity: "Jaipur",
+      );
+      return appNavigator.push(SearchScreen());
+    }
   }
 
   Future<void> openLocationPicker(String type) async {

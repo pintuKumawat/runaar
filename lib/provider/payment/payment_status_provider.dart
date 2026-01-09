@@ -12,13 +12,16 @@ class PaymentStatusProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   PaymentStatusModel? get response => _response;
 
-  Future<void> paymentStatus({required int tripId}) async {
+  Future<void> paymentStatus({required int tripId, required int userId}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await paymentStatusRepo.paymentStatus(tripId: tripId);
+      final result = await paymentStatusRepo.paymentStatus(
+        tripId: tripId,
+        userId: userId,
+      );
       _response = result;
     } on ApiException catch (e) {
       _errorMessage = e.message;

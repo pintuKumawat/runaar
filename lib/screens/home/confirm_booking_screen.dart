@@ -611,7 +611,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       );
       return;
     }
-    _showVerifyingDialog();
     await verifyPayment.verifyPayment(
       razorpayPaymentId: response.paymentId!,
       razorpayOrderId: response.orderId!,
@@ -621,6 +620,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       appSnackbar.showSingleSnackbar(context, verifyPayment.errorMessage ?? "");
       return;
     }
+    _showVerifyingDialog();
     await _waitForPaymentConfirmation();
   }
 
@@ -634,7 +634,10 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
   Future<void> _waitForPaymentConfirmation() async {
     final paymentStatus = context.read<PaymentStatusProvider>();
     Timer.periodic(Duration(seconds: 5), (timer) async {
-      await paymentStatus.paymentStatus(tripId: widget.tripId);
+      await paymentStatus.paymentStatus(
+        tripId: widget.tripId,
+        userId: userId ?? 0,
+      );
 
       if (!mounted) return;
 
@@ -644,7 +647,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       }
 
       final status = paymentStatus.response?.data;
-
+      debugPrint(status);
       if (status == 'captured') {
         timer.cancel();
         _closeVerifyingDialog();
@@ -678,7 +681,7 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       return;
     }
     appSnackbar.showSingleSnackbar(context, provider.response?.message ?? "");
-    appNavigator.push(BookingDoneScreen());
+    appNavigator.pushAndRemoveUntil(BookingDoneScreen());
     messageController.clear();
   }
 
