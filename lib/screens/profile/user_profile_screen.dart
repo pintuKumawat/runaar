@@ -15,7 +15,7 @@ import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
-import 'package:runaar/screens/profile/account/subscription_screen.dart';
+import 'package:runaar/screens/subscription/subscription_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
 import 'package:runaar/screens/profile/other/delete_account_screen.dart';
 import 'package:runaar/screens/profile/other/refer_earn_screen.dart';

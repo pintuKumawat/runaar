@@ -29,7 +29,7 @@ class Data {
   String? subscriptionType;
   String? subscriptionDescription;
   int? duration;
-  String? amount;
+  int? amount;
   String? totalRides;
 
   Data(

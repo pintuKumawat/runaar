@@ -35,6 +35,7 @@ import 'package:runaar/provider/payment/create_payment_provider.dart';
 import 'package:runaar/provider/payment/payment_status_provider.dart';
 import 'package:runaar/provider/payment/verify_payment_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
+import 'package:runaar/provider/profile/account/subscription_plan_provider.dart';
 import 'package:runaar/provider/profile/account/user_deactivate_provider.dart';
 import 'package:runaar/provider/profile/user_details_provider.dart';
 import 'package:runaar/provider/profile/user_profile_update_provider.dart';
@@ -99,6 +100,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CreatePaymentProvider()),
         ChangeNotifierProvider(create: (_) => VerifyPaymentProvider()),
         ChangeNotifierProvider(create: (_) => PaymentStatusProvider()),
+         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
+      
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
@@ -134,95 +137,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadAppState();
-    _initNotifications();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+    _initNotifications(); 
   }
 
   Future<void> _initNotifications() async {

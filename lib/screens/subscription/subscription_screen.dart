@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/models/profile/account/subscription_plan_model.dart';
 import 'package:runaar/provider/profile/account/subscription_plan_provider.dart';
+import 'package:runaar/screens/subscription/subscription_details_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   final int userId;
@@ -31,94 +33,106 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(title: const Text("Subscriptions")),
-      body: Consumer<SubscriptionProvider>(
-        builder: (context, provider, _) {
-          /// 🔄 LOADING
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: RefreshIndicator(
+        onRefresh: () =>
+            context.read<SubscriptionProvider>().getSubscriptions(),
+        child: Consumer<SubscriptionProvider>(
+          builder: (context, provider, _) {
+            /// 🔄 LOADING
+            if (provider.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          /// ❌ ERROR
-          if (provider.errorMessage != null) {
-            return Center(
-              child: Text(
-                provider.errorMessage!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          }
-
-          /// 📭 EMPTY
-          if (provider.response == null ||
-              provider.response!.data == null ||
-              provider.response!.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                "No subscription plans found",
-                style: TextStyle(color: Colors.white),
-              ),
-            );
-          }
-
-          final plans = provider.response!.data!;
-
-          return ListView(
-            padding: 14.all,
-            children: [
-              /// HEADER
-              Text(
-                "Subscribe and enjoy rides",
-                style: theme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+            /// ❌ ERROR
+            if (provider.errorMessage != null) {
+              return Center(
+                child: Text(
+                  provider.errorMessage!,
+                  style: const TextStyle(color: Colors.red),
                 ),
-              ),
+              );
+            }
 
-              16.height,
+            /// EMPTY
+            if (provider.response == null ||
+                provider.response!.data == null ||
+                provider.response!.data!.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No subscription plans found",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            }
 
-              /// LIST
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: plans.length,
-                itemBuilder: (context, index) {
-                  final plan = plans[index];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() => selectedIndex = index);
-                    },
-                    child: _subscriptionCard(
-                      theme,
-                      plan,
-                      isSelected: selectedIndex == index,
-                    ),
-                  );
-                },
-              ),
+            final plans = provider.response!.data!;
 
-              24.height,
-
-              /// CONTINUE BUTTON
-              SizedBox(
-                height: 40.h,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateColor.resolveWith(
-                      (states) => appColor.backgroundColor,
-                    ),
+            return ListView(
+              padding: 14.all,
+              children: [
+                /// HEADER
+                Text(
+                  "Subscribe and enjoy rides",
+                  style: theme.headlineSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                  onPressed: () {
-                    // final selectedPlan = plans[selectedIndex];
+                ),
+
+                16.height,
+
+                /// LIST
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: plans.length,
+                  itemBuilder: (context, index) {
+                    final plan = plans[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() => selectedIndex = index);
+                      },
+                      child: _subscriptionCard(
+                        theme,
+                        plan,
+                        isSelected: selectedIndex == index,
+                      ),
+                    );
                   },
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(color: appColor.textColor),
-                  ),
                 ),
-              ),
-            ],
+
+                24.height,
+                _planSelectButton(plans),
+
+                /// CONTINUE BUTTON
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _planSelectButton(List<Data> plans) {
+    return SizedBox(
+      height: 40.h,
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateColor.resolveWith(
+            (states) => appColor.backgroundColor,
+          ),
+        ),
+        onPressed: () {
+          final selectedPlan = plans[selectedIndex];
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => SubscriptionDetailsScreen(plan: selectedPlan),
+            ),
           );
         },
+
+        child: Text("Continue", style: TextStyle(color: appColor.textColor)),
       ),
     );
   }
@@ -236,7 +250,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     borderRadius: BorderRadius.circular(14.r),
                   ),
                   child: Text(
-                    "₹${plan.amount ?? 0}",
+                    "₹${plan.amount.toString()}",
                     style: theme.titleMedium?.copyWith(
                       color: isSelected ? Colors.black : Colors.white,
                       fontWeight: FontWeight.bold,
