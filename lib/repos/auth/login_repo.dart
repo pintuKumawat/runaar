@@ -5,8 +5,9 @@ class LoginRepo {
   Future<LoginModel> login({
     required String number,
     required String password,
+    required String token,
   }) async {
-    Map<String, dynamic> body = {"phone_number": number, "password": password};
+    Map<String, dynamic> body = {"phone_number": number, "password": password, "fcm_token":token};
     return apiMethods.post(
       endpoint: "user/login",
       body: body,

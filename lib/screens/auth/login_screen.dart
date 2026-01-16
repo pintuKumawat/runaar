@@ -142,6 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginUser({required LoginProvider provider}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString(savedData.fcmToken);
+    debugPrint("Token is: $token");
     if (!provider.validateAll()) {
       return appSnackbar.showSingleSnackbar(
         context,
@@ -152,6 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
     await provider.login(
       number: loginController.mobileController.text,
       password: loginController.passwordController.text,
+      token: token ?? "",
     );
     if (provider.errorMessage != null) {
       return appSnackbar.showSingleSnackbar(

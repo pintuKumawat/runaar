@@ -183,7 +183,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       ),
       child: ListTile(
         contentPadding: 12.all,
-        leading: defaultImage.userProvider("", 30.r),
+        leading: defaultImage.userProvider(data?.profileImage, 30.r),
         title: Text(
           data?.name ?? "user",
           style: theme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -194,7 +194,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               Icon(Icons.star, color: Colors.amber),
           itemCount: 5,
           itemSize: 16.sp,
-          unratedColor: Colors.grey.shade300,
+          unratedColor: Colors.grey.shade400,
           direction: Axis.horizontal,
         ),
       ),

@@ -110,8 +110,9 @@ class _OfferRideState extends State<OfferRide> {
 
   Future<void> _loadData() async {
     final provider = context.read<OfferProvider>();
-    String arrivalTime = '${arrivalDate.hour}:${arrivalDate.minute}';
-    String deptTime = '${departureDate.hour}:${departureDate.minute}';
+    String arrivalTime = _formatTime(arrivalDate);
+    String deptTime = _formatTime(departureDate);
+
     if (arrivalTime.isEmpty || deptTime.isEmpty) {
       return appSnackbar.showSingleSnackbar(context, "Time cannot be empty");
     } else if (offerController.destinationController.text.isEmpty ||
@@ -131,6 +132,8 @@ class _OfferRideState extends State<OfferRide> {
         context,
         "Please select your vehicle",
       );
+    } else if (arrivalTime == deptTime) {
+      return appSnackbar.showSingleSnackbar(context, "Both Time cannot be same");
     } else {
       final data = LoadOfferData(
         userId: userId,
@@ -143,9 +146,9 @@ class _OfferRideState extends State<OfferRide> {
         destinationAddress: offerController.destinationController.text,
         destinationCity: offerController.destinationCityController.text,
         deptDate:
-            '${departureDate.day}-${departureDate.month}-${departureDate.year}',
+            '${departureDate.year}-${departureDate.month}-${departureDate.day}',
         arrivalDate:
-            '${arrivalDate.day}-${arrivalDate.month}-${arrivalDate.year}',
+            '${arrivalDate.year}-${arrivalDate.month}-${arrivalDate.day}',
         deptTime: deptTime,
         arrivalTime: arrivalTime,
         vehicleId: offerController.selectedVehicleId,
@@ -298,7 +301,7 @@ class _OfferRideState extends State<OfferRide> {
     // Pick time after date
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(departureDate),
+      initialTime: TimeOfDay.fromDateTime(DateTime.now()),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -332,9 +335,11 @@ class _OfferRideState extends State<OfferRide> {
   }
 
   Future<void> _pickArrivalDate() async {
-    // Pick date first
     final DateTime? pickedDate = await showDatePicker(
       context: context,
+      initialDate: arrivalDate.isBefore(departureDate)
+          ? departureDate
+          : arrivalDate,
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -351,17 +356,25 @@ class _OfferRideState extends State<OfferRide> {
           child: child!,
         );
       },
-      initialDate: arrivalDate,
       firstDate: departureDate,
       lastDate: DateTime(2100),
     );
 
     if (pickedDate == null) return;
 
-    // Pick time after date
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(arrivalDate),
+      initialTime: TimeOfDay.fromDateTime(
+        pickedDate.isAtSameMomentAs(
+              DateTime(
+                departureDate.year,
+                departureDate.month,
+                departureDate.day,
+              ),
+            )
+            ? departureDate
+            : DateTime.now(),
+      ),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
@@ -379,14 +392,24 @@ class _OfferRideState extends State<OfferRide> {
 
     if (pickedTime == null) return;
 
-    setState(() {
-      arrivalDate = DateTime(
-        pickedDate.year,
-        pickedDate.month,
-        pickedDate.day,
-        pickedTime.hour,
-        pickedTime.minute,
+    final newArrival = DateTime(
+      pickedDate.year,
+      pickedDate.month,
+      pickedDate.day,
+      pickedTime.hour,
+      pickedTime.minute,
+    );
+
+    if (newArrival.isBefore(departureDate)) {
+      appSnackbar.showSingleSnackbar(
+        context,
+        "Arrival time cannot be before departure time",
       );
+      return;
+    }
+
+    setState(() {
+      arrivalDate = newArrival;
     });
   }
 
@@ -396,8 +419,7 @@ class _OfferRideState extends State<OfferRide> {
     required VoidCallback onTap,
     required TextTheme theme,
   }) {
-    String dateTime =
-        '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
+    String dateTime = _formatDateTime(date);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -425,6 +447,22 @@ class _OfferRideState extends State<OfferRide> {
         ),
       ),
     );
+  }
+
+  String _formatDateTime(DateTime dt) {
+    final d = dt.day.toString().padLeft(2, '0');
+    final m = dt.month.toString().padLeft(2, '0');
+    final y = dt.year;
+    final h = dt.hour.toString().padLeft(2, '0');
+    final min = dt.minute.toString().padLeft(2, '0');
+
+    return '$d/$m/$y $h:$min';
+  }
+
+  String _formatTime(DateTime dt) {
+    final h = dt.hour.toString().padLeft(2, '0');
+    final m = dt.minute.toString().padLeft(2, '0');
+    return '$h:$m';
   }
 
   Future<void> openLocationPicker(String type) async {

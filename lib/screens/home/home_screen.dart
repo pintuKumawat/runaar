@@ -197,12 +197,12 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else {
       await homeProvider.rideSearch(
-        // deptDate: date,
-        // originCity: homeController.originCityController.text,
-        // destinationCity: homeController.destinationCityController.text,
-        deptDate: "2024-12-20",
-        originCity: "Delhi",
-        destinationCity: "Jaipur",
+        deptDate: date,
+        originCity: homeController.originCityController.text,
+        destinationCity: homeController.destinationCityController.text,
+        // deptDate: "2024-12-20",
+        // originCity: "Delhi",
+        // destinationCity: "Jaipur",
       );
       return appNavigator.push(SearchScreen());
     }

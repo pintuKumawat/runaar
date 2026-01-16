@@ -26,10 +26,10 @@ class _BottomNavState extends State<BottomNav> {
     super.initState();
     _currentIndex = widget.initialIndex;
     _pages = [
-      OfferRide(), // Offer Ride
+      OfferRide(), 
       MyRidesScreen(initialIndex: widget.rideIndex ?? 0), // My Rides
       HomeScreen(),
-      NotificationScreen(), // Notifications
+      NotificationScreen(), 
       UserProfileScreen(),
     ];
   }
@@ -47,7 +47,7 @@ class _BottomNavState extends State<BottomNav> {
 
       /// 🔻 CUSTOM BOTTOM BAR
       bottomNavigationBar: Container(
-        height: (kBottomNavigationBarHeight + 12.h) * textScale,
+        height: (kBottomNavigationBarHeight + 20.h) * textScale,
         decoration: BoxDecoration(color: appColor.mainColor),
         child: Row(
           mainAxisAlignment: .spaceBetween,

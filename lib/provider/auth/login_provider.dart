@@ -18,7 +18,6 @@ class LoginProvider extends ChangeNotifier {
   // for fatch userId
   int? get userId => _response?.userId;
 
-
   void togglePasswordVisibility() {
     isPasswordVisible = !isPasswordVisible;
     notifyListeners();
@@ -57,13 +56,21 @@ class LoginProvider extends ChangeNotifier {
     return phoneError == null && passwordError == null;
   }
 
-  Future<void> login({required String number, required String password}) async {
+  Future<void> login({
+    required String number,
+    required String password,
+    required String token,
+  }) async {
     isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await loginRepo.login(number: number, password: password);
+      final result = await loginRepo.login(
+        number: number,
+        password: password,
+        token: token,
+      );
       _response = result;
     } on ApiException catch (e) {
       _errorMessage = e.message;

@@ -153,7 +153,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         const Icon(Icons.star, color: Colors.amber),
                     itemCount: 5,
                     itemSize: 16.sp,
-                    unratedColor: Colors.grey.shade300,
+                    unratedColor: Colors.grey.shade400,
                   ),
                 ),
                 trailing: GestureDetector(

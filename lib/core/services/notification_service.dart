@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/repos/auth/upddate_fcm_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
@@ -74,7 +75,7 @@ class NotificationService {
     int? userId = prefs.getInt(savedData.userId);
     debugPrint("👤 User ID: $userId");
     if (userId != null && token != null && userId != 0) {
-      // sendFcmRepo.updateToken(userId.toString(), token);
+      upddateFcmRepo.updateFcm(userId: userId, fcmToken: token);
     }
 
     // Auto Update Token
@@ -87,7 +88,7 @@ class NotificationService {
       final userId = prefs.getInt(savedData.userId);
 
       if (userId != null) {
-        //   sendFcmRepo.updateToken(userId.toString(), newToken);
+        upddateFcmRepo.updateFcm(userId: userId, fcmToken: newToken);
       }
     });
 
