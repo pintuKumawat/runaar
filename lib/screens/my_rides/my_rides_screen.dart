@@ -88,7 +88,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           preferredSize: Size.fromHeight(110.h),
           child: AppBar(
             title: Padding(
-              padding: 10.all,
+              padding: 10.horizontal,
               child: TextField(
                 controller: _searchCtrl,
                 onChanged: (v) => setState(() => query = v),
@@ -120,6 +120,7 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           ),
         ),
         body: TabBarView(
+
           children: [
             Consumer<BookingListProvider>(
               builder: (context, bookingProv, child) {

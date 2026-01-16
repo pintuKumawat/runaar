@@ -33,6 +33,11 @@ class OfferProvider extends ChangeNotifier {
     }
   }
 
+  void resetSeat() {
+    _seats = 1;
+    notifyListeners();
+  }
+
   Future<void> tripPublish({
     required int userId,
     required String originLat,

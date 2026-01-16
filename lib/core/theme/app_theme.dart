@@ -111,6 +111,7 @@ class AppTheme {
           ),
         ),
       ),
+      
       bottomAppBarTheme: BottomAppBarThemeData(
         color: Colors.transparent,
         shadowColor: Colors.transparent,

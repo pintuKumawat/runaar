@@ -18,7 +18,7 @@ class OfferRideDetailsScreen extends StatefulWidget {
 }
 
 class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
-  bool luggageAllowed = true;
+  bool luggageAllowed = false;
   bool petsAllowed = false;
   bool smokingAllowed = false;
 
@@ -439,7 +439,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
       appSnackbar.showSingleSnackbar(context, provider.reponse!.message!);
 
       setState(() {
-        luggageAllowed = true;
+        luggageAllowed = false;
         petsAllowed = false;
         smokingAllowed = false;
       });
@@ -448,6 +448,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
       appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 1, rideIndex: 1));
 
       provider.clearDetail();
+      provider.resetSeat();
       offerController.clear();
     }
   }

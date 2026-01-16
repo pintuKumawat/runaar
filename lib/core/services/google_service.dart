@@ -96,9 +96,9 @@ class GooglePlacesService {
 
       // 🔹 Build a smart formatted time string
       String formattedTime = '';
-      if (days > 0) formattedTime += '$days d ';
-      if (hours > 0) formattedTime += '$hours hr ';
-      if (minutes > 0 || formattedTime.isEmpty) formattedTime += '$minutes min';
+      if (days > 0) formattedTime += '${days}d ';
+      if (hours > 0) formattedTime += '${hours}hr ';
+      if (minutes > 0 || formattedTime.isEmpty) formattedTime += '${minutes}min';
 
       return {
         'distance_km': double.parse(distanceInKm.toStringAsFixed(2)),

@@ -210,7 +210,7 @@ class _PublishedRideDetailsScreenState
                           const Icon(Icons.star, color: Colors.amber),
                       itemCount: 5,
                       itemSize: 16.sp,
-                      unratedColor: Colors.grey.shade300,
+                      unratedColor: Colors.grey.shade400,
                     ),
                     4.width,
                     Text(data?.personRatings.toString() ?? ""),
@@ -813,13 +813,13 @@ class _PublishedRideDetailsScreenState
       appSnackbar.showSingleSnackbar(context, statusUpdate.errorMessage ?? "");
       return;
     }
+    appNavigator.pop();
     appSnackbar.showSingleSnackbar(
       context,
       statusUpdate.response?.message ?? "",
     );
     await _fetchData();
-    appNavigator.pop();
-    appNavigator.pop(true);
+
     return;
   }
 

@@ -12,7 +12,9 @@ class DefaultImage {
       return CircleAvatar(
         radius: radius,
         backgroundColor: Colors.transparent,
-        backgroundImage: AssetImage(_defaultUser),
+        child: ClipRRect(
+          borderRadius: .circular(radius),
+          child: Image.asset(_defaultUser, fit: .cover,)),
       );
     }
     return CircleAvatar(
@@ -23,7 +25,9 @@ class DefaultImage {
         errorListener: (image) => CircleAvatar(
           radius: radius,
           backgroundColor: Colors.transparent,
-          backgroundImage: AssetImage(_defaultUser),
+          child: ClipRRect(
+          borderRadius: .circular(radius),
+          child: Image.asset(_defaultUser, fit: .cover,)),
         ),
       ),
     );

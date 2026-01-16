@@ -32,7 +32,7 @@ extension PlatformExtensions on BuildContext {
       MediaQuery.of(this).size.width >= 600 &&
       MediaQuery.of(this).size.width < 1024;
   bool get isDesktop => MediaQuery.of(this).size.width >= 1024;
-  double get textScale => MediaQuery.textScaleFactorOf(this).clamp(1.0, 1.3);
+  double get textScale => MediaQuery.textScaleFactorOf(this).clamp(1.0, 1.0);
 
   bool get isAndroid => Theme.of(this).platform == TargetPlatform.android;
   bool get isIOS => Theme.of(this).platform == TargetPlatform.iOS;

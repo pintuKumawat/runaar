@@ -51,7 +51,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   debugPrint("📨 Background Notification: ${message.messageId}");
 }
 
@@ -60,11 +59,14 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
   runApp(
@@ -100,8 +102,6 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CreatePaymentProvider()),
         ChangeNotifierProvider(create: (_) => VerifyPaymentProvider()),
         ChangeNotifierProvider(create: (_) => PaymentStatusProvider()),
-         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
-      
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),
@@ -137,7 +137,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     _loadAppState();
-    _initNotifications(); 
+    _initNotifications();
   }
 
   Future<void> _initNotifications() async {

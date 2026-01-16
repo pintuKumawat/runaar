@@ -270,7 +270,7 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                       const Icon(Icons.star, color: Colors.amber),
                   itemCount: 5,
                   itemSize: 16.sp,
-                  unratedColor: Colors.grey.shade300,
+                  unratedColor: Colors.grey.shade400,
                 ),
               ),
               trailing: InkWell(

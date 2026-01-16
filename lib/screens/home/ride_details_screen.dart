@@ -363,7 +363,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
                           const Icon(Icons.star, color: Colors.amber),
                       itemCount: 5,
                       itemSize: 16.sp,
-                      unratedColor: Colors.grey.shade300,
+                      unratedColor: Colors.grey.shade400,
                     ),
                     4.width,
                     Text(
@@ -488,6 +488,7 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
         itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
         itemCount: 5,
         itemSize: 14.sp,
+        unratedColor: Colors.grey.shade400,
       ),
       trailing: Column(
         mainAxisSize: .min,
