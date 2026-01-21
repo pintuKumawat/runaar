@@ -120,7 +120,6 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
           ),
         ),
         body: TabBarView(
-
           children: [
             Consumer<BookingListProvider>(
               builder: (context, bookingProv, child) {
@@ -643,6 +642,13 @@ class _MyRidesScreenState extends State<MyRidesScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton(
+                    style: ButtonStyle(
+                      shape: WidgetStateOutlinedBorder.resolveWith((states) {
+                        return RoundedRectangleBorder(
+                          borderRadius: .circular(10.r),
+                        );
+                      }),
+                    ),
                     onPressed: onReject,
                     child: Text(
                       "Reject",

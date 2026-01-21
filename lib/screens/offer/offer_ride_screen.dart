@@ -9,6 +9,7 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
+import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/provider/vehicle/vehicle_list_provider.dart';
 import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
@@ -42,7 +43,33 @@ class _OfferRideState extends State<OfferRide> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('OFFER RIDE')),
+      appBar: AppBar(
+        title: const Text('OFFER RIDE'),
+        actions: [
+          Stack(
+            children: [
+              Icon(Icons.notifications, size: 26.sp),
+              Consumer<NotificationProvider>(
+                builder: (context, value, child) => Positioned(
+                  right: 0,
+                  top: 0,
+                  child: CircleAvatar(
+                    radius: 7.r,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      value.count.toString(),
+                      style: theme.bodySmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 9.sp,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: 10.all,
         child: Column(
@@ -133,7 +160,10 @@ class _OfferRideState extends State<OfferRide> {
         "Please select your vehicle",
       );
     } else if (arrivalTime == deptTime) {
-      return appSnackbar.showSingleSnackbar(context, "Both Time cannot be same");
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Both Time cannot be same",
+      );
     } else {
       final data = LoadOfferData(
         userId: userId,

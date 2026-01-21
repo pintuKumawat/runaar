@@ -1,10 +1,10 @@
-class CreatePaymentModel {
+class SubscriptionCreateModel {
   String? status;
   String? orderId;
 
-  CreatePaymentModel({this.status, this.orderId});
+  SubscriptionCreateModel({this.status, this.orderId});
 
-  CreatePaymentModel.fromJson(Map<String, dynamic> json) {
+  SubscriptionCreateModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     orderId = json['orderId'];
   }

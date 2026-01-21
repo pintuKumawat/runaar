@@ -9,6 +9,7 @@ import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_bottom.dart';
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:runaar/provider/home/home_provider.dart';
+import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -66,22 +67,23 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('CARPOOL'),
-        centerTitle: true,
         actions: [
           Stack(
             children: [
               Icon(Icons.notifications, size: 26.sp),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: CircleAvatar(
-                  radius: 7.r,
-                  backgroundColor: Colors.red,
-                  child: Text(
-                    '11',
-                    style: theme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontSize: 9.sp,
+              Consumer<NotificationProvider>(
+                builder: (context, value, child) => Positioned(
+                  right: 0,
+                  top: 0,
+                  child: CircleAvatar(
+                    radius: 7.r,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      value.count.toString(),
+                      style: theme.bodySmall?.copyWith(
+                        color: Colors.white,
+                        fontSize: 9.sp,
+                      ),
                     ),
                   ),
                 ),

@@ -354,7 +354,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       case "Change Password":
         appNavigator.push(ChangePasswordScreen(userId: userId));
         break;
-        case "Subscription":
+      case "Subscription":
         // Navigate to Subscription Screen,
         appNavigator.push(SubscriptionScreen(userId: userId));
         break;
@@ -419,6 +419,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton(
+                    style: ButtonStyle(
+                      shape: WidgetStatePropertyAll(
+                        RoundedRectangleBorder(borderRadius: .circular(10.r)),
+                      ),
+                    ),
                     onPressed: () => Navigator.pop(context),
                     child: const Text("Cancel"),
                   ),
@@ -443,6 +448,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(savedData.userId, 0);
     prefs.setBool(savedData.isLoggedIn, false);
+    prefs.remove(savedData.mob);
+    prefs.remove(savedData.email);
+    prefs.remove(savedData.fcmToken);
+    prefs.remove(savedData.language);
     await Future.delayed(Duration(milliseconds: 300));
     appSnackbar.showSingleSnackbar(context, "Logout successfull");
     appNavigator.pushAndRemoveUntil(LoginScreen());

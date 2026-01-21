@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:runaar/core/services/api_response.dart';
-import 'package:runaar/models/profile/account/subscription_plan_model.dart';
-import 'package:runaar/repos/profile/account/subscription_plan_repo.dart';
+import 'package:runaar/models/subscription/subscription_plan_model.dart';
+import 'package:runaar/repos/subscription/subscription_plan_repo.dart';
 
 
 class SubscriptionProvider extends ChangeNotifier {

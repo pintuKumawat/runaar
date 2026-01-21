@@ -321,6 +321,7 @@ class _PublishedRideDetailsScreenState
                         theme,
                         data.passengerName ?? "",
                         data.profileImage ?? "",
+                        data.phoneNumber ?? '',
                         data.rating ?? 0,
                         data.seatsRequested ?? 0,
                         data.paymentStatus,
@@ -340,6 +341,7 @@ class _PublishedRideDetailsScreenState
     TextTheme theme,
     String name,
     String image,
+    String number,
     dynamic rating,
     int seats,
     String? status,
@@ -347,27 +349,35 @@ class _PublishedRideDetailsScreenState
     return ListTile(
       leading: defaultImage.userProvider(image, 22.r),
       title: Text(name, style: theme.titleSmall),
-      subtitle: RatingBarIndicator(
-        rating: parseRating(rating),
-        itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
-        itemCount: 5,
-        itemSize: 14.sp,
-      ),
-      trailing: Column(
-        mainAxisSize: .min,
-        children: [
-          Text("$seats Seat", style: theme.titleSmall),
-          if (status != null && status.isNotEmpty)
-            Text(
-              status,
-              style: theme.bodySmall?.copyWith(
-                color: status.toLowerCase() == "paid"
-                    ? Colors.green
-                    : Colors.amber,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-        ],
+      // subtitle: RatingBarIndicator(
+      //   rating: parseRating(rating),
+      //   itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
+      //   itemCount: 5,
+      //   itemSize: 14.sp,
+      // ),
+      subtitle: Text("$seats Seat", style: theme.titleSmall),
+      // trailing: Column(
+      //   mainAxisSize: .min,
+      //   children: [
+      //     Text("$seats Seat", style: theme.titleSmall),
+      //     if (status != null && status.isNotEmpty)
+      //       Text(
+      //         status,
+      //         style: theme.bodySmall?.copyWith(
+      //           color: status.toLowerCase() == "paid"
+      //               ? Colors.green
+      //               : Colors.amber,
+      //           fontWeight: FontWeight.w600,
+      //         ),
+      //       ),
+      //   ],
+      // ),
+      trailing: GestureDetector(
+        onTap: () {
+          var num = "+91$number";
+          launch("tel:$num");
+        },
+        child: Icon(Icons.phone),
       ),
     );
   }

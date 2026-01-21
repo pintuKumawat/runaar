@@ -1,6 +1,6 @@
 
 import 'package:runaar/core/services/api_response.dart';
-import 'package:runaar/models/profile/account/subscription_plan_model.dart';
+import 'package:runaar/models/subscription/subscription_plan_model.dart';
 
 class SubscriptionPlanRepo {
   Future<SubscriptionPlanModel> getSubscriptions() async {

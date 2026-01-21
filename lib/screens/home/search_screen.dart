@@ -225,7 +225,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   String formatDate(String dateString) {
-    DateTime date = DateTime.parse(dateString);
+    DateTime date = DateFormat('yyyy-M-d').parse(dateString);
     return DateFormat("dd MMM yy").format(date).toUpperCase();
   }
 }

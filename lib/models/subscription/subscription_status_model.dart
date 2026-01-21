@@ -1,11 +1,11 @@
-class PaymentStatusModel {
+class SubscriptionStatusModel {
   String? status;
   String? message;
   String? data;
 
-  PaymentStatusModel({this.status, this.message, this.data});
+  SubscriptionStatusModel({this.status, this.message, this.data});
 
-  PaymentStatusModel.fromJson(Map<String, dynamic> json) {
+  SubscriptionStatusModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     message = json['message'];
     data = json['data'];

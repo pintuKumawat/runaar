@@ -1,75 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/models/notification/get_notification_model.dart';
+import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
-  /// 🔹 STATIC MOCK DATA
-  static final List<Map<String, dynamic>> notifications = [
-    {
-      "title": "Ride Confirmed",
-      "message": "Your ride from Delhi to Jaipur is confirmed.",
-      "isRead": false,
-      "type": "alert",
-      "time": "2 min ago",
-    },
-    {
-      "title": "New Message",
-      "message": "Driver has sent you a message.",
-      "isRead": true,
-      "type": "message",
-      "time": "10 min ago",
-    },
-    {
-      "title": "Promotion",
-      "message": "Get 20% off on your next ride.",
-      "isRead": false,
-      "type": "promotion",
-      "time": "1 day ago",
-    },
-    {
-      "title": "Ride Confirmed",
-      "message": "Your ride from Delhi to Jaipur is confirmed.",
-      "isRead": false,
-      "type": "alert",
-      "time": "2 min ago",
-    },
-    {
-      "title": "New Message",
-      "message": "Driver has sent you a message.",
-      "isRead": true,
-      "type": "message",
-      "time": "10 min ago",
-    },
-    {
-      "title": "Promotion",
-      "message": "Get 20% off on your next ride.",
-      "isRead": false,
-      "type": "promotion",
-      "time": "1 day ago",
-    },
-    {
-      "title": "Ride Confirmed",
-      "message": "Your ride from Delhi to Jaipur is confirmed.",
-      "isRead": false,
-      "type": "alert",
-      "time": "2 min ago",
-    },
-    {
-      "title": "New Message",
-      "message": "Driver has sent you a message.",
-      "isRead": true,
-      "type": "message",
-      "time": "10 min ago",
-    },
-    {
-      "title": "Promotion",
-      "message": "Get 20% off on your next ride.",
-      "isRead": false,
-      "type": "promotion",
-      "time": "1 day ago",
-    },
-  ];
+  @override
+  State<NotificationScreen> createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen> {
+  int userId = 0;
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+
+  Future<void> _fetchData() async {
+    await context.read<NotificationProvider>().getNotification(userId: userId);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => getuserId().then((value) => _fetchData()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,14 +42,48 @@ class NotificationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Notifications"),
+        title: const Text("Notifications"),
+        actions: [
+          Consumer<NotificationProvider>(
+            builder: (context, provider, _) {
+              if (provider.count == 0) return const SizedBox();
+              return TextButton(
+                onPressed: () {
+                  context.read<NotificationProvider>().markAllAsRead(
+                    userId: userId,
+                  );
+                },
+                child: const Text(
+                  "Mark all",
+                  style: TextStyle(color: Colors.white),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: notifications.isEmpty
-          ? _emptyView(context)
-          : Padding(
-              padding: 10.all,
-              child: Column(
-                crossAxisAlignment: .stretch,
+      body: RefreshIndicator(
+        onRefresh: _fetchData,
+        child: Padding(
+          padding: 10.all,
+          child: Consumer<NotificationProvider>(
+            builder: (context, notification, _) {
+              if (notification.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (notification.errorMessage != null) {
+                return _emptyView(context);
+              }
+
+              final list = notification.response?.notifications ?? [];
+
+              if (list.isEmpty) {
+                return _emptyView(context);
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
                     "Tap to mark as read",
@@ -92,23 +91,24 @@ class NotificationScreen extends StatelessWidget {
                     style: theme.bodySmall?.copyWith(color: Colors.grey),
                   ),
                   Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {},
-                      child: ListView.builder(
-                        itemCount: notifications.length,
-                        itemBuilder: (context, index) {
-                          return _notificationTile(
-                            context,
-                            theme,
-                            notifications[index],
-                          );
-                        },
-                      ),
+                    child: ListView.builder(
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        return _notificationTile(
+                          context,
+                          theme,
+                          list[index],
+                          index,
+                        );
+                      },
                     ),
                   ),
                 ],
-              ),
-            ),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 
@@ -134,25 +134,29 @@ class NotificationScreen extends StatelessWidget {
   Widget _notificationTile(
     BuildContext context,
     TextTheme theme,
-    Map<String, dynamic> item,
+    Notifications item,
+    int index,
   ) {
-    final String type = item["type"];
-
     Color accentColor;
     IconData icon;
 
-    switch (type) {
-      case "message":
+    switch (item.data?.toLowerCase()) {
+      case "new request":
+        accentColor = Colors.green;
+        icon = Icons.notifications;
+        break;
+      case "confirmed":
         accentColor = Colors.green;
         icon = Icons.chat_bubble_outline;
         break;
-      case "alert":
+      case "completed":
+      case "started":
+        accentColor = Colors.green;
+        icon = Icons.chat_bubble_outline;
+        break;
+      case "cancelled":
         accentColor = Colors.red;
         icon = Icons.warning_amber_rounded;
-        break;
-      case "promotion":
-        accentColor = Colors.purple;
-        icon = Icons.local_offer_outlined;
         break;
       default:
         accentColor = Colors.blueGrey;
@@ -164,31 +168,36 @@ class NotificationScreen extends StatelessWidget {
         leading: CircleAvatar(
           radius: 22.r,
           backgroundColor: accentColor.withOpacity(0.12),
-          child: Icon(icon, color: accentColor, size: 20.sp),
+          child: Icon(icon, color: accentColor),
         ),
-
-        /// TITLE
         title: Text(
-          item["title"],
-          style: theme.titleMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+          item.title ?? "",
+          style: theme.titleMedium?.copyWith(
+            fontWeight: item.isRead == 1 ? .normal : .bold,
+          ),
         ),
-
-        /// SUBTITLE
         subtitle: Text(
-          item["message"],
-          style: theme.bodyMedium,
+          item.message ?? "",
+          style: theme.titleSmall?.copyWith(
+            fontWeight: item.isRead == 1 ? .normal : .bold,
+          ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         trailing: Text(
-          item["time"],
-          style: theme.bodySmall?.copyWith(color: Colors.grey),
+          timeago.format(DateTime.parse(item.createdAt!).toLocal()),
+          style: theme.bodySmall?.copyWith(
+            color: Colors.grey,
+            fontWeight: item.isRead == 1 ? .normal : .bold,
+          ),
         ),
+        onTap: () async {
+          await context.read<NotificationProvider>().markAsRead(
+            notificationId: item.id!,
+            index: index,
+          );
 
-        onTap: () {
-          // mark as read / navigate later
+          await _fetchData();
         },
       ),
     );

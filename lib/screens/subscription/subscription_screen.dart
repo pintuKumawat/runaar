@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/models/profile/account/subscription_plan_model.dart';
-import 'package:runaar/provider/profile/account/subscription_plan_provider.dart';
+import 'package:runaar/models/subscription/subscription_plan_model.dart';
+import 'package:runaar/provider/subscription/subscription_provider.dart';
 import 'package:runaar/screens/subscription/subscription_details_screen.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -73,7 +73,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 /// HEADER
                 Text(
                   "Subscribe and enjoy rides",
-                  style: theme.headlineSmall?.copyWith(
+                  style: theme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -104,7 +104,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 24.height,
                 _planSelectButton(plans),
 
-                /// CONTINUE BUTTON
+                
               ],
             );
           },
@@ -124,12 +124,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ),
         onPressed: () {
           final selectedPlan = plans[selectedIndex];
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SubscriptionDetailsScreen(plan: selectedPlan),
-            ),
-          );
+          appNavigator.push(SubscriptionDetailsScreen(plan: selectedPlan,userId:widget.userId));
         },
 
         child: Text("Continue", style: TextStyle(color: appColor.textColor)),

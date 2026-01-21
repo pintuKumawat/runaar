@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
-
 import 'package:runaar/core/services/api_response.dart';
-import 'package:runaar/models/profile/user_details_model.dart';
-import 'package:runaar/repos/profile/user_details_repo.dart';
+import 'package:runaar/models/subscription/subscription_create_model.dart';
+import 'package:runaar/repos/subscription/subscription_create_repo.dart';
 
-class UserDetailsProvider extends ChangeNotifier {
+class SubscriptionCreateProvider extends ChangeNotifier {
   String? _errorMessage;
   bool _isLoding = false;
-  UserDetailsModel? _response;
+  SubscriptionCreateModel? _response;
+
   String? get errorMessage => _errorMessage;
   bool get isLoading => _isLoding;
-  UserDetailsModel? get response => _response;
+  SubscriptionCreateModel? get response => _response;
 
-  Future<void> userDetails({required int userId}) async {
+  Future<void> subscriptionCreate({
+    required int userId,
+    required int subscriptionId,
+    required int amount,
+  }) async {
     _isLoding = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final result = await userDetailsRepo.userDetails(userId: userId);
+      final result = await subscriptionCreateRepo.subscriptionCreate(
+        userId: userId,
+        subscriptionId: subscriptionId,
+        amount: amount,
+      );
       _response = result;
     } on ApiException catch (e) {
       _errorMessage = e.message;

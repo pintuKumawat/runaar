@@ -1,20 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/controllers/home/home_controller.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
-import 'package:runaar/provider/payment/create_payment_provider.dart';
-import 'package:runaar/provider/payment/payment_status_provider.dart';
-import 'package:runaar/provider/payment/verify_payment_provider.dart';
 import 'package:runaar/screens/home/booking_done_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,9 +45,6 @@ class ConfirmBookingScreen extends StatefulWidget {
 }
 
 class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
-  bool _isVerifyingDialogOpen = false;
-  late Razorpay _razorpay;
-
   int? userId;
   String email = "";
   String phone = "";
@@ -94,15 +87,10 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
       context.read<HomeProvider>().setMaxSeats(int.parse(widget.seats));
       getuserId();
     });
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
   @override
   void dispose() {
-    _razorpay.clear();
     messageController.dispose();
     super.dispose();
   }
@@ -504,8 +492,32 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
                         );
                         appNavigator.push(BookingDoneScreen());
                         messageController.clear();
+                        homeController.clear();
                       } else {
-                        _openingRazorPay(totalPrice);
+                        // _openingRazorPay(totalPrice);
+                        await provider.bookingRequest(
+                          userId: userId ?? 0,
+                          tripId: widget.tripId,
+                          paymentMethod: _selectedPaymentMethod.toLowerCase(),
+                          paymentStatus: "pending",
+                          seatRequest: homeProvider.seats,
+                          totalPrice: totalPrice,
+                          specialMessage: messageController.text,
+                        );
+                        if (provider.errorMessage != null) {
+                          appSnackbar.showSingleSnackbar(
+                            context,
+                            provider.errorMessage ?? "",
+                          );
+                          return;
+                        }
+                        appSnackbar.showSingleSnackbar(
+                          context,
+                          provider.response?.message ?? "",
+                        );
+                        appNavigator.push(BookingDoneScreen());
+                        messageController.clear();
+                        homeController.clear();
                       }
                     },
 
@@ -524,165 +536,6 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
         );
       },
     );
-  }
-
-  Future<void> _openingRazorPay(double totalPrice) async {
-    final createPayment = context.read<CreatePaymentProvider>();
-
-    await createPayment.createPayment(
-      userId: userId ?? 0,
-      tripId: widget.tripId,
-      amount: 10,
-    );
-    if (createPayment.errorMessage != null) {
-      return appSnackbar.showSingleSnackbar(
-        context,
-        createPayment.errorMessage ?? "",
-      );
-    }
-
-    String razorpayOrderId = createPayment.response?.orderId ?? "";
-
-    var options = {
-      'key': dotenv.get("RAZORPAY_KEY"),
-      'amount': 1000,
-      'name': 'Runaar',
-      'description': 'Ride Booking',
-      'retry': {'enabled': true, 'max_count': 2},
-      'send_sms_hash': true,
-      'order_id': razorpayOrderId,
-      'theme': {'color': '#000000'},
-      'prefill': {'contact': email, 'email': email},
-      'external': {
-        'wallets': ['paytm'],
-      },
-    };
-
-    debugPrint("🚀 Opening Razorpay checkout");
-
-    _razorpay.open(options);
-  }
-
-  void _showVerifyingDialog() {
-    if (_isVerifyingDialogOpen) return;
-
-    _isVerifyingDialogOpen = true;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const AlertDialog(
-        content: Row(
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                "Verifying payment, please wait...",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _closeVerifyingDialog() {
-    if (!_isVerifyingDialogOpen || !mounted) return;
-
-    _isVerifyingDialogOpen = false;
-    appNavigator.pop();
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    debugPrint("Payemnt failed: ${response.message}");
-    return appSnackbar.showSingleSnackbar(context, "Payment Failed");
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) async {
-    final verifyPayment = context.read<VerifyPaymentProvider>();
-    if (response.paymentId == null ||
-        response.orderId == null ||
-        response.signature == null) {
-      appSnackbar.showSingleSnackbar(
-        context,
-        "Payment received but verification data is incomplete.",
-      );
-      return;
-    }
-    await verifyPayment.verifyPayment(
-      razorpayPaymentId: response.paymentId!,
-      razorpayOrderId: response.orderId!,
-      razorpaySignature: response.signature!,
-    );
-    if (verifyPayment.errorMessage != null) {
-      appSnackbar.showSingleSnackbar(context, verifyPayment.errorMessage ?? "");
-      return;
-    }
-    _showVerifyingDialog();
-    await _waitForPaymentConfirmation();
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    appSnackbar.showSingleSnackbar(
-      context,
-      "Redirecting to ${response.walletName}…",
-    );
-  }
-
-  Future<void> _waitForPaymentConfirmation() async {
-    final paymentStatus = context.read<PaymentStatusProvider>();
-    Timer.periodic(Duration(seconds: 5), (timer) async {
-      await paymentStatus.paymentStatus(
-        tripId: widget.tripId,
-        userId: userId ?? 0,
-      );
-
-      if (!mounted) return;
-
-      if (paymentStatus.errorMessage != null) {
-        appSnackbar.showSingleSnackbar(context, paymentStatus.errorMessage!);
-        return;
-      }
-
-      final status = paymentStatus.response?.data;
-      debugPrint(status);
-      if (status == 'captured') {
-        timer.cancel();
-        _closeVerifyingDialog();
-        await bookingRequest();
-        return;
-      } else if (status == 'failed') {
-        timer.cancel();
-        _closeVerifyingDialog();
-        return appSnackbar.showSingleSnackbar(context, "Payment failed");
-      }
-    });
-  }
-
-  Future<void> bookingRequest() async {
-    final provider = context.read<BookingRequestProvider>();
-    final homeProvider = context.read<HomeProvider>();
-    final totalPrice = calculateTotalPrice();
-
-    await provider.bookingRequest(
-      userId: userId ?? 0,
-      tripId: widget.tripId,
-      paymentMethod: "online",
-      paymentStatus: "paid",
-      seatRequest: homeProvider.seats,
-      totalPrice: totalPrice,
-      specialMessage: messageController.text,
-    );
-
-    if (provider.errorMessage != null) {
-      appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
-      return;
-    }
-    appSnackbar.showSingleSnackbar(context, provider.response?.message ?? "");
-    appNavigator.pushAndRemoveUntil(BookingDoneScreen());
-    messageController.clear();
   }
 
   Widget _dot() {

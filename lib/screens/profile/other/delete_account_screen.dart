@@ -228,6 +228,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(savedData.userId, 0);
     prefs.setBool(savedData.isLoggedIn, false);
+    prefs.remove(savedData.mob);
+    prefs.remove(savedData.email);
+    prefs.remove(savedData.fcmToken);
+    prefs.remove(savedData.language);
     await Future.delayed(Duration(milliseconds: 300));
     appNavigator.pushAndRemoveUntil(LoginScreen());
   }
