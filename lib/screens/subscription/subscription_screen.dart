@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
+import 'package:runaar/models/subscription/active_subscription_model.dart';
 import 'package:runaar/models/subscription/subscription_plan_model.dart';
+import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/provider/subscription/subscription_provider.dart';
 import 'package:runaar/screens/subscription/subscription_details_screen.dart';
 
@@ -23,6 +25,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubscriptionProvider>().getSubscriptions();
+      context
+          .read<ActiveSubscriptionProvider>()
+          .ActiveSubscription(userId: widget.userId);
     });
   }
 
@@ -32,12 +37,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(title: const Text("Subscriptions")),
+      appBar: AppBar(
+        title: const Text("Subscriptions"),
+        backgroundColor: Colors.black,
+      ),
       body: RefreshIndicator(
-        onRefresh: () =>
-            context.read<SubscriptionProvider>().getSubscriptions(),
-        child: Consumer<SubscriptionProvider>(
-          builder: (context, provider, _) {
+        onRefresh: () async {
+          await context.read<SubscriptionProvider>().getSubscriptions();
+          await context
+              .read<ActiveSubscriptionProvider>()
+              .ActiveSubscription(userId: widget.userId);
+        },
+        child: Consumer2<SubscriptionProvider, ActiveSubscriptionProvider>(
+          builder: (context, provider, activeProvider, _) {
             /// 🔄 LOADING
             if (provider.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -54,8 +66,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             }
 
             /// EMPTY
-            if (provider.response == null ||
-                provider.response!.data == null ||
+            if (provider.response?.data == null ||
                 provider.response!.data!.isEmpty) {
               return const Center(
                 child: Text(
@@ -70,6 +81,18 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             return ListView(
               padding: 14.all,
               children: [
+                /// 🔥 ACTIVE SUBSCRIPTION
+                if (activeProvider.isLoading)
+                  const Center(child: CircularProgressIndicator()),
+
+                if (activeProvider.activeSubscription != null)
+                  _activeSubscriptionCard(
+                    theme,
+                    activeProvider.activeSubscription!,
+                  ),
+
+                if (activeProvider.activeSubscription != null) 24.height,
+
                 /// HEADER
                 Text(
                   "Subscribe and enjoy rides",
@@ -81,7 +104,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
                 16.height,
 
-                /// LIST
+                /// SUBSCRIPTION LIST
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -102,9 +125,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
 
                 24.height,
-                _planSelectButton(plans),
 
-                
+                /// CONTINUE BUTTON
+                _planSelectButton(plans),
               ],
             );
           },
@@ -113,21 +136,108 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     );
   }
 
+  /// 🔘 CONTINUE BUTTON
   Widget _planSelectButton(List<Data> plans) {
     return SizedBox(
       height: 40.h,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: WidgetStateColor.resolveWith(
-            (states) => appColor.backgroundColor,
+          backgroundColor: WidgetStateProperty.all(
+            appColor.backgroundColor,
           ),
         ),
         onPressed: () {
           final selectedPlan = plans[selectedIndex];
-          appNavigator.push(SubscriptionDetailsScreen(plan: selectedPlan,userId:widget.userId));
+          appNavigator.push(
+            SubscriptionDetailsScreen(
+              plan: selectedPlan,
+              userId: widget.userId,
+            ),
+          );
         },
+        child: Text(
+          "Continue",
+          style: TextStyle(color: appColor.textColor),
+        ),
+      ),
+    );
+  }
 
-        child: Text("Continue", style: TextStyle(color: appColor.textColor)),
+  /// ✅ ACTIVE SUBSCRIPTION CARD
+  Widget _activeSubscriptionCard(TextTheme theme, Message plan) {
+    return Container(
+      padding: 16.all,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        color: Colors.green.withOpacity(0.15),
+        border: Border.all(color: Colors.green, width: 1.4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.verified, color: Colors.green),
+              8.width,
+              Text(
+                "Active Subscription",
+                style: theme.titleMedium?.copyWith(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+
+          12.height,
+
+          Text(
+            plan.subscriptionType ?? "",
+            style: theme.titleLarge?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          6.height,
+
+          Text(
+            plan. ?? "",
+            style: theme.bodyMedium?.copyWith(
+              color: Colors.grey.shade400,
+            ),
+          ),
+
+          12.height,
+
+          Row(
+            children: [
+              Icon(Icons.schedule, size: 14.sp, color: Colors.grey),
+              6.width,
+              Text(
+                "${plan.} Days",
+                style: theme.bodySmall?.copyWith(color: Colors.grey),
+              ),
+              12.width,
+              Icon(Icons.directions_car, size: 14.sp, color: Colors.grey),
+              6.width,
+              Text(
+                "${plan.totalRides} Rides",
+                style: theme.bodySmall?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
+
+          12.height,
+
+          Text(
+            "₹${plan.amount}",
+            style: theme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -138,154 +248,56 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     Data plan, {
     bool isSelected = false,
   }) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        /// MAIN CARD
-        Container(
-          margin: EdgeInsets.only(top: 22.h, bottom: 14.h),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22.r),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                appColor.subscriptionCardColor1,
-                appColor.subscriptionCardColor2,
-              ],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.45),
-                blurRadius: 14,
-                offset: const Offset(0, 8),
-              ),
-            ],
-            border: Border.all(
-              color: isSelected ? Colors.white : Colors.white.withOpacity(0.06),
-              width: isSelected ? 1.6 : 1,
-            ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 16.h),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// LEFT CONTENT
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      /// PLAN TITLE
-                      Text(
-                        plan.subscriptionType ?? " ",
-                        style: theme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-
-                      6.height,
-
-                      /// DESCRIPTION
-                      Text(
-                        plan.subscriptionDescription ?? "",
-                        style: theme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade400,
-                          height: 1.3,
-                        ),
-                      ),
-
-                      10.height,
-
-                      /// META INFO
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.schedule,
-                            size: 14.sp,
-                            color: Colors.grey.shade500,
-                          ),
-                          6.width,
-                          Text(
-                            "${plan.duration ?? 0} Days",
-                            style: theme.bodySmall?.copyWith(
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                          12.width,
-                          Icon(
-                            Icons.directions_car,
-                            size: 14.sp,
-                            color: Colors.grey.shade500,
-                          ),
-                          6.width,
-                          Text(
-                            "${plan.totalRides ?? 0}",
-                            style: theme.bodySmall?.copyWith(
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                /// PRICE BADGE
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 14.w,
-                    vertical: 8.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(14.r),
-                  ),
-                  child: Text(
-                    "₹${plan.amount.toString()}",
-                    style: theme.titleMedium?.copyWith(
-                      color: isSelected ? Colors.black : Colors.white,
-                      fontWeight: FontWeight.bold,
+    return Container(
+      margin: EdgeInsets.only(bottom: 14.h),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22.r),
+        gradient: LinearGradient(
+          colors: [
+            appColor.subscriptionCardColor1,
+            appColor.subscriptionCardColor2,
+          ],
+        ),
+        border: Border.all(
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.1),
+          width: isSelected ? 1.6 : 1,
+        ),
+      ),
+      child: Padding(
+        padding: 16.all,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    plan.subscriptionType ?? "",
+                    style: theme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
-              ],
+                  6.height,
+                  Text(
+                    plan.subscriptionDescription ?? "",
+                    style: theme.bodyMedium?.copyWith(
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+            Text(
+              "₹${plan.amount}",
+              style: theme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-
-        /// 🔥 PREMIUM BADGE
-        Positioned(
-          top: 0,
-          left: 18.w,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFD54F), Color(0xFFFFB300)],
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(14.r),
-                bottomRight: Radius.circular(14.r),
-              ),
-              boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8),
-              ],
-            ),
-            child: const Text(
-              "BEST VALUE • ₹1 FIRST MONTH",
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                fontSize: 11,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

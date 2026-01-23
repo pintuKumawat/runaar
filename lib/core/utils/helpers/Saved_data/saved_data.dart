@@ -6,7 +6,7 @@ class SavedData {
   String fcmToken = "fcm_token";
   String name = "userName";
   String email = "userEmail";
-  String mob = "userMob";
+  String mob = "userMob";  
 }
 
-final SavedData savedData = SavedData();
+final SavedData savedData = SavedData();  
