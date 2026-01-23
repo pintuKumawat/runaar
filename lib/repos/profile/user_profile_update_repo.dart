@@ -19,13 +19,10 @@ class UserProfileUpdateRepo {
       "email": email,
     };
 
-    if (profileImage != null) {
-      Map<String, File> files = {"profile_image": profileImage};
-
-      return apiMethods.postMultipart(
+    if (profileImage == null) {
+      return apiMethods.post(
         endpoint: "user/profile_update",
-        fields: body,
-        files: files,
+        body: body,
         onSuccess: (responseData) {
           if (responseData['status'].toString().toLowerCase() == 'success') {
             return UserProfileUpdateModel.fromJson(responseData);
@@ -35,9 +32,12 @@ class UserProfileUpdateRepo {
         },
       );
     } else {
-      return apiMethods.post(
+      Map<String, File> files = {"profile_image": profileImage};
+
+      return apiMethods.postMultipart(
         endpoint: "user/profile_update",
-        body: body,
+        fields: body,
+        files: files,
         onSuccess: (responseData) {
           if (responseData['status'].toString().toLowerCase() == 'success') {
             return UserProfileUpdateModel.fromJson(responseData);

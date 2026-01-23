@@ -37,7 +37,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  String gender = "Male";
+  String? gender;
   File? profileImage;
 
   final ImagePicker _picker = ImagePicker();
@@ -50,16 +50,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => _initFormateData(),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initFormateData());
   }
 
   void _initFormateData() {
     editProfileController.nameController.text = widget.userName ?? "";
     editProfileController.emailController.text = widget.email ?? "";
     editProfileController.dobController.text = widget.dob ?? "";
-    gender = widget.gender ?? "";
+    if (widget.gender != null) {
+      final g = widget.gender!.trim().toLowerCase();
+
+      setState(() {
+        if (g == "male") {
+          gender = "Male";
+        } else if (g == "female") {
+          gender = "Female";
+        } else {
+          gender = "Other";
+        }
+      });
+    }
   }
 
   @override
@@ -100,7 +110,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return Center(
       child: Stack(
         children: [
-          defaultImage.userProvider(widget.image, 55.r),
+          (profileImage != null)
+              ? CircleAvatar(
+                  radius: 55.r,
+                  backgroundImage: FileImage(profileImage!),
+                )
+              : defaultImage.userProvider(widget.image, 55.r),
           Positioned(
             bottom: 4.h,
             right: 4.w,
@@ -353,7 +368,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 await updateProvider.userProfileUpdate(
                   userId: widget.userId,
                   dob: editProfileController.dobController.text,
-                  gender: gender,
+                  gender: gender ?? "",
                   profileImage: profileImage,
                   name: editProfileController.nameController.text,
                   email: editProfileController.emailController.text,
@@ -371,7 +386,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 );
                 if (!mounted) return;
 
-                appNavigator.pushReplacement(BottomNav(initialIndex: 4));
+                appNavigator.pushAndRemoveUntil(BottomNav(initialIndex: 4));
                 editProfileController.clear();
               },
               child: updateProvider.isLoading

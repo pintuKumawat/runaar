@@ -34,118 +34,124 @@ class _SignupScreenState extends State<SignupScreen> {
 
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: 10.all,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CircleAvatar(radius: 60.r, backgroundColor: Colors.black),
-            25.height,
-            Text(
-              "Create Account",
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: 20.horizontal,
+          child: Column(
+            mainAxisSize: .min,
+            children: [
+              CircleAvatar(
+                radius: 30.r,
+                backgroundColor: Colors.black,
+                backgroundImage: AssetImage('assets/icons/logo_foreground.png'),
               ),
-            ),
-
-            25.height,
-
-            TextFormField(
-              controller: signUpController.nameController,
-              onChanged: provider.validateUserName,
-              inputFormatters: [FirstLetterCapitalFormatter()],
-              decoration: InputDecoration(
-                hintText: "Enter username",
-                errorText: provider.userNameError,
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-
-            10.height,
-
-            TextFormField(
-              controller: signUpController.emailController,
-              onChanged: provider.validateEmail,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                errorText: provider.emailError,
-                hintText: "Enter email",
-                prefixIcon: Icon(Icons.email),
-              ),
-            ),
-
-            10.height,
-
-            TextFormField(
-              controller: signUpController.mobileController,
-              onChanged: provider.validateMobileNumber,
-              keyboardType: TextInputType.phone,
-              maxLength: 10,
-              decoration: InputDecoration(
-                counterText: "",
-                errorText: provider.phoneNumberError,
-                hintText: "Enter mobile number",
-                prefixIcon: Icon(Icons.phone),
-              ),
-            ),
-
-            10.height,
-
-            TextFormField(
-              controller: signUpController.passwordController,
-              onChanged: provider.validatePassword,
-              obscureText: !isPasswordVisible,
-              decoration: InputDecoration(
-                hintText: "Enter password",
-                errorText: provider.passwordError,
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isPasswordVisible = !isPasswordVisible;
-                    });
-                  },
+              25.height,
+              Text(
+                "Create Account",
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-
-            25.height,
-
-            SizedBox(
-              width: double.infinity,
-              height: 40.h,
-              child: ElevatedButton(
-                onPressed: provider.isLoading
-                    ? null
-                    : () async => _signUp(provider),
-                child: provider.isLoading
-                    ? const CircularProgressIndicator()
-                    : const Text("Sign Up"),
+        
+              25.height,
+        
+              TextFormField(
+                controller: signUpController.nameController,
+                onChanged: provider.validateUserName,
+                inputFormatters: [FirstLetterCapitalFormatter()],
+                decoration: InputDecoration(
+                  hintText: "Enter username",
+                  errorText: provider.userNameError,
+                  prefixIcon: Icon(Icons.person),
+                ),
               ),
-            ),
-
-            10.height,
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have an account?"),
-                4.width,
-                InkWell(
-                  onTap: () {
-                    appNavigator.push(LoginScreen());
-                  },
-                  child: Text(
-                    "Login",
-                    style: TextStyle(color: appColor.secondColor),
+        
+              10.height,
+        
+              TextFormField(
+                controller: signUpController.emailController,
+                onChanged: provider.validateEmail,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  errorText: provider.emailError,
+                  hintText: "Enter email",
+                  prefixIcon: Icon(Icons.email),
+                ),
+              ),
+        
+              10.height,
+        
+              TextFormField(
+                controller: signUpController.mobileController,
+                onChanged: provider.validateMobileNumber,
+                keyboardType: TextInputType.phone,
+                maxLength: 10,
+                decoration: InputDecoration(
+                  counterText: "",
+                  errorText: provider.phoneNumberError,
+                  hintText: "Enter mobile number",
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+        
+              10.height,
+        
+              TextFormField(
+                controller: signUpController.passwordController,
+                onChanged: provider.validatePassword,
+                obscureText: !isPasswordVisible,
+                decoration: InputDecoration(
+                  hintText: "Enter password",
+                  errorText: provider.passwordError,
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isPasswordVisible = !isPasswordVisible;
+                      });
+                    },
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+        
+              25.height,
+        
+              SizedBox(
+                width: double.infinity,
+                height: 40.h,
+                child: ElevatedButton(
+                  onPressed: provider.isLoading
+                      ? null
+                      : () async => _signUp(provider),
+                  child: provider.isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text("Sign Up"),
+                ),
+              ),
+        
+              10.height,
+        
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already have an account?"),
+                  4.width,
+                  InkWell(
+                    onTap: () {
+                      appNavigator.push(LoginScreen());
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: appColor.secondColor),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

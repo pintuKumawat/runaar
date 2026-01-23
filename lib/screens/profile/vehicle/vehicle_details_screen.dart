@@ -191,7 +191,7 @@ class _VehicleDetailsScreenState extends State<VehicleDetailsScreen> {
       builder: (_) => Dialog(
         child: Padding(
           padding: 12.all,
-          child: image is File ? Image.file(image) : Image.network(image),
+          child: image is File ? Image.file(image) : Image.network('${apiMethods.baseUrl}/$image'),
         ),
       ),
     );

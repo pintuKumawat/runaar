@@ -77,7 +77,7 @@ class _PublishedRideDetailsScreenState
         formattedDate = formatTripDate(data.tripDate!);
       } catch (e) {
         debugPrint("Error in _tripCard: $e");
-        formattedDate = data.tripDate!; // Show raw string if can't format
+        formattedDate = data.tripDate!;
       }
     }
 
@@ -349,29 +349,7 @@ class _PublishedRideDetailsScreenState
     return ListTile(
       leading: defaultImage.userProvider(image, 22.r),
       title: Text(name, style: theme.titleSmall),
-      // subtitle: RatingBarIndicator(
-      //   rating: parseRating(rating),
-      //   itemBuilder: (_, _) => const Icon(Icons.star, color: Colors.amber),
-      //   itemCount: 5,
-      //   itemSize: 14.sp,
-      // ),
       subtitle: Text("$seats Seat", style: theme.titleSmall),
-      // trailing: Column(
-      //   mainAxisSize: .min,
-      //   children: [
-      //     Text("$seats Seat", style: theme.titleSmall),
-      //     if (status != null && status.isNotEmpty)
-      //       Text(
-      //         status,
-      //         style: theme.bodySmall?.copyWith(
-      //           color: status.toLowerCase() == "paid"
-      //               ? Colors.green
-      //               : Colors.amber,
-      //           fontWeight: FontWeight.w600,
-      //         ),
-      //       ),
-      //   ],
-      // ),
       trailing: GestureDetector(
         onTap: () {
           var num = "+91$number";

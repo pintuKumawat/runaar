@@ -189,7 +189,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   context,
                   changePasswordProvider.response?.message ?? "",
                 );
-                return appNavigator.pop();
+                appNavigator.pop();
               },
               child: Text("Update Password"),
             ),

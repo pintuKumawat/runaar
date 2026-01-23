@@ -34,40 +34,35 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(title: Text("My Vehicles")),
       body: RefreshIndicator(
         onRefresh: _fetchData,
         child: Consumer<VehicleListProvider>(
-          builder: (context, vehicleProvider, child) {
+          builder: (context, vehicleProvider, _) {
             final vehicleData = vehicleProvider.response?.data ?? [];
-            return vehicleProvider.isLoading!
-                ? Center(child: const CircularProgressIndicator())
-                : vehicleProvider.errorMessage != null
+
+            return (vehicleProvider.isLoading == true)
+                ? Center(child: CircularProgressIndicator())
+                : (vehicleProvider.errorMessage != null)
                 ? Center(
                     child: Text(
-                      vehicleProvider.errorMessage ?? "",
-                      style: textTheme.bodyMedium,
-                    ),
-                  )
-                : vehicleData.isEmpty
-                ? Center(
-                    child: Text(
-                      "No vehicles added yet",
-                      style: textTheme.bodyMedium,
+                      vehicleProvider.errorMessage!,
+                      textAlign: TextAlign.center,
                     ),
                   )
                 : ListView.builder(
-                  padding: 10.all,
-                  
-                  shrinkWrap: true,
-                  itemCount: vehicleData.length,
-                  itemBuilder: (context, index) {
-                    final data = vehicleData[index];
-                    return _vehicleTile(data, index, textTheme);
-                  },
-                );
+                    padding: 10.all,
+                    itemCount: vehicleData.length,
+                    itemBuilder: (context, index) {
+                      final data = vehicleData[index];
+                      return _vehicleTile(
+                        data,
+                        index,
+                        Theme.of(context).textTheme,
+                      );
+                    },
+                  );
           },
         ),
       ),
@@ -81,16 +76,20 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         onTap: () => appNavigator.push(
           VehicleDetailsScreen(vehicleId: data.vehicleId ?? 0),
         ),
-        leading: CachedNetworkImage(
-          imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
-          imageBuilder: (context, imageProvider) =>
-              CircleAvatar(radius: 28.r, backgroundImage: imageProvider),
-          errorWidget: (_, _, _) => CircleAvatar(
-            radius: 28.r,
-            backgroundColor: Colors.grey.shade300,
-            child: Icon(Icons.directions_car, size: 26.sp),
+        leading: SizedBox(
+          width: 56.r,
+          height: 56.r,
+          child: CachedNetworkImage(
+            imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
+            imageBuilder: (context, imageProvider) =>
+                CircleAvatar(backgroundImage: imageProvider),
+            errorWidget: (_, _, _) => CircleAvatar(
+              backgroundColor: Colors.grey.shade300,
+              child: Icon(Icons.directions_car, size: 26.sp),
+            ),
           ),
         ),
+
         title: Row(
           mainAxisSize: .min,
           children: [
@@ -113,7 +112,9 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
           style: textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
         ),
         trailing: IconButton(
-          icon: const Icon(Icons.delete),
+          icon: const InkWell(
+            child: SizedBox(width: 40, height: 40, child: Icon(Icons.delete)),
+          ),
           color: Colors.red,
           onPressed: () => _onDeleteVehicle(data.vehicleId ?? 0),
         ),
@@ -146,12 +147,10 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                   );
                   if (deleteVehicleProvider.errorMessage != null) {
                     appNavigator.pop();
-                    appSnackbar.showSingleSnackbar(
+                    return appSnackbar.showSingleSnackbar(
                       context,
                       deleteVehicleProvider.errorMessage ?? "",
                     );
-
-                    return;
                   }
                   appSnackbar.showSingleSnackbar(
                     context,

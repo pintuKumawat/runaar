@@ -64,9 +64,17 @@ dependencies:
   flutter_dotenv: ^6.0.0
   razorpay_flutter: ^1.4.0
   timeago: ^3.7.1
+  flutter_native_splash: ^2.4.7
   
 
-
+flutter_native_splash:
+  color: "#000000"
+  image: assets/icons/logo_padded.png
+  android: true
+  ios: true
+  android_12:
+    color: "#000000"
+    image: assets/icons/logo_padded.png
 
 dev_dependencies:
   flutter_test:

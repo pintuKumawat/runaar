@@ -216,7 +216,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
                 await _logout();
               },
-              child: Text("Deactivate Account"),
+              child: provider.isLoading
+                  ? CircularProgressIndicator()
+                  : Text("Deactivate Account"),
             ),
           ),
         );

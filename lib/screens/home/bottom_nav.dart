@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
+import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/provider/my_rides/booking_list_provider.dart';
+import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:runaar/provider/profile/user_details_provider.dart';
+import 'package:runaar/provider/subscription/active_subscription_provider.dart';
+import 'package:runaar/provider/vehicle/active_vehicle_provider.dart';
 import 'package:runaar/screens/home/home_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/notification/notification_screen.dart';
 import 'package:runaar/screens/offer/offer_ride_screen.dart';
 import 'package:runaar/screens/profile/user_profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BottomNav extends StatefulWidget {
   final int initialIndex;
@@ -21,20 +29,44 @@ class _BottomNavState extends State<BottomNav> {
   late int _currentIndex;
   late final List<Widget> _pages;
 
+  int userId = 0;
+  Future<void> getuserId() async {
+    var prefs = await SharedPreferences.getInstance();
+    var id = prefs.getInt(savedData.userId);
+    setState(() {
+      userId = id ?? 0;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getuserId();
     _currentIndex = widget.initialIndex;
     _pages = [
-      OfferRide(), 
-      MyRidesScreen(initialIndex: widget.rideIndex ?? 0), // My Rides
-      HomeScreen(),
-      NotificationScreen(), 
-      UserProfileScreen(),
+      const OfferRide(),
+      MyRidesScreen(initialIndex: widget.rideIndex ?? 0),
+      const HomeScreen(),
+      const NotificationScreen(),
+      const UserProfileScreen(),
     ];
   }
 
   void _onTabSelected(int index) {
+    if (index == 0) {
+      context.read<ActiveVehicleProvider>().vehicleList(userId: userId);
+    } else if (index == 1) {
+      context.read<BookingListProvider>().bookingList(userId: userId);
+    } else if (index == 3) {
+      context.read<NotificationProvider>().getNotification(
+        userId: userId,
+      );
+    } else {
+      context.read<UserDetailsProvider>().userDetails(userId: userId);
+      context.read<ActiveSubscriptionProvider>().activeSubscription(
+        userId: userId,
+      );
+    }
     setState(() => _currentIndex = index);
   }
 

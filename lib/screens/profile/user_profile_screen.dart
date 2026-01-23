@@ -444,7 +444,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => _logout(),
-                    // appNavigator.pushAndRemoveUntil(LoginScreen());
                     child: const Text("Logout"),
                   ),
                 ),

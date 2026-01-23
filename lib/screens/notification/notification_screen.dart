@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
+import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/models/notification/get_notification_model.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -48,10 +49,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
             builder: (context, provider, _) {
               if (provider.count == 0) return const SizedBox();
               return TextButton(
-                onPressed: () {
-                  context.read<NotificationProvider>().markAllAsRead(
-                    userId: userId,
-                  );
+                onPressed: () async {
+                  final notify = context.read<NotificationProvider>();
+
+                  await notify.markAllAsRead(userId: userId);
+
+                  if (notify.errorMessage != null) {
+                    return appSnackbar.showSingleSnackbar(
+                      context,
+                      notify.errorMessage ?? "",
+                    );
+                  }
+                  appSnackbar.showSingleSnackbar(context, "Marked all read");
+                  await _fetchData();
                 },
                 child: const Text(
                   "Mark all",
@@ -147,12 +157,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
         break;
       case "confirmed":
         accentColor = Colors.green;
-        icon = Icons.chat_bubble_outline;
+        icon = Icons.warning_amber_rounded;
         break;
       case "completed":
       case "started":
         accentColor = Colors.green;
-        icon = Icons.chat_bubble_outline;
+        icon = Icons.directions_car_sharp;
         break;
       case "cancelled":
         accentColor = Colors.red;
@@ -164,39 +174,56 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
 
     return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
+        dense: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+
         leading: CircleAvatar(
-          radius: 22.r,
+          radius: 20,
           backgroundColor: accentColor.withOpacity(0.12),
-          child: Icon(icon, color: accentColor),
+          child: Icon(icon, color: accentColor, size: 20),
         ),
-        title: Text(
-          item.title ?? "",
-          style: theme.titleMedium?.copyWith(
-            fontWeight: item.isRead == 1 ? .normal : .bold,
-          ),
+
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                item.title ?? '',
+                overflow: .ellipsis,
+                style: theme.titleSmall?.copyWith(
+                  fontWeight: item.isRead == 1
+                      ? FontWeight.w500
+                      : FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              DateFormat(
+                'hh:mm a',
+              ).format(DateTime.parse(item.createdAt!).toLocal()),
+              style: theme.bodySmall?.copyWith(
+                color: Colors.grey,
+                fontWeight: item.isRead == 1
+                    ? FontWeight.normal
+                    : FontWeight.bold,
+              ),
+            ),
+          ],
         ),
+
         subtitle: Text(
-          item.message ?? "",
-          style: theme.titleSmall?.copyWith(
-            fontWeight: item.isRead == 1 ? .normal : .bold,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        trailing: Text(
-          timeago.format(DateTime.parse(item.createdAt!).toLocal()),
+          item.message ?? '',
           style: theme.bodySmall?.copyWith(
-            color: Colors.grey,
-            fontWeight: item.isRead == 1 ? .normal : .bold,
+            fontWeight: item.isRead == 1 ? FontWeight.normal : FontWeight.bold,
           ),
         ),
+
         onTap: () async {
           await context.read<NotificationProvider>().markAsRead(
             notificationId: item.id!,
             index: index,
           );
-
           await _fetchData();
         },
       ),

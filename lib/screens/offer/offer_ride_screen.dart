@@ -25,6 +25,7 @@ class OfferRide extends StatefulWidget {
 class _OfferRideState extends State<OfferRide> {
   DateTime departureDate = DateTime.now();
   DateTime arrivalDate = DateTime.now();
+  final ScrollController _scrollController = ScrollController();
 
   int userId = 0;
 
@@ -71,70 +72,73 @@ class _OfferRideState extends State<OfferRide> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async => await context
-            .read<ActiveVehicleProvider>()
-            .vehicleList(userId: userId),
-        child: SingleChildScrollView(
+        onRefresh: () async {
+          await context.read<ActiveVehicleProvider>().vehicleList(
+            userId: userId,
+          );
+        },
+        child: ListView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: 10.all,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Offer a Ride', style: theme.titleMedium),
-              16.height,
+          children: [
+            Text('Offer a Ride', style: theme.titleMedium),
+            16.height,
 
-              _inputTile(
-                icon: Icons.my_location,
-                hint: 'Enter Pickup Location',
-                theme: theme,
-                controller: offerController.originController,
-                type: 'pickup',
-              ),
-              _inputTile(
-                icon: Icons.location_on,
-                hint: 'Enter Drop Location',
-                theme: theme,
-                controller: offerController.destinationController,
-                type: 'drop',
-              ),
-              Text('Select Car', style: theme.titleMedium),
-              6.height,
-              _vehicleSelector(theme),
+            _inputTile(
+              icon: Icons.my_location,
+              hint: 'Enter Pickup Location',
+              theme: theme,
+              controller: offerController.originController,
+              type: 'pickup',
+            ),
 
-              // 6.height,
-              _dateTile(
-                title: 'Date of Departure',
-                date: departureDate,
-                onTap: _pickDepartureDate,
-                theme: theme,
-              ),
+            _inputTile(
+              icon: Icons.location_on,
+              hint: 'Enter Drop Location',
+              theme: theme,
+              controller: offerController.destinationController,
+              type: 'drop',
+            ),
 
-              12.height,
-              _dateTile(
-                title: 'Date of Arrival',
-                date: arrivalDate,
-                onTap: _pickArrivalDate,
-                theme: theme,
-              ),
+            Text('Select Car', style: theme.titleMedium),
+            6.height,
+            _vehicleSelector(theme),
 
-              28.height,
+            _dateTile(
+              title: 'Date of Departure',
+              date: departureDate,
+              onTap: _pickDepartureDate,
+              theme: theme,
+            ),
 
-              SizedBox(
-                width: double.infinity,
-                height: 40.h,
-                child: ElevatedButton(
-                  onPressed: _loadData,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.directions_car, size: 20.sp),
-                      6.width,
-                      const Text('OFFER RIDE'),
-                    ],
-                  ),
+            12.height,
+
+            _dateTile(
+              title: 'Date of Arrival',
+              date: arrivalDate,
+              onTap: _pickArrivalDate,
+              theme: theme,
+            ),
+
+            28.height,
+
+            SizedBox(
+              width: double.infinity,
+              height: 40.h,
+              child: ElevatedButton(
+                onPressed: _loadData,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.directions_car, size: 20.sp),
+                    6.width,
+                    const Text('OFFER RIDE'),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -142,58 +146,73 @@ class _OfferRideState extends State<OfferRide> {
 
   Future<void> _loadData() async {
     final provider = context.read<OfferProvider>();
-    String arrivalTime = _formatTime(arrivalDate);
-    String deptTime = _formatTime(departureDate);
 
-    if (arrivalTime.isEmpty || deptTime.isEmpty) {
-      return appSnackbar.showSingleSnackbar(context, "Time cannot be empty");
-    } else if (offerController.destinationController.text.isEmpty ||
-        offerController.originController.text.isEmpty) {
+    final DateTime dept = departureDate;
+    final DateTime arrival = arrivalDate;
+
+    // 1️⃣ Location checks
+    if (offerController.originController.text.isEmpty ||
+        offerController.destinationController.text.isEmpty) {
       return appSnackbar.showSingleSnackbar(
         context,
         "Locations cannot be empty",
       );
-    } else if (offerController.destinationController.text ==
-        offerController.originController.text) {
+    }
+
+    if (offerController.originController.text ==
+        offerController.destinationController.text) {
       return appSnackbar.showSingleSnackbar(
         context,
-        "Both location cannot be same",
+        "Pickup and drop location cannot be same",
       );
-    } else if (offerController.selectedVehicleId == 0) {
+    }
+
+    // 2️⃣ Vehicle check
+    if (offerController.selectedVehicleId == 0) {
       return appSnackbar.showSingleSnackbar(
         context,
         "Please select your vehicle",
       );
-    } else if (arrivalTime == deptTime) {
+    }
+
+    // 3️⃣ DateTime equality check
+    if (arrival.isAtSameMomentAs(dept)) {
       return appSnackbar.showSingleSnackbar(
         context,
-        "Both Time cannot be same",
+        "Departure and arrival time cannot be same",
       );
-    } else {
-      final data = LoadOfferData(
-        userId: userId,
-        originLat: offerController.originLatController.text,
-        originLong: offerController.originLongController.text,
-        originAddress: offerController.originController.text,
-        originCity: offerController.originCityController.text,
-        destinationLat: offerController.destinationLatController.text,
-        destinationLong: offerController.destinationLongController.text,
-        destinationAddress: offerController.destinationController.text,
-        destinationCity: offerController.destinationCityController.text,
-        deptDate:
-            '${departureDate.year}-${departureDate.month}-${departureDate.day}',
-        arrivalDate:
-            '${arrivalDate.year}-${arrivalDate.month}-${arrivalDate.day}',
-        deptTime: deptTime,
-        arrivalTime: arrivalTime,
-        vehicleId: offerController.selectedVehicleId,
-      );
-
-      provider.setDetail(data);
-
-      if (!mounted) return;
-      return appNavigator.push(OfferRideDetailsScreen());
     }
+
+    // 4️⃣ DateTime order check (MOST IMPORTANT)
+    if (arrival.isBefore(dept)) {
+      return appSnackbar.showSingleSnackbar(
+        context,
+        "Arrival date & time must be after departure",
+      );
+    }
+
+    // ✅ Everything valid → proceed
+    final data = LoadOfferData(
+      userId: userId,
+      originLat: offerController.originLatController.text,
+      originLong: offerController.originLongController.text,
+      originAddress: offerController.originController.text,
+      originCity: offerController.originCityController.text,
+      destinationLat: offerController.destinationLatController.text,
+      destinationLong: offerController.destinationLongController.text,
+      destinationAddress: offerController.destinationController.text,
+      destinationCity: offerController.destinationCityController.text,
+      deptDate: '${dept.year}-${dept.month}-${dept.day}',
+      arrivalDate: '${arrival.year}-${arrival.month}-${arrival.day}',
+      deptTime: _formatTime(dept),
+      arrivalTime: _formatTime(arrival),
+      vehicleId: offerController.selectedVehicleId,
+    );
+
+    provider.setDetail(data);
+
+    if (!mounted) return;
+    appNavigator.push(OfferRideDetailsScreen());
   }
 
   Widget _inputTile({
@@ -228,13 +247,11 @@ class _OfferRideState extends State<OfferRide> {
     ActiveVehicleProvider provider = context.watch<ActiveVehicleProvider>();
     final vehicleData = provider.response?.data ?? [];
 
-    if (provider.isLoading == true) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
     if (vehicleData.isEmpty) {
       return Container(
         padding: 12.all,
+        margin: .only(bottom: 12.h),
+        width: .infinity,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: .circular(14.r),
@@ -245,7 +262,8 @@ class _OfferRideState extends State<OfferRide> {
 
     return Container(
       margin: .only(bottom: 12.h),
-      padding: .symmetric(horizontal: 12.w),
+      padding: 12.horizontal,
+      width: .infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: .circular(14.r),
