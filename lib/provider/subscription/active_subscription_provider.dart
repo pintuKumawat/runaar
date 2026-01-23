@@ -4,19 +4,16 @@ import 'package:runaar/models/subscription/active_subscription_model.dart';
 import 'package:runaar/repos/subscription/active_subscription_repo.dart';
 
 class ActiveSubscriptionProvider extends ChangeNotifier {
-
   String? _errorMessage;
-  bool _isLoading=false;
+  bool _isLoading = false;
 
-  ActiveSubscriptionModel?_response;
-   Message? activeSubscription;
+  ActiveSubscriptionModel? _response;
 
+  String? get errorMessage => _errorMessage;
+  bool get isLoading => _isLoading;
+  ActiveSubscriptionModel? get response => _response;
 
-  String? get errorMessage=>_errorMessage;
-  bool get isLoading=>_isLoading;
-  ActiveSubscriptionModel? get response=>_response;
-
-  Future<void>ActiveSubscription({required int userId})async {
+  Future<void> activeSubscription({required int userId}) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -24,7 +21,6 @@ class ActiveSubscriptionProvider extends ChangeNotifier {
     try {
       final result = await activeSubscriptionRepo.activeSubscription(
         userId: userId,
-        
       );
       _response = result;
     } on ApiException catch (e) {
@@ -39,9 +35,4 @@ class ActiveSubscriptionProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-
-
-
-
 }

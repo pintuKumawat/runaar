@@ -35,7 +35,6 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(title: Text("My Vehicles")),
       body: RefreshIndicator(
@@ -52,14 +51,23 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                       style: textTheme.bodyMedium,
                     ),
                   )
+                : vehicleData.isEmpty
+                ? Center(
+                    child: Text(
+                      "No vehicles added yet",
+                      style: textTheme.bodyMedium,
+                    ),
+                  )
                 : ListView.builder(
-                    padding: 10.all,
-                    itemCount: vehicleData.length,
-                    itemBuilder: (context, index) {
-                      final data = vehicleData[index];
-                      return _vehicleTile(data, index, textTheme);
-                    },
-                  );
+                  padding: 10.all,
+                  
+                  shrinkWrap: true,
+                  itemCount: vehicleData.length,
+                  itemBuilder: (context, index) {
+                    final data = vehicleData[index];
+                    return _vehicleTile(data, index, textTheme);
+                  },
+                );
           },
         ),
       ),
@@ -69,38 +77,43 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   Widget _vehicleTile(Data data, int index, TextTheme textTheme) {
     return Card(
       child: ListTile(
-        contentPadding: .only(left: 12.w),
+        contentPadding: EdgeInsets.only(left: 12.w),
         onTap: () => appNavigator.push(
           VehicleDetailsScreen(vehicleId: data.vehicleId ?? 0),
         ),
-        leading: CircleAvatar(
-          radius: 28.r,
-          backgroundColor: Colors.transparent,
-          child: CachedNetworkImage(
-            imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
-
-            errorListener: (_) => Container(
-              decoration: BoxDecoration(
-                shape: .circle,
-                color: Colors.grey.shade300,
-              ),
-              child: Icon(Icons.directions_car, size: 26.sp),
-            ),
+        leading: CachedNetworkImage(
+          imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
+          imageBuilder: (context, imageProvider) =>
+              CircleAvatar(radius: 28.r, backgroundImage: imageProvider),
+          errorWidget: (_, _, _) => CircleAvatar(
+            radius: 28.r,
+            backgroundColor: Colors.grey.shade300,
+            child: Icon(Icons.directions_car, size: 26.sp),
           ),
         ),
-
-        /// TITLE & SUBTITLE
-        title: Text(
-          "${data.vehicleBrand} ${data.model}",
-          style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        title: Row(
+          mainAxisSize: .min,
+          children: [
+            Text(
+              "${data.vehicleBrand} ${data.model}",
+              style: textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            3.width,
+            Icon(
+              Icons.verified,
+              size: 14.sp,
+              color: data.isVerified == 1 ? Colors.green : Colors.grey,
+            ),
+          ],
         ),
         subtitle: Text(
           "Car No: ${data.vehicleNumber}",
           style: textTheme.bodySmall?.copyWith(color: Colors.grey.shade600),
         ),
-
         trailing: IconButton(
-          icon: Icon(Icons.delete),
+          icon: const Icon(Icons.delete),
           color: Colors.red,
           onPressed: () => _onDeleteVehicle(data.vehicleId ?? 0),
         ),

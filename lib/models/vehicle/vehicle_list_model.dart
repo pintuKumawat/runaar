@@ -11,15 +11,15 @@ class VehicleListModel {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(Data.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -60,15 +60,15 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['vehicle_id'] = this.vehicleId;
-    data['user_id'] = this.userId;
-    data['vehicle_brand'] = this.vehicleBrand;
-    data['vehicle_number'] = this.vehicleNumber;
-    data['vehicle_image'] = this.vehicleImage;
-    data['model'] = this.model;
-    data['is_verified'] = this.isVerified;
-    data['is_active'] = this.isActive;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['vehicle_id'] = vehicleId;
+    data['user_id'] = userId;
+    data['vehicle_brand'] = vehicleBrand;
+    data['vehicle_number'] = vehicleNumber;
+    data['vehicle_image'] = vehicleImage;
+    data['model'] = model;
+    data['is_verified'] = isVerified;
+    data['is_active'] = isActive;
     return data;
   }
 }

@@ -84,7 +84,6 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
     }
   }
 
-  /// ✅ SUCCESS
   void _handlePaymentSuccess(PaymentSuccessResponse response) async {
     _showVerifyingDialog();
     final provider = context.read<SubscriptionVerifyProvider>();
@@ -103,9 +102,9 @@ class _SubscriptionDetailsScreenState extends State<SubscriptionDetailsScreen> {
 
   ///  FAILURE
   void _handlePaymentError(PaymentFailureResponse response) {
-    appSnackbar.showSingleSnackbar(
+    return appSnackbar.showSingleSnackbar(
       context,
-      "Payment Failed  ${response.message}",
+      "Payment Failed",
     );
   }
 

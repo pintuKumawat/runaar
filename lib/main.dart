@@ -31,6 +31,7 @@ import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
+import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/provider/subscription/subscription_create_provider.dart';
 import 'package:runaar/provider/subscription/subscription_provider.dart';
 import 'package:runaar/provider/profile/account/user_deactivate_provider.dart';
@@ -38,6 +39,7 @@ import 'package:runaar/provider/profile/user_details_provider.dart';
 import 'package:runaar/provider/profile/user_profile_update_provider.dart';
 import 'package:runaar/provider/subscription/subscription_status_provider.dart';
 import 'package:runaar/provider/subscription/subscription_verify_provider.dart';
+import 'package:runaar/provider/vehicle/active_vehicle_provider.dart';
 import 'package:runaar/provider/vehicle/add_vehicle_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/provider/vehicle/delete_vehicle_provider.dart';
@@ -101,7 +103,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SubscriptionProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionCreateProvider()),
         ChangeNotifierProvider(create: (_) => SubscriptionVerifyProvider()),
-        ChangeNotifierProvider(create: (_)=> SubscriptionStatusProvider())
+        ChangeNotifierProvider(create: (_) => SubscriptionStatusProvider()),
+        ChangeNotifierProvider(create: (_) => ActiveSubscriptionProvider()),
+        ChangeNotifierProvider(create: (_) => ActiveVehicleProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

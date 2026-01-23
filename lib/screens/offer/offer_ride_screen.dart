@@ -11,7 +11,7 @@ import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_
 import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
-import 'package:runaar/provider/vehicle/vehicle_list_provider.dart';
+import 'package:runaar/provider/vehicle/active_vehicle_provider.dart';
 import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,9 +31,9 @@ class _OfferRideState extends State<OfferRide> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       getuserId().then((_) {
-        context.read<VehicleListProvider>().vehicleList(userId: userId);
+        context.read<ActiveVehicleProvider>().vehicleList(userId: userId);
       });
     });
   }
@@ -70,66 +70,71 @@ class _OfferRideState extends State<OfferRide> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: 10.all,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Offer a Ride', style: theme.titleMedium),
-            16.height,
+      body: RefreshIndicator(
+        onRefresh: () async => await context
+            .read<ActiveVehicleProvider>()
+            .vehicleList(userId: userId),
+        child: SingleChildScrollView(
+          padding: 10.all,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Offer a Ride', style: theme.titleMedium),
+              16.height,
 
-            _inputTile(
-              icon: Icons.my_location,
-              hint: 'Enter Pickup Location',
-              theme: theme,
-              controller: offerController.originController,
-              type: 'pickup',
-            ),
-            _inputTile(
-              icon: Icons.location_on,
-              hint: 'Enter Drop Location',
-              theme: theme,
-              controller: offerController.destinationController,
-              type: 'drop',
-            ),
-            Text('Select Car', style: theme.titleMedium),
-            6.height,
-            _vehicleSelector(theme),
+              _inputTile(
+                icon: Icons.my_location,
+                hint: 'Enter Pickup Location',
+                theme: theme,
+                controller: offerController.originController,
+                type: 'pickup',
+              ),
+              _inputTile(
+                icon: Icons.location_on,
+                hint: 'Enter Drop Location',
+                theme: theme,
+                controller: offerController.destinationController,
+                type: 'drop',
+              ),
+              Text('Select Car', style: theme.titleMedium),
+              6.height,
+              _vehicleSelector(theme),
 
-            // 6.height,
-            _dateTile(
-              title: 'Date of Departure',
-              date: departureDate,
-              onTap: _pickDepartureDate,
-              theme: theme,
-            ),
+              // 6.height,
+              _dateTile(
+                title: 'Date of Departure',
+                date: departureDate,
+                onTap: _pickDepartureDate,
+                theme: theme,
+              ),
 
-            12.height,
-            _dateTile(
-              title: 'Date of Arrival',
-              date: arrivalDate,
-              onTap: _pickArrivalDate,
-              theme: theme,
-            ),
+              12.height,
+              _dateTile(
+                title: 'Date of Arrival',
+                date: arrivalDate,
+                onTap: _pickArrivalDate,
+                theme: theme,
+              ),
 
-            28.height,
+              28.height,
 
-            SizedBox(
-              width: double.infinity,
-              height: 40.h,
-              child: ElevatedButton(
-                onPressed: _loadData,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.directions_car, size: 20.sp),
-                    6.width,
-                    const Text('OFFER RIDE'),
-                  ],
+              SizedBox(
+                width: double.infinity,
+                height: 40.h,
+                child: ElevatedButton(
+                  onPressed: _loadData,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.directions_car, size: 20.sp),
+                      6.width,
+                      const Text('OFFER RIDE'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -220,7 +225,7 @@ class _OfferRideState extends State<OfferRide> {
   }
 
   Widget _vehicleSelector(TextTheme theme) {
-    VehicleListProvider provider = context.watch<VehicleListProvider>();
+    ActiveVehicleProvider provider = context.watch<ActiveVehicleProvider>();
     final vehicleData = provider.response?.data ?? [];
 
     if (provider.isLoading == true) {
@@ -253,6 +258,16 @@ class _OfferRideState extends State<OfferRide> {
               : offerController.selectedVehicleId,
           isExpanded: true,
           icon: Icon(Icons.keyboard_arrow_down, size: 22.sp),
+          hint: Row(
+            children: [
+              Icon(Icons.directions_car, size: 18.sp, color: Colors.grey),
+              10.width,
+              Text(
+                "Select Car",
+                style: theme.bodyLarge?.copyWith(color: Colors.grey),
+              ),
+            ],
+          ),
           items: vehicleData.map((v) {
             return DropdownMenuItem(
               value: v.vehicleId,
@@ -286,20 +301,6 @@ class _OfferRideState extends State<OfferRide> {
       userId = id ?? 0;
     });
   }
-
-  // Future<void> _loadNotificationCount() async {
-  //   // final notifications = await ApiService.notificationList(userId, l10n);
-  //   // if (notifications.first.message != null &&
-  //   //     notifications.isNotEmpty &&
-  //   //     mounted) {
-  //   //   int unread = notifications
-  //   //       .map((n) => n.message?.where((m) => m?.isRead == 0).length ?? 0)
-  //   //       .fold(0, (a, b) => a + b);
-  //   // context
-  //   //     .watch<NotificationProvider>()
-  //   //     .setCount(unread);
-  //   // }
-  // }
 
   Future<void> _pickDepartureDate() async {
     // Pick date first

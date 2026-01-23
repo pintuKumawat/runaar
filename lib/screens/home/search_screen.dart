@@ -43,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       data?.originTime ?? "",
                       data?.destinationTime ?? "",
                     ),
-                    endTime: removeSeconds(data?.originTime ?? ""),
+                    endTime: removeSeconds(data?.destinationTime ?? ""),
                     from: data?.originCity ?? "",
                     to: data?.destinationCity ?? "",
                     personName: data?.personName ?? "",
@@ -88,14 +88,15 @@ class _SearchScreenState extends State<SearchScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _timeLine(startTime, duration, endTime, theme),
-
                   14.width,
+                  _buildIconLine(Icons.location_on, theme),
+                  6.width,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _locationText(from, theme),
-                        60.height,
+                        55.height,
                         _locationText(to, theme),
                       ],
                     ),
@@ -194,15 +195,25 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _locationText(String text, TextTheme theme) {
-    return Row(
+  Widget _buildIconLine(IconData icon, TextTheme theme) {
+    return Column(
       children: [
-        Icon(Icons.location_on, size: 18.sp, color: appColor.mainColor),
-        6.width,
-        Text(text, style: theme.titleMedium),
+        Icon(icon, size: 18.sp, color: appColor.mainColor),
+        60.height,
+        Icon(icon, size: 18.sp, color: appColor.mainColor),
       ],
     );
   }
+
+  Widget _locationText(String text, TextTheme theme) {
+    return Text(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      style: theme.titleMedium,
+    );
+  }
+  
 
   String removeSeconds(String time) {
     final parts = time.split(':');

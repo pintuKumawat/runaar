@@ -6,6 +6,7 @@ import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
 import 'package:runaar/models/subscription/active_subscription_model.dart';
 import 'package:runaar/models/subscription/subscription_plan_model.dart';
 import 'package:runaar/provider/subscription/active_subscription_provider.dart';
+import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/provider/subscription/subscription_provider.dart';
 import 'package:runaar/screens/subscription/subscription_details_screen.dart';
 
@@ -44,12 +45,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           await context.read<SubscriptionProvider>().getSubscriptions();
-          await context
-              .read<ActiveSubscriptionProvider>()
-              .ActiveSubscription(userId: widget.userId);
+          await context.read<ActiveSubscriptionProvider>().activeSubscription(
+            userId: widget.userId,
+          );
         },
-        child: Consumer2<SubscriptionProvider, ActiveSubscriptionProvider>(
-          builder: (context, provider, activeProvider, _) {
+        child: Consumer<SubscriptionProvider>(
+          builder: (context, provider, _) {
             /// 🔄 LOADING
             if (provider.isLoading) {
               return const Center(child: CircularProgressIndicator());
@@ -81,19 +82,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             return ListView(
               padding: 14.all,
               children: [
-                /// 🔥 ACTIVE SUBSCRIPTION
-                if (activeProvider.isLoading)
-                  const Center(child: CircularProgressIndicator()),
-
-                if (activeProvider.activeSubscription != null)
-                  _activeSubscriptionCard(
-                    theme,
-                    activeProvider.activeSubscription!,
-                  ),
-
-                if (activeProvider.activeSubscription != null) 24.height,
-
-                /// HEADER
+              
                 Text(
                   "Subscribe and enjoy rides",
                   style: theme.titleLarge?.copyWith(
@@ -142,9 +131,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       height: 40.h,
       child: ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(
-            appColor.backgroundColor,
-          ),
+          backgroundColor: WidgetStateProperty.all(appColor.backgroundColor),
         ),
         onPressed: () {
           final selectedPlan = plans[selectedIndex];
@@ -155,92 +142,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             ),
           );
         },
-        child: Text(
-          "Continue",
-          style: TextStyle(color: appColor.textColor),
-        ),
+        child: Text("Continue", style: TextStyle(color: appColor.textColor)),
       ),
     );
   }
 
-  /// ✅ ACTIVE SUBSCRIPTION CARD
-  Widget _activeSubscriptionCard(TextTheme theme, Message plan) {
-    return Container(
-      padding: 16.all,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.r),
-        color: Colors.green.withOpacity(0.15),
-        border: Border.all(color: Colors.green, width: 1.4),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Icon(Icons.verified, color: Colors.green),
-              8.width,
-              Text(
-                "Active Subscription",
-                style: theme.titleMedium?.copyWith(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-
-          12.height,
-
-          Text(
-            plan.subscriptionType ?? "",
-            style: theme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          6.height,
-
-          Text(
-            plan. ?? "",
-            style: theme.bodyMedium?.copyWith(
-              color: Colors.grey.shade400,
-            ),
-          ),
-
-          12.height,
-
-          Row(
-            children: [
-              Icon(Icons.schedule, size: 14.sp, color: Colors.grey),
-              6.width,
-              Text(
-                "${plan.} Days",
-                style: theme.bodySmall?.copyWith(color: Colors.grey),
-              ),
-              12.width,
-              Icon(Icons.directions_car, size: 14.sp, color: Colors.grey),
-              6.width,
-              Text(
-                "${plan.totalRides} Rides",
-                style: theme.bodySmall?.copyWith(color: Colors.grey),
-              ),
-            ],
-          ),
-
-          12.height,
-
-          Text(
-            "₹${plan.amount}",
-            style: theme.titleMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  
 
   /// 🔥 SUBSCRIPTION CARD
   Widget _subscriptionCard(
@@ -300,4 +207,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
     );
   }
+
+
 }

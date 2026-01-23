@@ -5,7 +5,6 @@ import 'package:runaar/models/auth/sign_up_model.dart';
 import 'package:runaar/repos/auth/sign_up_repo.dart';
 
 class SignupProvider extends ChangeNotifier {
-  
   String? userNameError;
   String? emailError;
   String? phoneNumberError;
@@ -16,7 +15,6 @@ class SignupProvider extends ChangeNotifier {
 
   SignUpModel? response;
   String? errorMessage;
-
 
   // Toggle password visibility
   void togglePasswordVisibility() {
@@ -60,17 +58,28 @@ class SignupProvider extends ChangeNotifier {
   }
 
   void validatePassword(String value) {
-    final passwordRegex = RegExp(
-      r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$',
-    );
+    final upperCaseRegex = RegExp(r'[A-Z]');
+    final lowerCaseRegex = RegExp(r'[a-z]');
+    final numberRegex = RegExp(r'[0-9]');
+    final symbolRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
+    final minLengthRegex = RegExp(r'.{8,}');
 
     if (value.isEmpty) {
       passwordError = "Please enter password";
-    } else if (!passwordRegex.hasMatch(value)) {
-      passwordError = "Password must be 8 characters";
+    } else if (!minLengthRegex.hasMatch(value)) {
+      passwordError = "Password must be at least 8 characters long";
+    } else if (!upperCaseRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one uppercase letter";
+    } else if (!lowerCaseRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one lowercase letter";
+    } else if (!numberRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one number";
+    } else if (!symbolRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one special character";
     } else {
       passwordError = null;
     }
+
     notifyListeners();
   }
 
