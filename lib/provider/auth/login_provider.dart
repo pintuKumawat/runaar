@@ -36,17 +36,28 @@ class LoginProvider extends ChangeNotifier {
   }
 
   void validatePassword(String value) {
-    final passwordRegex = RegExp(
-      r'^(?=.*[A-Z])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$',
-    );
+    final upperCaseRegex = RegExp(r'[A-Z]');
+    final lowerCaseRegex = RegExp(r'[a-z]');
+    final numberRegex = RegExp(r'[0-9]');
+    final symbolRegex = RegExp(r'[!@#$%^&*(),.?":{}|<>]');
+    final minLengthRegex = RegExp(r'.{8,}');
 
     if (value.isEmpty) {
-      passwordError = "Password is required";
-    } else if (!passwordRegex.hasMatch(value)) {
-      passwordError = "Password must be at least 8 character";
+      passwordError = "Please enter password";
+    } else if (!minLengthRegex.hasMatch(value)) {
+      passwordError = "Password must be at least 8 characters long";
+    } else if (!upperCaseRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one uppercase letter";
+    } else if (!lowerCaseRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one lowercase letter";
+    } else if (!numberRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one number";
+    } else if (!symbolRegex.hasMatch(value)) {
+      passwordError = "Password must contain at least one special character";
     } else {
       passwordError = null;
     }
+
     notifyListeners();
   }
 

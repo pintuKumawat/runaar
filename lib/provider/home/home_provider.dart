@@ -60,9 +60,6 @@ class HomeProvider extends ChangeNotifier {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
-    debugPrint(deptDate);
-    debugPrint(originCity);
-    debugPrint(destinationCity);
     try {
       final result = await rideSearchRepo.rideSearch(
         deptDate: deptDate,

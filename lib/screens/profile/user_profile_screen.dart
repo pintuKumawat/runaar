@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
@@ -9,7 +10,9 @@ import 'package:runaar/core/utils/helpers/Saved_data/saved_data.dart';
 import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/default_image/default_image.dart';
 import 'package:runaar/models/profile/user_details_model.dart';
+import 'package:runaar/models/subscription/active_subscription_model.dart';
 import 'package:runaar/provider/profile/user_details_provider.dart';
+import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
@@ -50,6 +53,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Future<void> loadData() async {
     await context.read<UserDetailsProvider>().userDetails(userId: userId);
+    await context.read<ActiveSubscriptionProvider>().activeSubscription(
+      userId: userId,
+    );
   }
 
   Future<void> _loadVersion() async {
@@ -70,8 +76,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).textTheme;
-    return Consumer<UserDetailsProvider>(
-      builder: (BuildContext context, userDetailsProvider, child) {
+    return Consumer2<UserDetailsProvider, ActiveSubscriptionProvider>(
+      builder: (context, userDetailsProvider, activeProvider, _) {
         final data = userDetailsProvider.response?.userDetail;
         return RefreshIndicator(
           onRefresh: loadData,
@@ -92,6 +98,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Expanded(child: _walletCard(theme)),
                   ],
                 ),
+                if (activeProvider.response?.message != null) 10.height,
+                if (activeProvider.response?.message != null)
+                  _activeSubscriptionCard(
+                    theme,
+                    activeProvider.response?.message,
+                  ),
 
                 12.height,
                 _sectionTitle("Account", theme),
@@ -442,6 +454,173 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
       ),
     );
+  }
+
+  Widget _activeSubscriptionCard(TextTheme theme, Message? plan) {
+    final used = int.tryParse(plan?.ridesUsed.toString() ?? "0") ?? 0;
+    final total =
+        int.tryParse(plan?.totalRides?.replaceAll(" Rides", "") ?? "0") ?? 0;
+
+    final progress = total == 0 ? 0.0 : used / total;
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
+      child: Container(
+        padding: 16.all,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18.r),
+          gradient: LinearGradient(
+            colors: [
+              Colors.green.withOpacity(0.18),
+              Colors.green.withOpacity(0.05),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// HEADER
+            Row(
+              children: [
+                Container(
+                  padding: 8.all,
+                  decoration: BoxDecoration(
+                    color: Colors.green.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.verified_rounded,
+                    color: Colors.green.shade700,
+                    size: 20.sp,
+                  ),
+                ),
+                10.width,
+                Expanded(
+                  child: Text(
+                    plan?.subscriptionType ?? "",
+                    style: theme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 4.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade700,
+                    borderRadius: BorderRadius.circular(20.r),
+                  ),
+                  child: Text(
+                    "ACTIVE",
+                    style: theme.labelSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            14.height,
+
+            /// START & EXPIRY
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _infoItem(
+                  theme,
+                  Icons.play_circle_outline,
+                  "Start",
+                  formatDate(plan?.startDate ?? ""),
+                ),
+                _infoItem(
+                  theme,
+                  Icons.event_busy_outlined,
+                  "Expires",
+                  formatDate(plan?.endDate ?? ""),
+                ),
+              ],
+            ),
+
+            16.height,
+
+            /// RIDES PROGRESS
+            Text(
+              "Rides Used",
+              style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            6.height,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.r),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 8.h,
+                backgroundColor: Colors.grey.shade300,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Colors.green.shade600,
+                ),
+              ),
+            ),
+            6.height,
+            Text(
+              "$used / $total rides used",
+              style: theme.bodySmall?.copyWith(color: Colors.black54),
+            ),
+
+            14.height,
+
+            /// DURATION
+            Row(
+              children: [
+                Icon(
+                  Icons.schedule_rounded,
+                  size: 16.sp,
+                  color: Colors.black54,
+                ),
+                8.width,
+                Text(
+                  "${plan?.duration} Days Validity",
+                  style: theme.bodyMedium?.copyWith(color: appColor.textColor),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _infoItem(TextTheme theme, IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(icon, size: 16.sp, color: Colors.black54),
+        6.width,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: theme.bodySmall?.copyWith(color: Colors.black54),
+            ),
+            Text(
+              value,
+              style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String formatDate(String dateString) {
+    DateTime date = DateFormat('yyyy-M-d').parse(dateString);
+    return DateFormat("dd/MM/yy").format(date).toUpperCase();
   }
 
   Future<void> _logout() async {

@@ -9,6 +9,7 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/screens/home/bottom_nav.dart';
+import 'package:runaar/screens/subscription/subscription_screen.dart';
 
 class OfferRideDetailsScreen extends StatefulWidget {
   const OfferRideDetailsScreen({super.key});
@@ -431,8 +432,14 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
     );
 
     if (provider.errorMessage != null) {
-      appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
-      return;
+      if (provider.errorMessage!.contains('subscription')) {
+        appSnackbar.showSingleSnackbar(context, provider.errorMessage ?? "");
+        return appNavigator.push(SubscriptionScreen(userId: data?.userId ?? 0));
+      }
+      return appSnackbar.showSingleSnackbar(
+        context,
+        provider.errorMessage ?? "",
+      );
     }
 
     if (provider.reponse?.message != null) {
