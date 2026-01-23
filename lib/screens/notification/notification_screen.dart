@@ -170,10 +170,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
           backgroundColor: accentColor.withOpacity(0.12),
           child: Icon(icon, color: accentColor),
         ),
-        title: Text(
-          item.title ?? "",
-          style: theme.titleMedium?.copyWith(
-            fontWeight: item.isRead == 1 ? .normal : .bold,
+        title: Flexible(
+          child: Text(
+            overflow: TextOverflow.ellipsis,
+            item.title ?? "",
+            style: theme.titleMedium?.copyWith(
+              fontWeight: item.isRead == 1 ? .normal : .bold,
+            ),
           ),
         ),
         subtitle: Text(

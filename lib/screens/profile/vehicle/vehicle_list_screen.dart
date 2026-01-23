@@ -84,7 +84,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         leading: CachedNetworkImage(
           imageUrl: "${apiMethods.baseUrl}/${data.vehicleImage}",
           imageBuilder: (context, imageProvider) =>
-              CircleAvatar(radius: 28.r, backgroundImage: imageProvider),
+              CircleAvatar(radius: 38.r, backgroundImage: imageProvider),
           errorWidget: (_, _, _) => CircleAvatar(
             radius: 28.r,
             backgroundColor: Colors.grey.shade300,

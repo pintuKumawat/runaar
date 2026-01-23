@@ -3,10 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:runaar/core/constants/app_color.dart';
 import 'package:runaar/core/responsive/responsive_extension.dart';
 import 'package:runaar/core/utils/helpers/Navigate/app_navigator.dart';
-import 'package:runaar/models/subscription/active_subscription_model.dart';
+
 import 'package:runaar/models/subscription/subscription_plan_model.dart';
-import 'package:runaar/provider/subscription/active_subscription_provider.dart';
-import 'package:runaar/provider/subscription/active_subscription_provider.dart';
+
 import 'package:runaar/provider/subscription/subscription_provider.dart';
 import 'package:runaar/screens/subscription/subscription_details_screen.dart';
 
@@ -26,9 +25,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SubscriptionProvider>().getSubscriptions();
-      context
-          .read<ActiveSubscriptionProvider>()
-          .ActiveSubscription(userId: widget.userId);
     });
   }
 
@@ -45,9 +41,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       body: RefreshIndicator(
         onRefresh: () async {
           await context.read<SubscriptionProvider>().getSubscriptions();
-          await context.read<ActiveSubscriptionProvider>().activeSubscription(
-            userId: widget.userId,
-          );
+          
         },
         child: Consumer<SubscriptionProvider>(
           builder: (context, provider, _) {
