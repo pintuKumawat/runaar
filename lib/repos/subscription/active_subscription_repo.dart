@@ -6,7 +6,6 @@ class ActiveSubscriptionRepo {
     required int userId,
   }) async {
     Map<String, dynamic> body = {"user_id": userId};
-
     return apiMethods.post(
       endpoint: "subscription/get_active",
       body: body,

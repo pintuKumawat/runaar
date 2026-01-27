@@ -244,7 +244,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       /// PLAN TITLE
                       Text(
                         plan.subscriptionType ?? " ",
-                        style: theme.titleLarge?.copyWith(
+                        style: theme.titleMedium?.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
                         ),
@@ -255,7 +255,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       /// DESCRIPTION
                       Text(
                         plan.subscriptionDescription ?? "",
-                        style: theme.bodyMedium?.copyWith(
+                        style: theme.bodySmall?.copyWith(
                           color: Colors.grey.shade400,
                           height: 1.3,
                         ),
