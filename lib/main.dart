@@ -16,6 +16,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:runaar/provider/auth/forgot_password_provider.dart';
 import 'package:runaar/provider/auth/otp_verify_provider.dart';
 import 'package:runaar/provider/auth/reset_password_provider.dart';
+import 'package:runaar/provider/faqs/faqs_provider.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/language/language_provider.dart';
@@ -30,6 +31,7 @@ import 'package:runaar/provider/my_rides/request_list_provider.dart';
 import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:runaar/provider/privacyPolicy/privacy_policy_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
 import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/provider/subscription/subscription_create_provider.dart';
@@ -106,6 +108,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SubscriptionStatusProvider()),
         ChangeNotifierProvider(create: (_) => ActiveSubscriptionProvider()),
         ChangeNotifierProvider(create: (_) => ActiveVehicleProvider()),
+        ChangeNotifierProvider(create: (_) => FaqsProvider()),
+        ChangeNotifierProvider(create: (_) => PrivacyPolicyProvider()),
       ],
       child: const ScreenUtilSetup(child: MyApp()),
     ),

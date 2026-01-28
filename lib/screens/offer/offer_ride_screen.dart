@@ -12,6 +12,7 @@ import 'package:runaar/core/utils/helpers/offer_ride/load_offer_data.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/offerProvider/offer_provider.dart';
 import 'package:runaar/provider/vehicle/active_vehicle_provider.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:runaar/screens/offer/offer_ride_details_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,27 +48,30 @@ class _OfferRideState extends State<OfferRide> {
       appBar: AppBar(
         title: const Text('OFFER RIDE'),
         actions: [
-          Stack(
-            children: [
-              Icon(Icons.notifications, size: 26.sp),
-              Consumer<NotificationProvider>(
-                builder: (context, value, child) => Positioned(
-                  right: 0,
-                  top: 0,
-                  child: CircleAvatar(
-                    radius: 7.r,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      value.count.toString(),
-                      style: theme.bodySmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 9.sp,
+          InkWell(
+            onTap: () => appNavigator.push(BottomNav(initialIndex: 3)),
+            child: Stack(
+              children: [
+                Icon(Icons.notifications, size: 26.sp),
+                Consumer<NotificationProvider>(
+                  builder: (context, value, child) => Positioned(
+                    right: 0,
+                    top: 0,
+                    child: CircleAvatar(
+                      radius: 7.r,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        value.count.toString(),
+                        style: theme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          fontSize: 9.sp,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
