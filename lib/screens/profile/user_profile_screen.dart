@@ -19,6 +19,7 @@ import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
 import 'package:runaar/screens/profile/account/faq_scereen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
+import 'package:runaar/screens/profile/other/privacy_policy_screen.dart';
 import 'package:runaar/screens/subscription/subscription_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
 import 'package:runaar/screens/profile/other/delete_account_screen.dart';
@@ -90,7 +91,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               padding: 10.all,
               children: [
                 _profileHeader(theme, data),
-                10.height,
+              //  10.height,
 
                 /// WALLET & REFER CARDS
                 // Row(
@@ -412,21 +413,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       case "Share App":
         shareApp();
       case "Privacy Policy":
-        openGoogleImages();
+       appNavigator.push(PrivacyPolicyScreen());
 
       default:
         break;
     }
   }
 
-  void openGoogleImages() async {
-    final url = Uri.parse(
-      "https://www.google.com/imgres?q=chimpanzee%20middle%20finger&imgurl=https%3A%2F%2Fi.pinimg.com%2F736x%2F3d%2F4c%2F07%2F3d4c0704a83c7fd091224cc22295655e.jpg&imgrefurl=https%3A%2F%2Fwww.pinterest.com%2Fpin%2Fmonkey-middle-finger-sticker-in-2025--1058838562391180200%2F&docid=ck5cUrGXt1sp0M&tbnid=JefvPzC8WgKhZM&vet=12ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA..i&w=736&h=736&hcb=2&ved=2ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA",
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    }
-  }
 
   void shareApp() {
     Share.share(
@@ -617,23 +610,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             style: theme.bodySmall?.copyWith(color: Colors.black54),
           ),
 
-          14.height,
+          
 
           /// DURATION
-          Row(
-            children: [
-              Icon(
-                Icons.schedule_rounded,
-                size: 16.sp,
-                color: Colors.black54,
-              ),
-              8.width,
-              Text(
-                "${plan?.duration} Days Validity",
-                style: theme.bodyMedium?.copyWith(color: appColor.textColor),
-              ),
-            ],
-          ),
+          
         ],
       ),
     ),

@@ -12,7 +12,7 @@ class PrivacyPolicyProvider extends ChangeNotifier {
   bool get isLoading=>_isLoading;
   PrivacyPolicyModel? get response=>_response;
 
-   Future<void> getSubscriptions() async {
+   Future<void> PrivacyPolicy() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
