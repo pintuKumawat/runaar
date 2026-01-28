@@ -93,14 +93,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 10.height,
 
                 /// WALLET & REFER CARDS
-                Row(
-                  mainAxisAlignment: .spaceBetween,
-                  children: [
-                    Expanded(child: _referCard(theme, data)),
-                    12.width,
-                    Expanded(child: _walletCard(theme)),
-                  ],
-                ),
+                // Row(
+                //   mainAxisAlignment: .spaceBetween,
+                //   children: [
+                //     Expanded(child: _referCard(theme, data)),
+                //     12.width,
+                //     Expanded(child: _walletCard(theme)),
+                //   ],
+                // ),
                 if (activeProvider.response?.message != null) 10.height,
                 if (activeProvider.response?.message != null)
                   _activeSubscriptionCard(
@@ -499,144 +499,146 @@ void openGoogleImages() async {
   }
 
   Widget _activeSubscriptionCard(TextTheme theme, Message? plan) {
-    final used = int.tryParse(plan?.ridesUsed.toString() ?? "0") ?? 0;
-    final total =
-        int.tryParse(plan?.totalRides?.replaceAll(" Rides", "") ?? "0") ?? 0;
+  final used = int.tryParse(plan?.ridesUsed.toString() ?? "0") ?? 0;
+  final total =
+      int.tryParse(plan?.totalRides?.replaceAll(" Rides", "") ?? "0") ?? 0;
 
-    final progress = total == 0 ? 0.0 : used / total;
+  final progress = total == 0 ? 0.0 : used / total;
 
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
-      child: Container(
-        padding: 16.all,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18.r),
-          gradient: LinearGradient(
-            colors: [
-              Colors.green.withOpacity(0.18),
-              Colors.green.withOpacity(0.05),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// HEADER
-            Row(
-              children: [
-                Container(
-                  padding: 8.all,
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.verified_rounded,
-                    color: Colors.green.shade700,
-                    size: 20.sp,
-                  ),
-                ),
-                10.width,
-                Expanded(
-                  child: Text(
-                    plan?.subscriptionType ?? "",
-                    style: theme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 10.w,
-                    vertical: 4.h,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade700,
-                    borderRadius: BorderRadius.circular(20.r),
-                  ),
-                  child: Text(
-                    "ACTIVE",
-                    style: theme.labelSmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.8,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+ 
+  final bool isActive = plan?.isActive == 1;
+  final Color mainColor = isActive ? Colors.green : Colors.red.shade700;
 
-            14.height,
-
-            /// START & EXPIRY
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _infoItem(
-                  theme,
-                  Icons.play_circle_outline,
-                  "Start",
-                  formatDate(plan?.startDate ?? ""),
-                ),
-                _infoItem(
-                  theme,
-                  Icons.event_busy_outlined,
-                  "Expires",
-                  formatDate(plan?.endDate ?? ""),
-                ),
-              ],
-            ),
-
-            16.height,
-
-            /// RIDES PROGRESS
-            Text(
-              "Rides Used",
-              style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            6.height,
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 8.h,
-                backgroundColor: Colors.grey.shade300,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Colors.green.shade600,
-                ),
-              ),
-            ),
-            6.height,
-            Text(
-              "$used / $total rides used",
-              style: theme.bodySmall?.copyWith(color: Colors.black54),
-            ),
-
-            14.height,
-
-            /// DURATION
-            Row(
-              children: [
-                Icon(
-                  Icons.schedule_rounded,
-                  size: 16.sp,
-                  color: Colors.black54,
-                ),
-                8.width,
-                Text(
-                  "${plan?.duration} Days Validity",
-                  style: theme.bodyMedium?.copyWith(color: appColor.textColor),
-                ),
-              ],
-            ),
+  return Card(
+    elevation: 4,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)),
+    child: Container(
+      padding: 16.all,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18.r),
+        gradient: LinearGradient(
+          colors: [
+            mainColor.withOpacity(0.18),
+            mainColor.withOpacity(0.05),
           ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
-    );
-  }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// HEADER
+          Row(
+            children: [
+              Container(
+                padding: 8.all,
+                decoration: BoxDecoration(
+                  color: mainColor.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.verified_rounded,
+                  color: mainColor,
+                  size: 20.sp,
+                ),
+              ),
+              10.width,
+              Expanded(
+                child: Text(
+                  plan?.subscriptionType ?? "",
+                  style: theme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                decoration: BoxDecoration(
+                  color: mainColor,
+                  borderRadius: BorderRadius.circular(20.r),
+                ),
+                child: Text(
+                  isActive ? "ACTIVE" : "EXPIRED",
+                  style: theme.labelSmall?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          14.height,
+
+          /// START & EXPIRY
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _infoItem(
+                theme,
+                Icons.play_circle_outline,
+                "Start",
+                formatDate(plan?.startDate ?? ""),
+              ),
+              _infoItem(
+                theme,
+                Icons.event_busy_outlined,
+                "Expires",
+                formatDate(plan?.endDate ?? ""),
+              ),
+            ],
+          ),
+
+          16.height,
+
+          /// RIDES PROGRESS
+          Text(
+            "Rides Used",
+            style: theme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          6.height,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.r),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8.h,
+              backgroundColor: Colors.grey.shade300,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                mainColor,
+              ),
+            ),
+          ),
+          6.height,
+          Text(
+            "$used / $total rides used",
+            style: theme.bodySmall?.copyWith(color: Colors.black54),
+          ),
+
+          14.height,
+
+          /// DURATION
+          Row(
+            children: [
+              Icon(
+                Icons.schedule_rounded,
+                size: 16.sp,
+                color: Colors.black54,
+              ),
+              8.width,
+              Text(
+                "${plan?.duration} Days Validity",
+                style: theme.bodyMedium?.copyWith(color: appColor.textColor),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   Widget _infoItem(TextTheme theme, IconData icon, String label, String value) {
     return Row(

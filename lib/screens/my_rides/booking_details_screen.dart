@@ -114,18 +114,20 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
   }
 
   Widget statusContainer(TextTheme theme, BookingStatus status) {
-    return Align(
-      alignment: .topRight,
-      child: Container(
-        padding: 12.hv(6),
-        width: double.infinity,
-        decoration: BoxDecoration(color: status.backgroundColor),
-        child: Text(
-          status.label,
-          textAlign: .end,
-          style: theme.bodyMedium?.copyWith(
-            color: status.textColor,
-            fontWeight: FontWeight.w900,
+    return Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 6),
+      child: Align(
+        alignment: .topRight,
+        child: Container(
+          padding: 12.hv(6),
+          width: double.infinity,
+          decoration: BoxDecoration(color: status.backgroundColor),
+          child: Text(
+            status.label,
+            textAlign: .end,
+            style: theme.bodyMedium?.copyWith(
+              color: status.textColor,
+              fontWeight: FontWeight.w900,
+            ),
           ),
         ),
       ),
