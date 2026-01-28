@@ -401,53 +401,54 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       case "Deactivate Account":
         appNavigator.push(DeleteAccountScreen(userId: userId));
         break;
-        case "FAQs":
+      case "FAQs":
         appNavigator.push(FaqScreen());
         break;
       case "Logout":
         _showLogoutSheet();
         break;
-        case "Contact Support":
-         openWhatsAppSupport();
-          case "Share App":
-         shareApp();
-         case "Privacy Policy":
-         openGoogleImages();
+      case "Contact Support":
+        openWhatsAppSupport();
+      case "Share App":
+        shareApp();
+      case "Privacy Policy":
+        openGoogleImages();
 
       default:
         break;
     }
   }
 
-void openGoogleImages() async {
-  final url = Uri.parse("https://www.google.com/imgres?q=chimpanzee%20middle%20finger&imgurl=https%3A%2F%2Fi.pinimg.com%2F736x%2F3d%2F4c%2F07%2F3d4c0704a83c7fd091224cc22295655e.jpg&imgrefurl=https%3A%2F%2Fwww.pinterest.com%2Fpin%2Fmonkey-middle-finger-sticker-in-2025--1058838562391180200%2F&docid=ck5cUrGXt1sp0M&tbnid=JefvPzC8WgKhZM&vet=12ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA..i&w=736&h=736&hcb=2&ved=2ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA");
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url, mode: LaunchMode.externalApplication);
+  void openGoogleImages() async {
+    final url = Uri.parse(
+      "https://www.google.com/imgres?q=chimpanzee%20middle%20finger&imgurl=https%3A%2F%2Fi.pinimg.com%2F736x%2F3d%2F4c%2F07%2F3d4c0704a83c7fd091224cc22295655e.jpg&imgrefurl=https%3A%2F%2Fwww.pinterest.com%2Fpin%2Fmonkey-middle-finger-sticker-in-2025--1058838562391180200%2F&docid=ck5cUrGXt1sp0M&tbnid=JefvPzC8WgKhZM&vet=12ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA..i&w=736&h=736&hcb=2&ved=2ahUKEwj9k9OMz6GSAxV1xzgGHVUjI10QM3oECBYQAA",
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
   }
-}
-   
-       void shareApp() {
-  Share.share(
-    'Hey 👋 Check out this awesome app:\n\n'
-    'https://play.google.com/store/apps/details?id=com.your.app',
-    subject: 'My App',
-  );
-}
-// For redirect whatsapp 
+
+  void shareApp() {
+    Share.share(
+      'Hey 👋 Check out this awesome app:\n\n'
+      'https://play.google.com/store/apps/details?id=com.your.app',
+      subject: 'My App',
+    );
+  }
+
+  // For redirect whatsapp
   Future<void> openWhatsAppSupport() async {
-  final phone = "918740929857"; // with country code
-  final message = Uri.encodeComponent("I need some help");
+    final phone = "918740929857"; // with country code
+    final message = Uri.encodeComponent("I need some help");
 
-  final url = Uri.parse(
-    "https://wa.me/$phone?text=$message",
-  );
+    final url = Uri.parse("https://wa.me/$phone?text=$message");
 
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url, mode: LaunchMode.externalApplication);
-  } else {
-    throw 'Could not open WhatsApp';
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not open WhatsApp';
+    }
   }
-}
 
   void _showLogoutSheet() {
     showModalBottomSheet(
