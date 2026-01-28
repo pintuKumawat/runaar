@@ -17,14 +17,14 @@ import 'package:runaar/screens/auth/login_screen.dart';
 import 'package:runaar/screens/my_rides/my_rides_screen.dart';
 import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
-import 'package:runaar/screens/profile/account/faq_scereen.dart';
+import 'package:runaar/screens/profile/account/faq_screen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
 import 'package:runaar/screens/profile/other/privacy_policy_screen.dart';
 import 'package:runaar/screens/subscription/subscription_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
 import 'package:runaar/screens/profile/other/delete_account_screen.dart';
-import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
-import 'package:runaar/screens/profile/other/wallet_screen.dart';
+// import 'package:runaar/screens/profile/other/refer_earn_screen.dart';
+// import 'package:runaar/screens/profile/other/wallet_screen.dart';
 import 'package:runaar/screens/profile/vehicle/add_vehicle_screen.dart';
 import 'package:runaar/screens/profile/vehicle/vehicle_list_screen.dart';
 import 'package:share_plus/share_plus.dart';
@@ -217,108 +217,108 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _walletCard(TextTheme theme) {
-    return Card(
-      elevation: 3,
+  // Widget _walletCard(TextTheme theme) {
+  //   return Card(
+  //     elevation: 3,
 
-      color: appColor.mainColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.r),
-        onTap: () => appNavigator.push(WalletScreen()),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.account_balance_wallet_rounded,
-                    color: appColor.secondColor,
-                    size: 20.sp,
-                  ),
-                  8.width,
-                  Text(
-                    "₹${walletBalance.toStringAsFixed(2)}",
-                    style: theme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: appColor.buttonColor,
-                    ),
-                  ),
-                ],
-              ),
+  //     color: appColor.mainColor,
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+  //     child: InkWell(
+  //       borderRadius: BorderRadius.circular(12.r),
+  //       onTap: () => appNavigator.push(WalletScreen()),
+  //       child: Container(
+  //         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 Icon(
+  //                   Icons.account_balance_wallet_rounded,
+  //                   color: appColor.secondColor,
+  //                   size: 20.sp,
+  //                 ),
+  //                 8.width,
+  //                 Text(
+  //                   "₹${walletBalance.toStringAsFixed(2)}",
+  //                   style: theme.titleLarge?.copyWith(
+  //                     fontWeight: FontWeight.w700,
+  //                     color: appColor.buttonColor,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
 
-              2.height,
+  //             2.height,
 
-              Text(
-                "Wallet",
-                style: theme.bodySmall?.copyWith(
-                  color: Colors.grey.shade400,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //             Text(
+  //               "Wallet",
+  //               style: theme.bodySmall?.copyWith(
+  //                 color: Colors.grey.shade400,
+  //                 fontWeight: FontWeight.w500,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _referCard(TextTheme theme, UserDetail? data) {
-    return Card(
-      elevation: 3,
-      // shadowColor: Colors.black26,
-      color: appColor.mainColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12.r),
-        onTap: () =>
-            appNavigator.push(ReferEarnScreen(referCode: data?.referBy)),
-        child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 14.w,
-            vertical: 10.h, // :arrow_left: compact height
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              /// Row: Icon + Points
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.card_giftcard_rounded,
-                    color: appColor.secondColor,
-                    size: 20.sp,
-                  ),
-                  8.width,
-                  Text(
-                    "$referralPoints pts",
-                    style: theme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
+  // Widget _referCard(TextTheme theme, UserDetail? data) {
+  //   return Card(
+  //     elevation: 3,
+  //     // shadowColor: Colors.black26,
+  //     color: appColor.mainColor,
+  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+  //     child: InkWell(
+  //       borderRadius: BorderRadius.circular(12.r),
+  //       onTap: () =>
+  //           appNavigator.push(ReferEarnScreen(referCode: data?.referBy)),
+  //       child: Container(
+  //         padding: EdgeInsets.symmetric(
+  //           horizontal: 14.w,
+  //           vertical: 10.h, // :arrow_left: compact height
+  //         ),
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: [
+  //             /// Row: Icon + Points
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 Icon(
+  //                   Icons.card_giftcard_rounded,
+  //                   color: appColor.secondColor,
+  //                   size: 20.sp,
+  //                 ),
+  //                 8.width,
+  //                 Text(
+  //                   "$referralPoints pts",
+  //                   style: theme.titleLarge?.copyWith(
+  //                     fontWeight: FontWeight.w700,
+  //                     color: Colors.white,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
 
-              2.height, // :arrow_left: reduced spacing
-              /// Label
-              Text(
-                "Refer & Earn",
-                style: theme.bodySmall?.copyWith(
-                  color: Colors.grey.shade400,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  //             2.height, // :arrow_left: reduced spacing
+  //             /// Label
+  //             Text(
+  //               "Refer & Earn",
+  //               style: theme.bodySmall?.copyWith(
+  //                 color: Colors.grey.shade400,
+  //                 fontWeight: FontWeight.w500,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _sectionTitle(String title, TextTheme theme) {
     return Padding(
@@ -610,10 +610,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             style: theme.bodySmall?.copyWith(color: Colors.black54),
           ),
 
-          
+          // 14.height,
 
-          /// DURATION
-          
+          // /// DURATION
+          // Row(
+          //   children: [
+          //     Icon(
+          //       Icons.schedule_rounded,
+          //       size: 16.sp,
+          //       color: Colors.black54,
+          //     ),
+          //     8.width,
+          //     Text(
+          //       "${plan?.duration} Days Validity",
+          //       style: theme.bodyMedium?.copyWith(color: appColor.textColor),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     ),

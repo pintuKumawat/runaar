@@ -10,6 +10,7 @@ import 'package:runaar/core/utils/helpers/location_picker_sheet/location_picker_
 import 'package:runaar/l10n/app_localizations.dart';
 import 'package:runaar/provider/home/home_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:runaar/screens/home/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -68,27 +69,30 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('CARPOOL'),
         actions: [
-          Stack(
-            children: [
-              Icon(Icons.notifications, size: 26.sp),
-              Consumer<NotificationProvider>(
-                builder: (context, value, child) => Positioned(
-                  right: 0,
-                  top: 0,
-                  child: CircleAvatar(
-                    radius: 7.r,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      value.count.toString(),
-                      style: theme.bodySmall?.copyWith(
-                        color: Colors.white,
-                        fontSize: 9.sp,
+          InkWell(
+            onTap: () => appNavigator.push(BottomNav(initialIndex: 3)),
+            child: Stack(
+              children: [
+                Icon(Icons.notifications, size: 26.sp),
+                Consumer<NotificationProvider>(
+                  builder: (context, value, child) => Positioned(
+                    right: 0,
+                    top: 0,
+                    child: CircleAvatar(
+                      radius: 7.r,
+                      backgroundColor: Colors.red,
+                      child: Text(
+                        value.count.toString(),
+                        style: theme.bodySmall?.copyWith(
+                          color: Colors.white,
+                          fontSize: 9.sp,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
