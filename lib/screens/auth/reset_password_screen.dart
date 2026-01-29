@@ -31,52 +31,54 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text("Reset Password"), centerTitle: true),
-      body: SingleChildScrollView(
-        padding: 16.all,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              /// 🔹 IMAGE
-              Center(
-                child: Image.asset(
-                  "assets/images/password.png",
-                  height: 160.h,
-                  fit: BoxFit.contain,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: 10.all,
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                /// 🔹 IMAGE
+                Center(
+                  child: Image.asset(
+                    "assets/images/password.png",
+                    height: 160.h,
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
-
-              15.height,
-
-              /// 🔹 TITLE
-              Text(
-                "Create New Password",
-                style: theme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+        
+                15.height,
+        
+                /// 🔹 TITLE
+                Text(
+                  "Create New Password",
+                  style: theme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-
-              6.height,
-
-              /// 🔹 SUBTITLE
-              Text(
-                "Your new password must be different\n from the previous one",
-                textAlign: .center,
-                style: theme.titleSmall?.copyWith(color: Colors.grey),
-              ),
-
-              10.height,
-
-              _passwordField(),
-
-              10.height,
-
-              _confirmPasswordField(),
-
-              15.height,
-
-              _resetButton(),
-            ],
+        
+                6.height,
+        
+                /// 🔹 SUBTITLE
+                Text(
+                  "Your new password must be different\n from the previous one",
+                  textAlign: .center,
+                  style: theme.titleSmall?.copyWith(color: Colors.grey),
+                ),
+        
+                10.height,
+        
+                _passwordField(),
+        
+                10.height,
+        
+                _confirmPasswordField(),
+        
+                15.height,
+        
+                _resetButton(),
+              ],
+            ),
           ),
         ),
       ),
