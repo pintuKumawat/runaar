@@ -19,6 +19,7 @@ import 'package:runaar/screens/profile/account/change_password_screen.dart';
 import 'package:runaar/screens/profile/account/edit_profile_screen.dart';
 import 'package:runaar/screens/profile/account/faq_screen.dart';
 import 'package:runaar/screens/profile/account/language_change_screen.dart';
+import 'package:runaar/screens/profile/account/test_screen.dart';
 import 'package:runaar/screens/profile/other/privacy_policy_screen.dart';
 import 'package:runaar/screens/subscription/subscription_screen.dart';
 import 'package:runaar/screens/profile/account/verification_screen.dart';
@@ -414,6 +415,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         shareApp();
       case "Privacy Policy":
        appNavigator.push(PrivacyPolicyScreen());
+
+       case "Rate App":
+       appNavigator.push(TestScreen());
 
       default:
         break;

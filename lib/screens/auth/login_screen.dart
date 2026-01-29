@@ -27,117 +27,187 @@ class _LoginScreenState extends State<LoginScreen> {
     final provider = context.watch<LoginProvider>();
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: 10.all,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// TITLE
-              Text(
-                "Welcome Back",
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+   return Scaffold(
+  backgroundColor: Colors.grey.shade100,
+  appBar: AppBar(
+    backgroundColor: Colors.black,
+    foregroundColor: Colors.white,
+    elevation: 0,
+  ),
+  body: SingleChildScrollView(
+    padding: const EdgeInsets.all(20),
+    child: Column(
+      children: [
+        10.height,
 
-              10.height,
-              Text("Login to continue", style: theme.textTheme.titleSmall),
-              25.height,
+        /// TOP IMAGE
+        Image.asset(
+          "assets/images/login yellow.png",
+          height: 170.h,
+        ),
 
-              // MOBILE NUMBER (LIVE VALIDATION)
-              TextFormField(
-                controller: loginController.mobileController,
-                keyboardType: TextInputType.phone,
-                onChanged: provider.validatePhone,
-                maxLength: 10,
-                decoration: InputDecoration(
-                  hintText: "Enter mobile number",
-                  prefixIcon: const Icon(Icons.phone),
-                  errorText: provider.phoneError,
-                  counterText: "",
-                ),
-              ),
+        20.height,
 
-              15.height,
-              TextFormField(
-                controller: loginController.passwordController,
-                obscureText: !provider.isPasswordVisible,
-                onChanged: provider.validatePassword,
-                decoration: InputDecoration(
-                  hintText: "Enter password",
-                  prefixIcon: const Icon(Icons.lock),
-                  errorText: provider.passwordError,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      provider.isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+        /// TITLE
+        Text(
+          "Secure Your Account",
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+
+        8.height,
+        Text(
+          "Login to continue",
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: Colors.grey,
+          ),
+        ),
+
+        30.height,
+
+        /// FORM CARD
+        Card(
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                /// MOBILE NUMBER
+                TextFormField(
+                  controller: loginController.mobileController,
+                  keyboardType: TextInputType.phone,
+                  maxLength: 10,
+                  onChanged: provider.validatePhone,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.phone),
+                    hintText: "Enter mobile number",
+                    counterText: "",
+                    errorText: provider.phoneError,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: appColor.secondColor,
+                        width: 2,
+                      ),
                     ),
-                    onPressed: provider.togglePasswordVisibility,
                   ),
                 ),
-              ),
 
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    appNavigator.push(ForgotMobileScreen());
-                  },
-                  child: Text(
-                    "Forgot Password?",
-                    style: TextStyle(color: appColor.secondColor),
+                20.height,
+
+                /// PASSWORD
+                TextFormField(
+                  controller: loginController.passwordController,
+                  obscureText: !provider.isPasswordVisible,
+                  onChanged: provider.validatePassword,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.lock),
+                    hintText: "Enter password",
+                    errorText: provider.passwordError,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: appColor.secondColor,
+                        width: 2,
+                      ),
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        provider.isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
+                      onPressed: provider.togglePasswordVisibility,
+                    ),
                   ),
                 ),
-              ),
 
-              20.height,
+                10.height,
 
-              SizedBox(
-                width: double.infinity,
-                height: 40.h,
-                child: ElevatedButton(
-                  onPressed: provider.isLoading
-                      ? null
-                      : () async => _loginUser(provider: provider),
-                  child: provider.isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text("Login"),
-                ),
-              ),
-
-              15.height,
-
-              /// SIGN UP
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Don't have an account?"),
-                  4.width,
-                  InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignupScreen(),
-                        ),
-                      );
+                /// FORGOT
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      appNavigator.push(ForgotMobileScreen());
                     },
                     child: Text(
-                      "SignUp",
+                      "Forgot Password?",
                       style: TextStyle(color: appColor.secondColor),
                     ),
                   ),
-                ],
-              ),
-            ],
+                ),
+
+                20.height,
+
+                /// LOGIN BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 50.h,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      elevation: 4,
+                    ),
+                    onPressed: provider.isLoading
+                        ? null
+                        : () async => _loginUser(provider: provider),
+                    child: provider.isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+
+        25.height,
+
+        /// SIGNUP
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text("Don't have an account?"),
+            6.width,
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignupScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                "Sign Up",
+                style: TextStyle(
+                  color: appColor.secondColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  ),
+);
+
+
   }
 
   Future<void> _loginUser({required LoginProvider provider}) async {
