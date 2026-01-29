@@ -16,9 +16,13 @@ class AppTheme {
       // textTheme: GoogleFonts.interTextTheme(
       //   customTextTheme,
       // ).apply(fontFamilyFallback: ['Noto Sans Devanagari']),
-      textTheme: GoogleFonts.interTextTheme(
-        customTextTheme,
-      ).apply(fontFamilyFallback: ['sans-serif']),
+      textTheme:GoogleFonts.rubikTextTheme
+(
+  customTextTheme,
+).apply(
+  fontFamilyFallback: ['Inter', 'sans-serif'],
+),
+
 
       scaffoldBackgroundColor: appColor.backgroundColor,
 
