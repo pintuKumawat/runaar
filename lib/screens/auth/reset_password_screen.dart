@@ -27,60 +27,79 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Reset Password"), centerTitle: true),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: 16.all,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: .min,
-              children: [
-                _title(theme),
-                10.height,
-                _subtitle(theme),
-                30.height,
-                _passwordField(theme),
-                15.height,
-                _confirmPasswordField(theme),
-                30.height,
-                _resetButton(),
-              ],
-            ),
+      body: SingleChildScrollView(
+        padding: 16.all,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              /// 🔹 IMAGE
+              Center(
+                child: Image.asset(
+                  "assets/images/password.png",
+                  height: 160.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              15.height,
+
+              /// 🔹 TITLE
+              Text(
+                "Create New Password",
+                style: theme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              6.height,
+
+              /// 🔹 SUBTITLE
+              Text(
+                "Your new password must be different\n from the previous one",
+                textAlign: .center,
+                style: theme.titleSmall?.copyWith(color: Colors.grey),
+              ),
+
+              10.height,
+
+              _passwordField(),
+
+              10.height,
+
+              _confirmPasswordField(),
+
+              15.height,
+
+              _resetButton(),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _title(ThemeData theme) {
-    return Text(
-      "Create New Password",
-      style: theme.textTheme.headlineSmall?.copyWith(
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-
-  Widget _subtitle(ThemeData theme) {
-    return Text(
-      "Your new password must be different from the previous one",
-      style: theme.textTheme.titleSmall,
-      textAlign: TextAlign.center,
-    );
-  }
-
-  Widget _passwordField(ThemeData theme) {
+  Widget _passwordField() {
     return TextFormField(
       controller: passwordController,
       obscureText: !showPassword,
+
+      // decoration: _inputDecoration(
+      //   hint: "New Password",
+      //   icon: Icons.lock,
+      // suffix: IconButton(
+      //   icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
+      //   onPressed: () => setState(() => showPassword = !showPassword),
+      // ),
+      // ),
       decoration: InputDecoration(
         hintText: "New Password",
-        prefixIcon: const Icon(Icons.lock),
-        suffixIcon: IconButton(
+        prefixIcon: Icon(Icons.lock),
+        suffix: IconButton(
           icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
           onPressed: () => setState(() => showPassword = !showPassword),
         ),
@@ -97,13 +116,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _confirmPasswordField(ThemeData theme) {
+  Widget _confirmPasswordField() {
     return TextFormField(
       controller: confirmPasswordController,
       obscureText: !showConfirmPassword,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+
+      // decoration: _inputDecoration(
+      //   hint: "Confirm Password",
+      //   icon: Icons.lock_outline,
+      //   suffix: IconButton(
+      //     icon: Icon(
+      //       showConfirmPassword ? Icons.visibility_off : Icons.visibility,
+      //     ),
+      //     onPressed: () =>
+      //         setState(() => showConfirmPassword = !showConfirmPassword),
+      //   ),
+      // ),
       decoration: InputDecoration(
         hintText: "Confirm Password",
-        prefixIcon: const Icon(Icons.lock_outline),
+        prefixIcon: Icon(Icons.lock),
+
         suffixIcon: IconButton(
           icon: Icon(
             showConfirmPassword ? Icons.visibility_off : Icons.visibility,
@@ -112,7 +145,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               setState(() => showConfirmPassword = !showConfirmPassword),
         ),
       ),
-      autovalidateMode: .onUserInteraction,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Confirm password is required";
@@ -124,6 +156,27 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       },
     );
   }
+
+  // Widget _confirmPasswordField(ThemeData theme) {
+  //   return TextFormField(
+  //     controller: confirmPasswordController,
+  //     obscureText: !showConfirmPassword,
+  //     decoration: InputDecoration(
+  //       hintText: "Confirm Password",
+  //       prefixIcon: const Icon(Icons.lock_outline),
+  //     ),
+  //     autovalidateMode: .onUserInteraction,
+  //     validator: (value) {
+  //       if (value == null || value.isEmpty) {
+  //         return "Confirm password is required";
+  //       }
+  //       if (value != passwordController.text) {
+  //         return "Passwords do not match";
+  //       }
+  //       return null;
+  //     },
+  //   );
+  // }
 
   // -------------------- RESET BUTTON --------------------
   Widget _resetButton() {

@@ -415,6 +415,7 @@ class _PublishedRideDetailsScreenState
           'yyyy-MM-ddTHH:mm:ss.SSSZ',
           'yyyy-MM-dd HH:mm:ss',
           'yyyy-MM-dd',
+          'yyyy-M-d',
           'dd/MM/yyyy',
           'MM/dd/yyyy',
         ];
@@ -444,7 +445,7 @@ class _PublishedRideDetailsScreenState
       }
 
       if (dateTime != null) {
-        return DateFormat('EEEE, dd MMM yy').format(dateTime);
+        return DateFormat('EEEE, dd-MM-yyyy').format(dateTime);
       } else {
         // Return original string if can't parse
         return isoDateString;
@@ -815,20 +816,31 @@ class _PublishedRideDetailsScreenState
     try {
       if (date.isEmpty || time.isEmpty) return null;
 
-      String datePart = date.trim().split('T').first;
+      // ---- Normalize Date ----
+      List<String> dParts = date.trim().split('-');
+      if (dParts.length != 3) return null;
 
-      List<String> parts = time.trim().split(':');
-      if (parts.length < 2) return null;
+      String year = dParts[0];
+      String month = dParts[1].padLeft(2, '0');
+      String day = dParts[2].padLeft(2, '0');
 
-      String hour = parts[0].padLeft(2, '0');
-      String minute = parts[1].padLeft(2, '0');
-      String second = parts.length > 2 ? parts[2].padLeft(2, '0') : '00';
+      String fixedDate = "$year-$month-$day";
 
-      String cleaned = "$datePart $hour:$minute:$second";
+      // ---- Normalize Time ----
+      List<String> tParts = time.trim().split(':');
 
-      return DateTime.parse(cleaned);
+      String hour = tParts[0].padLeft(2, '0');
+      String minute = tParts.length > 1 ? tParts[1].padLeft(2, '0') : "00";
+      String second = tParts.length > 2 ? tParts[2].padLeft(2, '0') : "00";
+
+      String fixedTime = "$hour:$minute:$second";
+
+      String finalString = "$fixedDate $fixedTime";
+
+      return DateTime.parse(finalString);
     } catch (e) {
       debugPrint("parseTripDateTime error → $e");
+      debugPrint("$date $time");
       return null;
     }
   }

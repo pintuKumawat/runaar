@@ -663,8 +663,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Future<void> _logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(savedData.userId, 0);
-    prefs.setBool(savedData.isLoggedIn, false);
+    prefs.remove(savedData.isLoggedIn);
+    prefs.remove(savedData.userId);
     prefs.remove(savedData.mob);
     prefs.remove(savedData.email);
     prefs.remove(savedData.fcmToken);

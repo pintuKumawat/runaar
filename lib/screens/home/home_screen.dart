@@ -158,7 +158,8 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               height: 40.h,
               child: ElevatedButton(
-                onPressed: _searchButton,
+                onPressed: () =>
+                    homeProvider.isLoading ? null : _searchButton(),
                 child: homeProvider.isLoading
                     ? const CircularProgressIndicator()
                     : Row(

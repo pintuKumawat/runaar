@@ -348,7 +348,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
               _seatButton(
                 Icons.remove,
                 () => provider.decrement(),
-                provider.seats > 1, // Only enable if > 1 seat
+                provider.seats > 1,
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -363,7 +363,7 @@ class _OfferRideDetailsScreenState extends State<OfferRideDetailsScreen> {
               _seatButton(
                 Icons.add,
                 () => provider.increment(),
-                true, // Always enabled
+                true,
               ),
             ],
           ),

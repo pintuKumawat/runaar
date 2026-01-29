@@ -115,13 +115,13 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
                             }
                           },
                         ),
-                        _infoTile(
-                          icon: Icons.report,
-                          title: 'Report ride',
-                          theme: theme,
-                          onTap: () {},
-                        ),
-                        20.height,
+                        // _infoTile(
+                        //   icon: Icons.report,
+                        //   title: 'Report ride',
+                        //   theme: theme,
+                        //   onTap: () {},
+                        // ),
+                        // 20.height,
                       ],
                     ),
                   ),
@@ -140,7 +140,9 @@ class _RideDetailsScreenState extends State<RideDetailsScreen> {
             width: double.infinity,
             height: 40.h,
             child: ElevatedButton(
-              onPressed: () => appNavigator.push(
+              onPressed: () =>  
+              
+              appNavigator.push(
                 ConfirmBookingScreen(
                   date: formatTripDate(provider.response?.trip?.tripDate ?? ""),
                   originTime: formatTimeToAMPM(data?.originTime ?? ""),

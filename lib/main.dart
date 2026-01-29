@@ -32,7 +32,6 @@ import 'package:runaar/provider/my_rides/request_response_provider.dart';
 import 'package:runaar/provider/my_rides/trip_status_update_provider.dart';
 import 'package:runaar/provider/notification/notification_provider.dart';
 import 'package:runaar/provider/privacyPolicy/privacy_policy_provider.dart';
-import 'package:runaar/provider/privacyPolicy/privacy_policy_provider.dart';
 import 'package:runaar/provider/profile/account/change_password_provider.dart';
 import 'package:runaar/provider/subscription/active_subscription_provider.dart';
 import 'package:runaar/provider/subscription/subscription_create_provider.dart';

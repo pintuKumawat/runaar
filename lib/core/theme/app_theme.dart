@@ -16,9 +16,16 @@ class AppTheme {
       // textTheme: GoogleFonts.interTextTheme(
       //   customTextTheme,
       // ).apply(fontFamilyFallback: ['Noto Sans Devanagari']),
-      textTheme: GoogleFonts.interTextTheme(
-        customTextTheme,
-      ).apply(fontFamilyFallback: ['sans-serif']),
+      // textTheme: GoogleFonts.interTextTheme(
+      //   customTextTheme,
+      // ).apply(fontFamilyFallback: ['sans-serif']),
+      textTheme: GoogleFonts.poppinsTextTheme(customTextTheme)
+          .apply(bodyColor: Colors.black, displayColor: Colors.black)
+          .copyWith(
+            bodyMedium: customTextTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
+          ),
 
       scaffoldBackgroundColor: appColor.backgroundColor,
 
@@ -111,7 +118,7 @@ class AppTheme {
           ),
         ),
       ),
-      
+
       bottomAppBarTheme: BottomAppBarThemeData(
         color: Colors.transparent,
         shadowColor: Colors.transparent,
@@ -141,19 +148,19 @@ class AppTheme {
         alignLabelWithHint: true,
         fillColor: Colors.white70,
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: .5.r),
+          borderSide: BorderSide(color: Colors.grey, width: .6.r),
           // borderRadius: .circular(14.r),
         ),
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: appColor.mainColor, width: 1.r),
+          borderSide: BorderSide(color: appColor.mainColor, width: .6.r),
           // borderRadius: .circular(14.r),
         ),
         errorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 2.r),
+          borderSide: BorderSide(color: Colors.grey, width: .6.r),
           // borderRadius: .circular(14.r),
         ),
         focusedErrorBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 2.r),
+          borderSide: BorderSide(color: Colors.grey, width: .6.r),
           // borderRadius: .circular(14.r),
         ),
 

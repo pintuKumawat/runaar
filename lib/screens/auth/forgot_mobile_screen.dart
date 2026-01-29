@@ -23,26 +23,56 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
     final theme = Theme.of(context).textTheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Forgot Password")),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: 16.all,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _title(theme),
-                10.height,
-                _subtitle(theme),
-                25.height,
-                _mobileField(),
-                25.height,
-                _submitButton(),
-                15.height,
-                _backToLogin(),
-              ],
-            ),
+      appBar: AppBar(title: const Text("Forgot Password"), centerTitle: true),
+      body: SingleChildScrollView(
+        padding: 16.all,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// 🔹 IMAGE
+              Center(
+                child: Image.asset(
+                  "assets/images/forgot.png",
+                  height: 160.h,
+                  fit: BoxFit.contain,
+                ),
+              ),
+
+              25.height,
+
+              /// 🔹 TITLE
+              Text(
+                "Reset Password",
+                style: theme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              6.height,
+
+              /// 🔹 SUBTITLE
+              Text(
+                "Enter your registered mobile number",
+                style: theme.titleSmall?.copyWith(color: Colors.grey),
+              ),
+
+              30.height,
+
+              /// 🔹 MOBILE FIELD
+              _mobileField(),
+
+              30.height,
+
+              /// 🔹 BUTTON
+              _submitButton(),
+
+              20.height,
+
+              /// 🔹 BACK TO LOGIN
+              Center(child: _backToLogin()),
+            ],
           ),
         ),
       ),
@@ -50,32 +80,21 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
   }
 
   // -------------------- TITLE --------------------
-  Widget _title(TextTheme theme) {
-    return Text(
-      "Reset Password",
-      style: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-    );
-  }
-
-  // -------------------- SUBTITLE --------------------
-  Widget _subtitle(TextTheme theme) {
-    return Text(
-      "Enter your registered mobile number",
-      style: theme.titleSmall,
-      textAlign: TextAlign.center,
-    );
-  }
-
-  // -------------------- MOBILE FIELD --------------------
   Widget _mobileField() {
     return TextFormField(
       controller: forgotPasswordController.forgotMobileController,
       keyboardType: TextInputType.phone,
       maxLength: 10,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         hintText: "Enter mobile number",
-        prefixIcon: Icon(Icons.phone),
+        prefixIcon: const Icon(Icons.phone),
         counterText: "",
+        filled: true,
+        fillColor: Colors.grey.shade100,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -94,8 +113,13 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
       builder: (context, provider, child) {
         return SizedBox(
           width: double.infinity,
-          height: 40.h,
+          height: 48.h,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
             onPressed: provider.isLoading
                 ? null
                 : () async {
@@ -139,7 +163,7 @@ class _ForgotMobileScreenState extends State<ForgotMobileScreen> {
   // -------------------- BACK TO LOGIN --------------------
   Widget _backToLogin() {
     return TextButton(
-      onPressed: () => Navigator.pop(context),
+      onPressed: () => appNavigator.pop(),
       child: Text(
         "Back to Login",
         style: TextStyle(color: appColor.secondColor),

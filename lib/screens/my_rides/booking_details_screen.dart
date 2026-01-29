@@ -484,8 +484,9 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
           isEnabled = true;
         }
         break;
+        
       default:
-        buttonText = "Ride Completed";
+        buttonText = "Ride Rejected";
         isEnabled = false;
     }
 

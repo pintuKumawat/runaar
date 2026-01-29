@@ -52,20 +52,52 @@ class _OtpScreenState extends State<OtpScreen> {
       appBar: AppBar(title: const Text("Verify OTP"), centerTitle: true),
       body: Center(
         child: SingleChildScrollView(
-          padding: 16.all,
+          padding: 10.all,
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _title(theme),
+                /// 🔹 IMAGE
+                Center(
+                  child: Image.asset(
+                    "assets/images/otp.png",
+                    height: 160.h,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+        
                 10.height,
-                _subtitle(theme),
-                25.height,
+        
+                /// 🔹 TITLE
+                Text(
+                  "OTP Verification",
+                  style: theme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+        
+                6.height,
+        
+                /// 🔹 SUBTITLE
+                Text(
+                  "Enter the OTP sent to +91 ${widget.mobile}",
+                  style: theme.titleSmall?.copyWith(color: Colors.grey),
+                ),
+        
+                10.height,
+        
+                /// 🔹 OTP BOXES
                 _otpBoxes(),
+        
+                15.height,
+        
+                /// 🔹 RESEND
+                Center(child: _resendOtp()),
+        
                 20.height,
-                _resendOtp(),
-                25.height,
+        
+                /// 🔹 BUTTON
                 _verifyButton(),
               ],
             ),
@@ -76,34 +108,28 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   // -------------------- TITLE --------------------
-  Widget _title(TextTheme theme) {
-    return Text(
-      "OTP Verification",
-      style: theme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _subtitle(TextTheme theme) {
-    return Text(
-      "Enter the OTP sent to +91 ${widget.mobile}",
-      style: theme.titleSmall,
-      textAlign: TextAlign.center,
-    );
-  }
-
   Widget _otpBoxes() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: List.generate(
         6,
         (index) => SizedBox(
-          width: 45.w,
+          width: 48.w,
           child: TextFormField(
             controller: _otpControllers[index],
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             maxLength: 1,
-            decoration: const InputDecoration(counterText: ""),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              counterText: "",
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
             onChanged: (value) {
               if (value.isNotEmpty && index < 5) {
                 FocusScope.of(context).nextFocus();
@@ -132,7 +158,7 @@ class _OtpScreenState extends State<OtpScreen> {
           )
         : Consumer<ForgotPasswordProvider>(
             builder: (context, value, child) => TextButton(
-              onPressed: () => _resendOtpAction(value),
+              onPressed: () => value.isLoading ? null : _resendOtpAction(value),
               child: value.isLoading
                   ? const CircularProgressIndicator()
                   : Text(
@@ -145,16 +171,21 @@ class _OtpScreenState extends State<OtpScreen> {
 
   Widget _verifyButton() {
     return Consumer<OtpVerifyProvider>(
-      builder: (BuildContext context, otpVerifyProvider, child) {
+      builder: (context, otpVerifyProvider, child) {
         return SizedBox(
           width: double.infinity,
-          height: 40.h,
+          height: 48.h,
           child: ElevatedButton(
-            onPressed: () => otpVerifyProvider.isLoading
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            onPressed: otpVerifyProvider.isLoading
                 ? null
-                : _verifyOtp(otpVerifyProvider),
+                : () => _verifyOtp(otpVerifyProvider),
             child: otpVerifyProvider.isLoading
-                ? const CircularProgressIndicator()
+                ? const CircularProgressIndicator(color: Colors.white)
                 : const Text("Verify OTP"),
           ),
         );

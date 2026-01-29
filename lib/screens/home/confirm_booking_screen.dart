@@ -11,7 +11,7 @@ import 'package:runaar/core/utils/helpers/Snackbar/app_snackbar.dart';
 import 'package:runaar/core/utils/helpers/Text_Formatter/text_formatter.dart';
 import 'package:runaar/provider/home/booking_request_provider.dart';
 import 'package:runaar/provider/home/home_provider.dart';
-import 'package:runaar/screens/home/booking_done_screen.dart';
+import 'package:runaar/screens/home/bottom_nav.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmBookingScreen extends StatefulWidget {
@@ -468,57 +468,32 @@ class _ConfirmBookingScreenState extends State<ConfirmBookingScreen> {
               onPressed: provider.isLoading
                   ? null
                   : () async {
-                      if (_selectedPaymentMethod.toString().toLowerCase() ==
-                          "cash") {
-                        await provider.bookingRequest(
-                          userId: userId ?? 0,
-                          tripId: widget.tripId,
-                          paymentMethod: _selectedPaymentMethod.toLowerCase(),
-                          paymentStatus: "pending",
-                          seatRequest: homeProvider.seats,
-                          totalPrice: totalPrice,
-                          specialMessage: messageController.text,
-                        );
-                        if (provider.errorMessage != null) {
-                          appSnackbar.showSingleSnackbar(
-                            context,
-                            provider.errorMessage ?? "",
-                          );
-                          return;
-                        }
+                      await provider.bookingRequest(
+                        userId: userId ?? 0,
+                        tripId: widget.tripId,
+                        paymentMethod: _selectedPaymentMethod.toLowerCase(),
+                        paymentStatus: "pending",
+                        seatRequest: homeProvider.seats,
+                        totalPrice: totalPrice,
+                        specialMessage: messageController.text,
+                      );
+                      if (provider.errorMessage != null) {
                         appSnackbar.showSingleSnackbar(
                           context,
-                          provider.response?.message ?? "",
+                          provider.errorMessage ?? "",
                         );
-                        appNavigator.push(BookingDoneScreen());
-                        messageController.clear();
-                        homeController.clear();
-                      } else {
-                        // _openingRazorPay(totalPrice);
-                        await provider.bookingRequest(
-                          userId: userId ?? 0,
-                          tripId: widget.tripId,
-                          paymentMethod: _selectedPaymentMethod.toLowerCase(),
-                          paymentStatus: "pending",
-                          seatRequest: homeProvider.seats,
-                          totalPrice: totalPrice,
-                          specialMessage: messageController.text,
-                        );
-                        if (provider.errorMessage != null) {
-                          appSnackbar.showSingleSnackbar(
-                            context,
-                            provider.errorMessage ?? "",
-                          );
-                          return;
-                        }
-                        appSnackbar.showSingleSnackbar(
-                          context,
-                          provider.response?.message ?? "",
-                        );
-                        appNavigator.push(BookingDoneScreen());
-                        messageController.clear();
-                        homeController.clear();
+                        return;
                       }
+                      appSnackbar.showSingleSnackbar(
+                        context,
+                        provider.response?.message ?? "",
+                      );
+                      // appNavigator.push(BookingDoneScreen());
+                      appNavigator.pushAndRemoveUntil(
+                        const BottomNav(initialIndex: 1, rideIndex: 0),
+                      );
+                      messageController.clear();
+                      homeController.clear();
                     },
 
               child: provider.isLoading
